@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Datang</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+      .email-container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #4caf50;
+      }
+      .content {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888888;
+        text-align: center;
+      }
+      a.button {
+        display: inline-block;
+        background-color: #4caf50;
+        color: #fff !important;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .user-info {
+        margin-top: 10px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .user-info p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">Selamat Datang!</div>
+      <div class="content">
+        <p>Hi <strong><%= fullname %></strong>,</p>
+        <p>
+          Terima kasih telah mendaftar di aplikasi kami. Berikut detail akun
+          Anda:
+        </p>
+
+        <div class="user-info">
+          <p><strong>Email:</strong> <%= email %></p>
+          <p><strong>Phone:</strong> <%= phone %></p>
+          <p><strong>Tanggal Pendaftaran:</strong> <%= registeredAt %></p>
+        </div>
+
+        <p>Silakan klik tombol di bawah ini untuk mengaktifkan akun Anda:</p>
+        <a href="<%= activationLink %>" class="button">Aktivasi Akun</a>
+      </div>
+      <div class="footer">
+        &copy; <%= new Date().getFullYear() %> My Company. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

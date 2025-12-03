@@ -17,4 +17,7 @@ export class AuthValidation {
     .strict() satisfies ZodType<
     UserCreateRequestType & { confirmPassword: string }
   >;
+
+  // activation code
+  static readonly ACTIVATION_CODE = z.object({ code: z.string() }).strict();
 }

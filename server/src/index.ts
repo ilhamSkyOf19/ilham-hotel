@@ -1,9 +1,9 @@
 // dot env
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import authRoute from "./routes/auth.route";
 import connect from "./libs/db";
-dotenv.config();
 
 const init = async () => {
   try {

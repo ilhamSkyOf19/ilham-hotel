@@ -67,4 +67,38 @@ export class AuthController {
       next(error);
     }
   }
+
+  // activation code
+  static async activationCode(
+    req: Request<{}, {}, { code: string }>,
+    res: Response<ResponseType<UserResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get body
+      const body = req.body;
+
+      // update activation code
+      const response = await AuthService.updateActivationCode(body.code);
+
+      // cek response
+      if (!response) {
+        return res.status(400).json({
+          status: "failed",
+          message: "Invalid activation code",
+          data: null,
+        });
+      }
+      // response
+      res.status(200).json({
+        status: "success",
+        message: "success",
+        data: response,
+      });
+    } catch (error) {
+      // cek
+      console.log(error);
+      next(error);
+    }
+  }
 }

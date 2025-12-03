@@ -14,5 +14,12 @@ authRoute.post(
   AuthController.register
 );
 
+// activation code
+authRoute.post(
+  "/activation",
+  validationMiddleware(AuthValidation.ACTIVATION_CODE),
+  AuthController.activationCode
+);
+
 // export route auth
 export default authRoute;

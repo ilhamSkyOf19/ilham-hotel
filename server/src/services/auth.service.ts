@@ -36,4 +36,32 @@ export class AuthService {
       _id: response._id.toString(),
     });
   }
+
+  // update activation code
+  static async updateActivationCode(
+    activationCode: string
+  ): Promise<UserResponseType | null> {
+    try {
+      // update
+      const response = await UserModel.findOneAndUpdate(
+        { activateCode: activationCode },
+        { isActive: true },
+        { new: true }
+      );
+
+      // cek response
+      if (!response) {
+        return null;
+      }
+
+      // return
+      return toUserResponseType({
+        ...response.toObject(),
+        _id: response._id.toString(),
+      });
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }

@@ -18,7 +18,8 @@ export interface UserCreateRequestType
   extends Pick<IUser, "fullName" | "email" | "phone" | "password"> {}
 
 // response user
-export interface UserResponseType extends Omit<IUser, "password"> {}
+export interface UserResponseType
+  extends Omit<IUser, "password" | "activateCode"> {}
 
 // to response
 export const toUserResponseType = (user: IUser): UserResponseType => ({
@@ -29,7 +30,6 @@ export const toUserResponseType = (user: IUser): UserResponseType => ({
   role: user.role,
   avatar: user.avatar,
   isActive: user.isActive,
-  activateCode: user.activateCode,
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
 });

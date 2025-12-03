@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { IUser } from "../models/user-model";
 import bcrypt from "bcrypt";
+import { renderEmail, sendEmail } from "../utils/mail/mail";
 
 // user schema
 const UserSchema = new Schema<IUser>(
@@ -45,13 +46,34 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-// model
-const UserModel = model<IUser>("User", UserSchema);
-
 // hash password
 UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
+  this.activateCode = await bcrypt.hash(this.email, 10);
 });
+
+// send email
+UserSchema.post("save", async function (doc, next) {
+  // get user
+  const user = doc;
+
+  const contentEmail = await renderEmail("registration-succes.ejs", {
+    fullname: user.fullName,
+    email: user.email,
+    phone: user.phone,
+    registeredAt: user.createdAt,
+    activationLink: `${process.env.CLIENT_URL}/auth/activation?code=${user.activateCode}`,
+  });
+
+  // send email
+  await sendEmail(user.email, "Registration Success", contentEmail);
+
+  // next
+  next();
+});
+
+// model
+const UserModel = model<IUser>("User", UserSchema);
 
 // export
 export default UserModel;
