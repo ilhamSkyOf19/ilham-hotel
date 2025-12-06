@@ -11,7 +11,7 @@ const AuthLayoutPage: FC<Props> = ({ children, type }) => {
   return (
     <div className="w-screen min-h-screen flex flex-col justify-start items-start">
       {/* header */}
-      <HeaderAuth type="login" />
+      <HeaderAuth type={type} />
 
       {/* content input */}
       <div className="w-full flex flex-col justify-start items-center pb-10 pt-75">

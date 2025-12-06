@@ -5,8 +5,24 @@ import {
 } from "../models/user-model";
 import UserModel from "../schemas/user.schema";
 import { ResponseType } from "../types/request-response";
+import { renderEmail, sendEmail } from "../utils/mail/mail";
+import { generateCode } from "../utils/util";
 
 export class AuthService {
+  // get auth user
+  static async getAuthUser(email: string): Promise<UserResponseType | null> {
+    const response = await UserModel.findOne({ email });
+
+    if (!response) {
+      return null;
+    }
+
+    return toUserResponseType({
+      ...response.toObject(),
+      _id: response._id.toString(),
+    });
+  }
+
   // create
   static async create(
     req: UserCreateRequestType
@@ -61,16 +77,16 @@ export class AuthService {
       }
 
       // get createdAt
-      const createAt = new Date(response.createdAt);
+      const timeCode = new Date(response.updatedAt);
 
       // expired duration
-      const EXPIRE_TIME = 3 * 60 * 1000;
+      const EXPIRE_TIME = 2 * 60 * 1000;
 
       // date now
       const dateNow = new Date();
 
       // cek expired
-      if (dateNow.getTime() - createAt.getTime() > EXPIRE_TIME) {
+      if (dateNow.getTime() - timeCode.getTime() > EXPIRE_TIME) {
         return {
           status: "failed",
           message: "Expired activation code",
@@ -95,5 +111,56 @@ export class AuthService {
         data: null,
       };
     }
+  }
+
+  // read user by email
+  static async readUserByEmail(
+    email: string
+  ): Promise<UserResponseType | null> {
+    // call model
+    const response = await UserModel.findOne({ email });
+
+    // cek response
+    if (!response) {
+      return null;
+    }
+
+    // return
+    return toUserResponseType({
+      ...response.toObject(),
+      _id: response._id.toString(),
+    });
+  }
+
+  // update code
+  static async resend(email: string): Promise<UserResponseType | null> {
+    const response = await UserModel.findOneAndUpdate(
+      { email },
+      { activateCode: generateCode() },
+      { new: true }
+    );
+
+    // send email
+    if (response) {
+      const contentEmail = await renderEmail("registration-succes.ejs", {
+        fullname: response.fullName,
+        email: response.email,
+        phone: response.phone,
+        registeredAt: response.createdAt,
+        activateCode: response.activateCode,
+      });
+
+      // send email
+      await sendEmail(response.email, "Activation Code", contentEmail);
+
+      // return
+
+      return toUserResponseType({
+        ...response.toObject(),
+        _id: response._id.toString(),
+      });
+    }
+
+    return null;
   }
 }

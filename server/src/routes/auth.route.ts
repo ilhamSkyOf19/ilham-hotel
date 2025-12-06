@@ -3,6 +3,7 @@ import { AuthValidation } from "../validations/auth-validation";
 import { UserCreateRequestType } from "../models/user-model";
 import { AuthController } from "../controllers/auth.controller";
 import validationMiddleware from "../middlewares/vaidation.middleware";
+import authMiddleware from "../middlewares/auth.middleware";
 
 // route auth
 const authRoute: Router = Router();
@@ -17,9 +18,20 @@ authRoute.post(
 // activation code
 authRoute.post(
   "/activation",
+  authMiddleware("activation"),
   validationMiddleware(AuthValidation.ACTIVATION_CODE),
   AuthController.activationCode
 );
+
+// get auth
+authRoute.get(
+  "/get-auth-activation",
+  authMiddleware("activation"),
+  AuthController.getAuthUser
+);
+
+// resend
+authRoute.post("/resend", authMiddleware("activation"), AuthController.resend);
 
 // export route auth
 export default authRoute;

@@ -59,7 +59,6 @@ export class AuthValidation {
         .min(4, "Code harus diisi")
         .max(4, "Code maksimal 4 karakter")
         .regex(/^[0-9]+$/, "Code tidak valid"),
-      email: z.email("Email is required"),
     })
     .strict();
 }

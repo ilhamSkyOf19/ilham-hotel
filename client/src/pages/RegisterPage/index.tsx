@@ -42,10 +42,7 @@ const RegisterPage: FC = () => {
         data
       )) as ResponseType<UserCreateRequestType | null>;
     },
-    onSuccess: (data: ResponseType<UserCreateRequestType | null>) => {
-      // set session
-      sessionStorage.setItem("email", data.data?.email ?? "");
-
+    onSuccess: () => {
       // navigate to activation page
       return navigate("/activation");
     },

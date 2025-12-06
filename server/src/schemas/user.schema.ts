@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import { IUser } from "../models/user-model";
 import bcrypt from "bcrypt";
 import { renderEmail, sendEmail } from "../utils/mail/mail";
+import { generateCode } from "../utils/util";
 
 // user schema
 const UserSchema = new Schema<IUser>(
@@ -51,8 +52,7 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 
   // generate code
-  const code = Math.floor(1000 + Math.random() * 9000);
-  this.activateCode = code;
+  this.activateCode = generateCode();
 });
 
 // send email

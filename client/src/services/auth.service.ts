@@ -1,4 +1,5 @@
 import api from "../libs/axios";
+import type { PayloadType } from "../models/auth-model";
 import type {
   UserCreateRequestType,
   UserResponseType,
@@ -24,19 +25,36 @@ export class AuthService {
 
   //   activation ode
   static async activationCode(data: {
-    email: string;
     code: number;
   }): Promise<ResponseType<UserResponseType | null>> {
     const response = api
       .post(
         "/auth/activation",
-        { email: data.email, code: data.code },
+        { code: data.code },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       )
+      .then((res) => res.data);
+
+    return response;
+  }
+
+  // resend
+  static async resend(): Promise<ResponseType<UserResponseType | null>> {
+    // call api
+    const response = await api.post("/auth/resend").then((res) => res.data);
+
+    return response;
+  }
+
+  // get auth
+  static async getAuthActivation(): Promise<ResponseType<PayloadType | null>> {
+    // call api
+    const response = await api
+      .get("/auth/get-auth-activation")
       .then((res) => res.data);
 
     return response;

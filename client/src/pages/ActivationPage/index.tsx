@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
 import OtpInput from "react-otp-input";
@@ -13,20 +13,55 @@ import type { ResponseType } from "../../utils/response-type";
 import type { UserResponseType } from "../../models/user-model";
 import { AxiosError } from "axios";
 import Resend from "../../components/Resend";
+import type { PayloadType } from "../../models/auth-model";
+import { useGetAuthActivation } from "../../hooks/useAuth";
 
 // code length
 const CODE_LENGTH: number = 4;
 
 const ActivationPage: FC = () => {
-  // get from session
-  const email = sessionStorage.getItem("email") ?? "";
+  // state reset
+  const [resetTrigger, setResetTrigger] = useState<number>(0);
+
+  // state data
+  const [data, setData] = useState<PayloadType | null>(null);
+
+  // loading
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // get data
+  useEffect(() => {
+    const response = async () => {
+      try {
+        // set loading
+        setLoading(true);
+
+        // get auth
+        const response = await useGetAuthActivation();
+
+        // cek response
+        if (response?.status === "failed") {
+          return;
+        }
+
+        setData(response?.data as PayloadType);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // call
+    response();
+  }, [resetTrigger]);
+
   // navigate
   const navigate = useNavigate();
   // use form
   const { control, handleSubmit, setError } = useForm({
     defaultValues: {
       code: "",
-      email: email ?? "",
     },
     resolver: zodResolver(AuthValidation.ACTIVATION_CODE),
   });
@@ -35,7 +70,6 @@ const ActivationPage: FC = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (data: { code: string }) => {
       return (await AuthService.activationCode({
-        email,
         code: Number(data.code),
       })) as ResponseType<UserResponseType | null>;
     },
@@ -57,7 +91,7 @@ const ActivationPage: FC = () => {
   });
 
   // handle submit
-  const onSubmit = async (data: { email: string; code: string }) => {
+  const onSubmit = async (data: { code: string }) => {
     try {
       // call mutation
       return await mutateAsync({ code: String(data.code) });
@@ -65,6 +99,9 @@ const ActivationPage: FC = () => {
       console.log(error);
     }
   };
+
+  // handle reset
+  const reset = () => setResetTrigger((prev) => prev + 1);
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center py-10 px-4">
@@ -90,7 +127,7 @@ const ActivationPage: FC = () => {
 
           {/* email */}
           <p className="text-primary-skyblue text-sm font-medium ">
-            {email || "default@gmail.com"}
+            {data?.email || ""}
           </p>
         </div>
 
@@ -146,7 +183,15 @@ const ActivationPage: FC = () => {
           />
 
           {/* resend */}
-          <Resend />
+          <div className="w-full min-h-23 flex flex-col justify-center items-center">
+            {loading ? null : (
+              <Resend
+                time={String(data?.updatedAt)}
+                reset={reset}
+                resetTrigger={resetTrigger}
+              />
+            )}
+          </div>
           {/* verify */}
           <div className="w-full mt-5">
             <ButtonAuth type="submit" label="verify" loading={isPending} />

@@ -2,5 +2,8 @@ export interface PayloadType {
   _id: string;
   fullName: string;
   email: string;
-  role: string;
+  isActive: boolean;
+  role: "admin" | "customer";
+  createAt: string;
+  updatedAt: string;
 }

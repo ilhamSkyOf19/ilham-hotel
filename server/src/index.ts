@@ -5,11 +5,14 @@ import express from "express";
 import authRoute from "./routes/auth.route";
 import connect from "./libs/db";
 import cors from "cors";
-
+import cookieParser from "cookie-parser";
 const init = async () => {
   try {
     // init express
     const app = express();
+
+    // cookie
+    app.use(cookieParser());
 
     // cors
     app.use(

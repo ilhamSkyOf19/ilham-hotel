@@ -19,7 +19,8 @@ export class AuthValidation {
   >;
 
   // activation code
-  static readonly ACTIVATION_CODE = z
-    .object({ code: z.number(), email: z.email() })
-    .strict();
+  static readonly ACTIVATION_CODE = z.object({ code: z.number() }).strict();
+
+  // resend
+  static readonly RESEND = z.object({ email: z.email() }).strict();
 }
