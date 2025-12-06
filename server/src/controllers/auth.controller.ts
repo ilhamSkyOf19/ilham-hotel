@@ -34,12 +34,50 @@ export class AuthController {
       // creater user
       const response = await AuthService.create(body);
 
+      // response
+      res.status(200).json({
+        status: "success",
+        message: "success",
+        data: response,
+      });
+    } catch (error) {
+      // cek
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // activation code
+  static async activationCode(
+    req: Request<{}, {}, { code: number; email: string }>,
+    res: Response<ResponseType<UserResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get body
+      const body = req.body;
+
+      // update activation code
+      const response = await AuthService.updateActivationCode(
+        body.code,
+        body.email
+      );
+
+      // cek response
+      if (response.status === "failed") {
+        return res.status(400).json({
+          status: "failed",
+          message: "Invalid activation code",
+          data: null,
+        });
+      }
+
       //   generate token
       const payload: PayloadType = {
-        _id: response?._id ?? "",
-        fullName: response?.fullName ?? "",
-        email: response?.email ?? "",
-        role: response?.role ?? "",
+        _id: response.data?._id ?? "",
+        fullName: response.data?.fullName ?? "",
+        email: response.data?.email ?? "",
+        role: response.data?.role ?? "",
       };
 
       // generate token
@@ -59,41 +97,7 @@ export class AuthController {
       res.status(200).json({
         status: "success",
         message: "success",
-        data: response,
-      });
-    } catch (error) {
-      // cek
-      console.log(error);
-      next(error);
-    }
-  }
-
-  // activation code
-  static async activationCode(
-    req: Request<{}, {}, { code: string }>,
-    res: Response<ResponseType<UserResponseType | null>>,
-    next: NextFunction
-  ) {
-    try {
-      // get body
-      const body = req.body;
-
-      // update activation code
-      const response = await AuthService.updateActivationCode(body.code);
-
-      // cek response
-      if (!response) {
-        return res.status(400).json({
-          status: "failed",
-          message: "Invalid activation code",
-          data: null,
-        });
-      }
-      // response
-      res.status(200).json({
-        status: "success",
-        message: "success",
-        data: response,
+        data: response.data,
       });
     } catch (error) {
       // cek

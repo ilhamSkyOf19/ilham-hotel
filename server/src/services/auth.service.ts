@@ -4,6 +4,7 @@ import {
   UserResponseType,
 } from "../models/user-model";
 import UserModel from "../schemas/user.schema";
+import { ResponseType } from "../types/request-response";
 
 export class AuthService {
   // create
@@ -39,29 +40,60 @@ export class AuthService {
 
   // update activation code
   static async updateActivationCode(
-    activationCode: string
-  ): Promise<UserResponseType | null> {
+    activationCode: number,
+    email: string
+  ): Promise<ResponseType<UserResponseType | null>> {
     try {
       // update
       const response = await UserModel.findOneAndUpdate(
-        { activateCode: activationCode },
+        { activateCode: activationCode, email },
         { isActive: true },
         { new: true }
       );
 
       // cek response
       if (!response) {
-        return null;
+        return {
+          status: "failed",
+          message: "Invalid activation code",
+          data: null,
+        };
+      }
+
+      // get createdAt
+      const createAt = new Date(response.createdAt);
+
+      // expired duration
+      const EXPIRE_TIME = 3 * 60 * 1000;
+
+      // date now
+      const dateNow = new Date();
+
+      // cek expired
+      if (dateNow.getTime() - createAt.getTime() > EXPIRE_TIME) {
+        return {
+          status: "failed",
+          message: "Expired activation code",
+          data: null,
+        };
       }
 
       // return
-      return toUserResponseType({
-        ...response.toObject(),
-        _id: response._id.toString(),
-      });
+      return {
+        status: "success",
+        message: "Success",
+        data: toUserResponseType({
+          ...response.toObject(),
+          _id: response._id.toString(),
+        }),
+      };
     } catch (error) {
       console.log(error);
-      return null;
+      return {
+        status: "failed",
+        message: "Internal server error",
+        data: null,
+      };
     }
   }
 }

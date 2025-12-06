@@ -37,8 +37,8 @@ const UserSchema = new Schema<IUser>(
       default: false,
     },
     activateCode: {
-      type: String,
-      default: "",
+      type: Number,
+      default: null,
     },
   },
   {
@@ -49,7 +49,10 @@ const UserSchema = new Schema<IUser>(
 // hash password
 UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
-  this.activateCode = await bcrypt.hash(this.email, 10);
+
+  // generate code
+  const code = Math.floor(1000 + Math.random() * 9000);
+  this.activateCode = code;
 });
 
 // send email
@@ -62,7 +65,7 @@ UserSchema.post("save", async function (doc, next) {
     email: user.email,
     phone: user.phone,
     registeredAt: user.createdAt,
-    activationLink: `${process.env.CLIENT_URL}/auth/activation?code=${user.activateCode}`,
+    activateCode: user.activateCode,
   });
 
   // send email

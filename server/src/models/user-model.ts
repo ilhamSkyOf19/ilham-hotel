@@ -8,7 +8,7 @@ export interface IUser {
   password: string;
   avatar: string;
   isActive: boolean;
-  activateCode: string;
+  activateCode: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Selamat Datang</title>
+    <title>Aktivasi Akun</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -34,14 +34,17 @@
         color: #888888;
         text-align: center;
       }
-      a.button {
+      .activation-code {
         display: inline-block;
-        background-color: #4caf50;
-        color: #fff !important;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-top: 20px;
+        background-color: #f1f1f1;
+        color: #333;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 15px 25px;
+        border-radius: 8px;
+        letter-spacing: 4px;
+        margin: 20px 0;
+        text-align: center;
       }
       .user-info {
         margin-top: 10px;
@@ -56,13 +59,10 @@
   </head>
   <body>
     <div class="email-container">
-      <div class="header">Selamat Datang!</div>
+      <div class="header">Aktivasi Akun Anda</div>
       <div class="content">
         <p>Hi <strong><%= fullname %></strong>,</p>
-        <p>
-          Terima kasih telah mendaftar di aplikasi kami. Berikut detail akun
-          Anda:
-        </p>
+        <p>Terima kasih telah mendaftar di aplikasi kami.</p>
 
         <div class="user-info">
           <p><strong>Email:</strong> <%= email %></p>
@@ -70,11 +70,15 @@
           <p><strong>Tanggal Pendaftaran:</strong> <%= registeredAt %></p>
         </div>
 
-        <p>Silakan klik tombol di bawah ini untuk mengaktifkan akun Anda:</p>
-        <a href="<%= activationLink %>" class="button">Aktivasi Akun</a>
+        <p>Gunakan kode aktivasi berikut untuk mengaktifkan akun Anda:</p>
+        <div class="activation-code"><%= activateCode %></div>
+
+        <p>
+          Masukkan kode ini di aplikasi untuk menyelesaikan aktivasi akun Anda.
+        </p>
       </div>
       <div class="footer">
-        &copy; <%= new Date().getFullYear() %> My Company. All rights reserved.
+        &copy; <%= new Date().getFullYear() %> My Hotel. All rights reserved.
       </div>
     </div>
   </body>
