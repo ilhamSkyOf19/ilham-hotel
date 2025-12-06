@@ -7,28 +7,65 @@ import ButtonAuth from "../../components/ButtonAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthValidation } from "../../validations/auth-validation";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { AuthService } from "../../services/auth.service";
+import type { ResponseType } from "../../utils/response-type";
+import type { UserResponseType } from "../../models/user-model";
+import { AxiosError } from "axios";
+import Resend from "../../components/Resend";
 
 // code length
 const CODE_LENGTH: number = 4;
 
 const ActivationPage: FC = () => {
+  // get from session
+  const email = sessionStorage.getItem("email") ?? "";
   // navigate
   const navigate = useNavigate();
   // use form
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, setError } = useForm({
     defaultValues: {
       code: "",
+      email: email ?? "",
     },
     resolver: zodResolver(AuthValidation.ACTIVATION_CODE),
   });
 
+  // use mutation
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: { code: string }) => {
+      return (await AuthService.activationCode({
+        email,
+        code: Number(data.code),
+      })) as ResponseType<UserResponseType | null>;
+    },
+    onSuccess: (data: ResponseType<UserResponseType | null>) => {
+      if (data.status === "success") {
+        navigate("/");
+      }
+    },
+    onError: (error) => {
+      // cek error from axios
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 410) {
+          // set error already exist
+          setError("code", { message: error.response?.data.message });
+        }
+      }
+      console.log(error);
+    },
+  });
+
   // handle submit
-  const onSubmit = (data: { code: string }) => {
-    console.log(data);
+  const onSubmit = async (data: { email: string; code: string }) => {
+    try {
+      // call mutation
+      return await mutateAsync({ code: String(data.code) });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // get from session
-  const email = sessionStorage.getItem("email");
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center py-10 px-4">
       {/* button back */}
@@ -107,21 +144,12 @@ const ActivationPage: FC = () => {
               </div>
             )}
           />
-          {/* resend */}
-          <div className="w-full flex flex-col justify-start items-center">
-            <p className="text-black text-sm">Didn't receive the code?</p>
 
-            {/* button resend */}
-            <button
-              type="button"
-              className="text-black underline text-sm font-semibold"
-            >
-              Resend code
-            </button>
-          </div>
+          {/* resend */}
+          <Resend />
           {/* verify */}
           <div className="w-full mt-5">
-            <ButtonAuth type="submit" label="verify" />
+            <ButtonAuth type="submit" label="verify" loading={isPending} />
           </div>
         </form>
       </div>

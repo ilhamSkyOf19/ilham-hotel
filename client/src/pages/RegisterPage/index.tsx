@@ -9,6 +9,11 @@ import InputPassword from "../../components/InputPassword";
 
 import ButtonAgreement from "../../components/ButtonAgreement";
 import AuthLayoutPage from "../../fragments/AuthLayoutPage";
+import { useMutation } from "@tanstack/react-query";
+import { AuthService } from "../../services/auth.service";
+import type { ResponseType } from "../../utils/response-type";
+import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
 
 const RegisterPage: FC = () => {
   // state for button agree
@@ -17,13 +22,45 @@ const RegisterPage: FC = () => {
   // state error for button agree
   const [errorAgree, setErrorAgree] = useState<boolean>(false);
 
+  // navigate
+  const navigate = useNavigate();
+
   // use form
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<UserCreateRequestType>({
     resolver: zodResolver(AuthValidation.REGISTER),
+  });
+
+  // use mutation
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: async (data: UserCreateRequestType) => {
+      return (await AuthService.register(
+        data
+      )) as ResponseType<UserCreateRequestType | null>;
+    },
+    onSuccess: (data: ResponseType<UserCreateRequestType | null>) => {
+      // set session
+      sessionStorage.setItem("email", data.data?.email ?? "");
+
+      // navigate to activation page
+      return navigate("/activation");
+    },
+    onError: (error) => {
+      // cek error from axios
+      if (error instanceof AxiosError) {
+        // cek status code
+        if (error.response?.status === 409) {
+          // set error already exist
+          setError("email", { message: error.response?.data.message });
+        }
+      }
+
+      return console.log("error", error);
+    },
   });
 
   // handle submit
@@ -36,7 +73,11 @@ const RegisterPage: FC = () => {
       }
 
       console.log(data);
-    } catch (error) {}
+
+      await mutateAsync(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -90,7 +131,7 @@ const RegisterPage: FC = () => {
 
         {/* button submit */}
         <div className="w-full px-6 mt-4">
-          <ButtonAuth type="submit" label="sign up" />
+          <ButtonAuth type="submit" label="sign up" loading={isPending} />
         </div>
       </form>
     </AuthLayoutPage>

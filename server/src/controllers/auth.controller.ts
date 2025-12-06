@@ -24,7 +24,7 @@ export class AuthController {
 
       //   cek user
       if (user) {
-        return res.status(400).json({
+        return res.status(409).json({
           status: "failed",
           message: "User already exists",
           data: null,
@@ -65,7 +65,7 @@ export class AuthController {
 
       // cek response
       if (response.status === "failed") {
-        return res.status(400).json({
+        return res.status(410).json({
           status: "failed",
           message: "Invalid activation code",
           data: null,

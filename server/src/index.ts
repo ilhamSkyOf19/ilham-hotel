@@ -4,11 +4,20 @@ dotenv.config();
 import express from "express";
 import authRoute from "./routes/auth.route";
 import connect from "./libs/db";
+import cors from "cors";
 
 const init = async () => {
   try {
     // init express
     const app = express();
+
+    // cors
+    app.use(
+      cors({
+        origin: "http://localhost:5173",
+        credentials: true, // izin cookie, session, token HttpOnly
+      })
+    );
 
     // connect db
     await connect();
