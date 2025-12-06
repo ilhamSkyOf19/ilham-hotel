@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { UserCreateRequestType, UserResponseType } from "../models/user-model";
+import {
+  UserCreateRequestType,
+  UserLoginRequestType,
+  UserResponseType,
+} from "../models/user-model";
 import { AuthRequest, ResponseType } from "../types/request-response";
 import { AuthService } from "../services/auth.service";
 import { PayloadType } from "../types/payload";
 import jwt from "jsonwebtoken";
-import { email } from "zod";
 
 export class AuthController {
   // get auth user
-  static async getAuthUser(
+  static async getAuthUserForActivation(
     req: AuthRequest,
     res: Response<ResponseType<PayloadType | null>>
   ) {
@@ -17,7 +20,7 @@ export class AuthController {
       const email = req.data?.email ?? "";
 
       // get auth user
-      const response = await AuthService.getAuthUser(email);
+      const response = await AuthService.getAuthUserForActivation(email);
 
       // return response
       return res.status(200).json({
@@ -45,7 +48,9 @@ export class AuthController {
   // register
   static async register(
     req: Request<{}, {}, UserCreateRequestType>,
-    res: Response<ResponseType<UserResponseType | null>>,
+    res: Response<
+      ResponseType<Omit<UserResponseType, "isActive" | "_id"> | null>
+    >,
     next: NextFunction
   ) {
     try {
@@ -98,7 +103,15 @@ export class AuthController {
       res.status(200).json({
         status: "success",
         message: "success",
-        data: response,
+        data: {
+          fullName: response?.fullName ?? "",
+          email: response?.email ?? "",
+          role: response?.role ?? "customer",
+          phone: response?.phone ?? "",
+          avatar: response?.avatar ?? "",
+          createdAt: response?.createdAt ?? "",
+          updatedAt: response?.updatedAt ?? "",
+        },
       });
     } catch (error) {
       // cek
@@ -191,15 +204,6 @@ export class AuthController {
         });
       }
 
-      // cek activate
-      if (user.isActive === true) {
-        return res.status(409).json({
-          status: "failed",
-          message: "User already activated",
-          data: null,
-        });
-      }
-
       // update activation code
       const response = await AuthService.resend(email as string);
 
@@ -208,6 +212,116 @@ export class AuthController {
         status: "success",
         message: "success",
         data: response,
+      });
+    } catch (error) {
+      // cek
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // login
+  static async login(
+    req: Request<{}, {}, UserLoginRequestType>,
+    res: Response<
+      ResponseType<Pick<
+        UserResponseType,
+        "email" | "fullName" | "role" | "phone" | "avatar"
+      > | null>
+    >,
+    next: NextFunction
+  ) {
+    try {
+      // get body
+      const body = req.body;
+
+      // find user by email
+      const user = await AuthService.login(body);
+
+      // cek user
+      if (user?.status === "failed") {
+        return res.status(400).json(user);
+      }
+
+      // generate token
+      const payload: PayloadType = {
+        _id: user.data?._id ?? "",
+        fullName: user.data?.fullName ?? "",
+        email: user.data?.email ?? "",
+        isActive: user.data?.isActive ?? false,
+        role: user.data?.role ?? "customer",
+        createAt: user.data?.createdAt ?? "",
+        updatedAt: user.data?.updatedAt ?? "",
+      };
+
+      // generate token
+      const token = jwt.sign(payload, process.env.SECRET_KEY as string, {
+        expiresIn: "1h",
+      });
+
+      //   set cookie
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false, // ⬅️ development
+        sameSite: "lax", // NONE tidak boleh jika secure:false
+        maxAge: 60 * 60 * 1000,
+      });
+
+      // response
+      res.status(200).json({
+        status: "success",
+        message: "success",
+        data: {
+          fullName: user.data?.fullName ?? "",
+          email: user.data?.email ?? "",
+          phone: user.data?.phone ?? "",
+          role: user.data?.role ?? "customer",
+          avatar: user.data?.avatar ?? "",
+        },
+      });
+    } catch (error) {
+      // cek
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // get user for auth
+  static async getAuthUser(
+    req: AuthRequest,
+    res: Response<
+      ResponseType<Omit<UserResponseType, "_id" | "isActive"> | null>
+    >,
+    next: NextFunction
+  ) {
+    try {
+      // get email from req data
+      const email = req.data?.email ?? { email: "" };
+
+      // cek user
+      const user = await AuthService.getAuthUser(email as string);
+
+      // cek user
+      if (!user) {
+        return res.status(401).json({
+          status: "failed",
+          message: "Unauthorized",
+          data: null,
+        });
+      }
+      // response
+      res.status(200).json({
+        status: "success",
+        message: "success",
+        data: {
+          fullName: user?.fullName ?? "",
+          email: user?.email ?? "",
+          phone: user?.phone ?? "",
+          role: user?.role ?? "customer",
+          avatar: user?.avatar ?? "",
+          createdAt: user?.createdAt ?? "",
+          updatedAt: user?.updatedAt ?? "",
+        },
       });
     } catch (error) {
       // cek

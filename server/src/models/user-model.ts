@@ -17,6 +17,10 @@ export interface IUser {
 export interface UserCreateRequestType
   extends Pick<IUser, "fullName" | "email" | "phone" | "password"> {}
 
+// login request
+export interface UserLoginRequestType
+  extends Pick<IUser, "email" | "password"> {}
+
 // response user
 export interface UserResponseType
   extends Omit<IUser, "password" | "activateCode"> {}

@@ -1,5 +1,8 @@
 import z, { ZodType } from "zod";
-import { UserCreateRequestType } from "../models/user-model";
+import {
+  UserCreateRequestType,
+  UserLoginRequestType,
+} from "../models/user-model";
 
 export class AuthValidation {
   static readonly REGISTER = z
@@ -21,6 +24,11 @@ export class AuthValidation {
   // activation code
   static readonly ACTIVATION_CODE = z.object({ code: z.number() }).strict();
 
-  // resend
-  static readonly RESEND = z.object({ email: z.email() }).strict();
+  // login
+  static readonly LOGIN = z
+    .object({
+      email: z.email("Email is required"),
+      password: z.string("Password is required"),
+    })
+    .strict() satisfies ZodType<UserLoginRequestType>;
 }

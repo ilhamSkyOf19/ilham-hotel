@@ -1,5 +1,5 @@
 import api from "../libs/axios";
-import type { PayloadType } from "../models/auth-model";
+import type { AuthLoginRequestType, PayloadType } from "../models/auth-model";
 import type {
   UserCreateRequestType,
   UserResponseType,
@@ -20,6 +20,26 @@ export class AuthService {
       .then((res) => res.data);
 
     // handle response
+    return response;
+  }
+
+  // login
+  static async login(
+    data: AuthLoginRequestType
+  ): Promise<
+    ResponseType<Omit<
+      UserResponseType,
+      "isActive" | "_id" | "createdAt" | "updatedAt"
+    > | null>
+  > {
+    const response = api
+      .post("/auth/login", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.data);
+
     return response;
   }
 
@@ -50,12 +70,22 @@ export class AuthService {
     return response;
   }
 
-  // get auth
+  // get auth for activation
   static async getAuthActivation(): Promise<ResponseType<PayloadType | null>> {
     // call api
     const response = await api
       .get("/auth/get-auth-activation")
       .then((res) => res.data);
+
+    return response;
+  }
+
+  // get user for auth
+  static async getAuthUser(): Promise<
+    ResponseType<Omit<UserResponseType, "_id" | "isActive"> | null>
+  > {
+    // call api
+    const response = await api.get(`/auth/get-auth`).then((res) => res.data);
 
     return response;
   }

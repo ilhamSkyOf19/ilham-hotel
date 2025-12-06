@@ -15,6 +15,20 @@ authRoute.post(
   AuthController.register
 );
 
+// login
+authRoute.post(
+  "/login",
+  validationMiddleware(AuthValidation.LOGIN),
+  AuthController.login
+);
+
+// get auth user
+authRoute.get(
+  "/get-auth",
+  authMiddleware("customer"),
+  AuthController.getAuthUser
+);
+
 // activation code
 authRoute.post(
   "/activation",
@@ -27,7 +41,7 @@ authRoute.post(
 authRoute.get(
   "/get-auth-activation",
   authMiddleware("activation"),
-  AuthController.getAuthUser
+  AuthController.getAuthUserForActivation
 );
 
 // resend

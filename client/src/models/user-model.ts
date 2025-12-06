@@ -19,6 +19,8 @@ export interface UserCreateRequestType
   confirmPassword: string;
 }
 
+// login request
+
 // response user
 export interface UserResponseType
   extends Omit<IUser, "password" | "activateCode"> {}

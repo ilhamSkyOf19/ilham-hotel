@@ -1,17 +1,35 @@
 import {
   toUserResponseType,
   UserCreateRequestType,
+  UserLoginRequestType,
   UserResponseType,
 } from "../models/user-model";
 import UserModel from "../schemas/user.schema";
 import { ResponseType } from "../types/request-response";
 import { renderEmail, sendEmail } from "../utils/mail/mail";
 import { generateCode } from "../utils/util";
+import bcrypt from "bcrypt";
 
 export class AuthService {
-  // get auth user
-  static async getAuthUser(email: string): Promise<UserResponseType | null> {
+  // get user for activation
+  static async getAuthUserForActivation(
+    email: string
+  ): Promise<UserResponseType | null> {
     const response = await UserModel.findOne({ email });
+
+    if (!response) {
+      return null;
+    }
+
+    return toUserResponseType({
+      ...response.toObject(),
+      _id: response._id.toString(),
+    });
+  }
+
+  // get user for auth
+  static async getAuthUser(email: string): Promise<UserResponseType | null> {
+    const response = await UserModel.findOne({ email, isActive: true });
 
     if (!response) {
       return null;
@@ -162,5 +180,56 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  // cek user
+  static async login(
+    req: UserLoginRequestType
+  ): Promise<ResponseType<UserResponseType | null>> {
+    try {
+      // call model
+      const response = await UserModel.findOne({
+        email: req.email,
+        isActive: true,
+      });
+
+      // cek response
+      if (!response) {
+        return {
+          status: "failed",
+          message: "email or password is wrong",
+          data: null,
+        };
+      }
+
+      // verify password
+      const isMatch = await bcrypt.compare(req.password, response.password);
+
+      // cek password
+      if (!isMatch) {
+        return {
+          status: "failed",
+          message: "email or password is wrong",
+          data: null,
+        };
+      }
+
+      // return
+      return {
+        status: "success",
+        message: "Success",
+        data: toUserResponseType({
+          ...response.toObject(),
+          _id: response._id.toString(),
+        }),
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: "failed",
+        message: "Internal server error",
+        data: null,
+      };
+    }
   }
 }
