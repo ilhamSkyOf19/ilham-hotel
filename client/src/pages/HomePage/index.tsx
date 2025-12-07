@@ -10,6 +10,10 @@ import InputRangePrice from "../../components/InputRangePrice";
 import InputCheckbox from "../../components/InputCheckbox";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import clsx from "clsx";
+import TitleSeAll from "../../components/TitleSeeAll";
+import CardLarge from "../../components/CardLarge";
+import kamar1 from "../../assets/thumb/kamar-3.jpg";
+import kamar2 from "../../assets/thumb/kamar-2.jpg";
 
 const location: string[] = [
   "New York, USA",
@@ -65,7 +69,7 @@ const HomePage: FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-start items-center pt-8 gap-6">
+    <div className="w-screen h-[200vh] flex flex-col justify-start items-center pt-8">
       {/* header */}
       <HeaderHomePage
         locationList={location}
@@ -75,6 +79,34 @@ const HomePage: FC = () => {
 
       {/* search hotel */}
       <SearchHotel register={register} handleOpenModal={setActive} />
+
+      {/* title recommended hotel */}
+      <div className="w-[90vw] mt-4">
+        <TitleSeAll label="Recommended Hotel" link="#" />
+      </div>
+
+      {/* container card large hotel */}
+      <div className="w-full flex flex-row justify-start items-start overflow-x-scroll py-6 px-5 gap-4 scrollbar-hidden">
+        {/* card large */}
+        <CardLarge
+          thumbnail={kamar1}
+          title="OasisOverture"
+          location="New York, USA"
+          price={630}
+          discount={20}
+          rating={4.8}
+          link="/"
+        />
+        <CardLarge
+          thumbnail={kamar2}
+          title="OasisOverture"
+          location="New York, USA"
+          price={630}
+          discount={20}
+          rating={4.8}
+          link="/"
+        />
+      </div>
 
       {/* modal filter*/}
       <ModalComponent active={active} handleClose={handleClose}>
@@ -129,7 +161,7 @@ type SearchHotelProps = {
 };
 const SearchHotel: FC<SearchHotelProps> = ({ register, handleOpenModal }) => {
   return (
-    <div className="w-[90vw] flex flex-row justify-between items-start gap-3">
+    <div className="w-[90vw] flex flex-row justify-between items-start gap-3 mt-6">
       {/* search */}
       <div className="flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 py-2">
         {/* icon search  */}

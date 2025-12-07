@@ -9,6 +9,17 @@
   --text-poppins: "Poppins", sans-serif;
 }
 
+/* Untuk semua elemen, termasuk body dan html */
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0px; /* Menghilangkan track & thumb di Webkit */
+  background: transparent; /* Optional: buat transparan */
+}
+
 body {
   font-family: var(--text-poppins);
   overflow-x: hidden;
