@@ -4,7 +4,7 @@ import { FaBell, FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import clsx from "clsx";
-import InputRaw from "../../components/InputRaw";
+import InputRaw from "../../../components/InputRaw";
 import { useForm } from "react-hook-form";
 
 // header component
@@ -106,7 +106,7 @@ const ModalLocation: FC<ModalLocationProps> = ({
     <div
       ref={modalRef}
       className={clsx(
-        "absolute w-full shadow-[0px_3px_7px_0px_rgba(0,0,0,0.2)] top-[120%] transition-all duration-300 ease-in-out z-50 rounded-2xl overflow-hidden",
+        "absolute w-full shadow-[0px_3px_7px_0px_rgba(0,0,0,0.2)] top-[120%] transition-all duration-300 ease-in-out z-50 rounded-2xl overflow-hidden bg-white",
         isOpenModalLocation ? "max-h-70" : "max-h-0"
       )}
     >

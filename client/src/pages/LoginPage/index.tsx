@@ -36,7 +36,7 @@ const LoginPage: FC = () => {
     },
     onSuccess: (data) => {
       // navigate
-      navigate("/home");
+      navigate("/");
 
       console.log(data);
     },

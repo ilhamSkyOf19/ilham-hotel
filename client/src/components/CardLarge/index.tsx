@@ -1,9 +1,7 @@
 import { type FC } from "react";
 import { GrFavorite } from "react-icons/gr";
-import { FaStar } from "react-icons/fa6";
-import LocationGray from "../LocationGray";
-import { formatCurrency } from "../../utils/util";
 import { Link } from "react-router";
+import ContentCard from "../ContentCard";
 
 type Props = {
   thumbnail: string;
@@ -47,40 +45,14 @@ const CardLarge: FC<Props> = ({
       </div>
 
       {/* content */}
-      <div className="w-full h-auto flex flex-col justify-start items-start mt-4">
-        {/* discount & rating */}
-        <div className="w-full flex flex-row justify-between items-center">
-          {/* discount */}
-          <h2 className="bg-primary-gray/30 text-xs font-medium text-primary-skyblue rounded-lg py-2 px-3">
-            {discount} Off
-          </h2>
-
-          {/* rating */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* start */}
-            <FaStar className="text-lg text-yellow-500" />
-
-            {/* rating */}
-            <h2 className="text-sm   text-black">{rating}</h2>
-          </div>
-        </div>
-
-        {/* title */}
-        <h2 className="text-lg font-semibold text-black mt-2">{title}</h2>
-
-        {/* location */}
-        <LocationGray address={location} />
-
-        {/* price */}
-        <div className="w-full flex flex-row justify-start items-center gap-1 mt-1">
-          {/* price */}
-          <h2 className="text-sm font-medium text-primary-skyblue mt-2">
-            {formatCurrency(price)}
-          </h2>
-
-          {/* /* per night */}
-          <h2 className="text-xs text-gray-400 mt-2">/night</h2>
-        </div>
+      <div className="w-full mt-4">
+        <ContentCard
+          discount={discount}
+          rating={rating}
+          title={title}
+          location={location}
+          price={price}
+        />
       </div>
     </Link>
   );

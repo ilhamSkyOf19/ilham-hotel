@@ -1,19 +1,16 @@
-import { useEffect, useState, type FC } from "react";
-import HeaderHomePage from "../../fragments/HeaderHomePage";
+import { useState, type FC } from "react";
+import HeaderHomePage from "../../fragments/homePage/HeaderHomePage";
 import { FiSearch } from "react-icons/fi";
 import { useForm, type UseFormRegister } from "react-hook-form";
 import InputRaw from "../../components/InputRaw";
 import { PiSlidersHorizontal } from "react-icons/pi";
 import ModalComponent from "../../components/ModalComponent";
-import { IoClose } from "react-icons/io5";
-import InputRangePrice from "../../components/InputRangePrice";
-import InputCheckbox from "../../components/InputCheckbox";
-import ToggleSwitch from "../../components/ToggleSwitch";
-import clsx from "clsx";
 import TitleSeAll from "../../components/TitleSeeAll";
 import CardLarge from "../../components/CardLarge";
 import kamar1 from "../../assets/thumb/kamar-3.jpg";
 import kamar2 from "../../assets/thumb/kamar-2.jpg";
+import ModalFilter from "../../fragments/homePage/ModalFilter";
+import CardMedium from "../../components/CardMedium";
 
 const location: string[] = [
   "New York, USA",
@@ -108,47 +105,40 @@ const HomePage: FC = () => {
         />
       </div>
 
+      {/* title Nearby Hotel */}
+      <div className="w-[90vw] mt-2">
+        <TitleSeAll label="Nearby Hotel" link="#" />
+      </div>
+
+      {/* card hotel small */}
+      <div className="w-[90vw] flex flex-col justify-start items-center mt-4 gap-4">
+        <CardMedium
+          thumbnail={kamar2}
+          discount={20}
+          rating={4.8}
+          title="OasisOverture"
+          location="New York, USA"
+          price={630}
+        />
+        <CardMedium
+          thumbnail={kamar1}
+          discount={20}
+          rating={4.8}
+          title="OasisOverture"
+          location="New York, USA"
+          price={630}
+        />
+      </div>
+
       {/* modal filter*/}
       <ModalComponent active={active} handleClose={handleClose}>
-        <div className="w-full h-screen flex flex-col justify-start item-start">
-          <div className="w-full flex flex-col justify-center items-center relative">
-            {/* title */}
-            <h2 className="font-semibold text-base text-center">
-              Filter Hotel
-            </h2>
-
-            {/* button close */}
-            <button
-              type="button"
-              className="absolute right-0"
-              onClick={handleClose}
-            >
-              <IoClose className="text-3xl text-slate-500" />
-            </button>
-          </div>
-
-          {/* range price */}
-          <InputRangePrice handleSetRangePrice={handleSetRangePrice} />
-
-          {/* facility */}
-          <Facility handleSetFacility={setFacility} />
-
-          {/* type of accommodation */}
-          <TypeOfAccommodation handleSetAccommodation={setAccommodation} />
-
-          {/* button apply */}
-          <div className="w-full pb-8 mt-4">
-            <button
-              type="button"
-              className="w-full flex flex-1 justify-center items-center bg-primary-skyblue font-bold  rounded-full text-white py-3"
-              onClick={() => {
-                handleSubmit();
-              }}
-            >
-              Apply
-            </button>
-          </div>
-        </div>
+        <ModalFilter
+          handleClose={handleClose}
+          handleSetRangePrice={handleSetRangePrice}
+          handleSubmit={handleSubmit}
+          setFacility={setFacility}
+          setAccommodation={setAccommodation}
+        />
       </ModalComponent>
     </div>
   );
@@ -184,123 +174,6 @@ const SearchHotel: FC<SearchHotelProps> = ({ register, handleOpenModal }) => {
       >
         <PiSlidersHorizontal className="text-3xl text-white" />
       </button>
-    </div>
-  );
-};
-
-// facility
-type FacilityProps = {
-  handleSetFacility: (id: number[]) => void;
-};
-const Facility: FC<FacilityProps> = ({ handleSetFacility }) => {
-  // state facility
-  const [ChooseFacility, setFacility] = useState<number[]>([]);
-  // handle set facility
-  const handleChooseFacility = (id: number) => {
-    // cek
-    if (ChooseFacility.includes(id)) {
-      setFacility((prev) => prev.filter((item) => item !== id));
-      return;
-    } else {
-      setFacility((prev) => [...prev, id]);
-    }
-  };
-
-  // set choose
-  useEffect(() => {
-    // set after 1.5 second
-    const timer = setTimeout(() => {
-      handleSetFacility(ChooseFacility);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [ChooseFacility]);
-
-  return (
-    <div className="w-full flex flex-col justify-start items-start mt-6 gap-4 border-b-2 border-black/30 pb-8">
-      <p className="text-base text-black/60">Facility</p>
-      {/* checkbox */}
-      <div className="grid grid-cols-2 gap-4 justify-between w-full">
-        {[1, 2, 3, 4].map((id) => (
-          <div key={id} className="col-span-1">
-            <InputCheckbox
-              handleCheckbox={() => handleChooseFacility(id)}
-              label={`Facility ${id}`}
-              checked={ChooseFacility.includes(id)}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// type of  acco
-type TypeOfAccommodationProps = {
-  handleSetAccommodation: (id: string[]) => void;
-};
-const TypeOfAccommodation: FC<TypeOfAccommodationProps> = ({
-  handleSetAccommodation,
-}) => {
-  // data
-  const data: { id: string; label: string }[] = [
-    { id: "1", label: "Hotel" },
-    { id: "2", label: "Villa" },
-    { id: "3", label: "Apartment" },
-    { id: "4", label: "Resort" },
-  ];
-
-  // state check
-  const [isChecked, setIsChecked] = useState<string[]>([]);
-
-  // handle check
-  const handleCheck = (id: string) => {
-    // cek
-    if (isChecked.includes(id)) {
-      setIsChecked((prev) => prev.filter((item) => item !== id));
-      return;
-    } else {
-      setIsChecked((prev) => [...prev, id]);
-    }
-  };
-
-  useEffect(() => {
-    // set after 1.5 second
-    const timer = setTimeout(() => {
-      handleSetAccommodation(isChecked);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [isChecked]);
-
-  return (
-    <div className="w-full flex flex-col justify-start items-start gap-2 mt-6 ">
-      {/* title */}
-      <p className="text-base text-black/60">Type of accommodation</p>
-
-      {/* listing */}
-      <div className="w-full flex flex-col justify-start items-start gap-4">
-        {/* list */}
-        {data.map((item, index) => (
-          <div
-            key={index}
-            className={clsx(
-              "w-full flex flex-row justify-between items-center py-4 ",
-              index !== data.length - 1 && "border-b-2 border-black/30"
-            )}
-          >
-            {/* label */}
-            <p className="text-lg text-black font-medium">{item.label}</p>
-
-            {/* checkbox */}
-            <ToggleSwitch
-              id={item.id}
-              handleCheck={handleCheck}
-              active={isChecked.includes(item.id)}
-            />
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

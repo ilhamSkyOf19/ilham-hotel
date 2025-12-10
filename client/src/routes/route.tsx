@@ -5,10 +5,11 @@ import LoginPage from "../pages/LoginPage";
 import ActivationPage from "../pages/ActivationPage";
 import HomePage from "../pages/HomePage";
 import { AuthService } from "../services/auth.service";
+import LayoutPage from "../fragments/LayoutPage";
 
 const route = createBrowserRouter([
   {
-    path: "/",
+    path: "/welcome",
     element: <FirstPage />,
   },
   {
@@ -24,11 +25,33 @@ const route = createBrowserRouter([
     element: <ActivationPage />,
   },
   {
-    path: "/home",
+    path: "/",
     loader: async () => {
       return await AuthService.getAuthUser();
     },
-    element: <HomePage />,
+    element: <LayoutPage />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/history",
+        element: <HomePage />,
+      },
+      {
+        path: "/room",
+        element: <HomePage />,
+      },
+      {
+        path: "/favorite",
+        element: <HomePage />,
+      },
+      {
+        path: "/user",
+        element: <HomePage />,
+      },
+    ],
   },
 ]);
 

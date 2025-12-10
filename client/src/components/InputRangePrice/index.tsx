@@ -20,7 +20,7 @@ const InputRangePrice: FC<Props> = ({ handleSetRangePrice }) => {
   }, [rangeValue]);
 
   return (
-    <div className="w-full flex flex-col justify-start items-start gap-2 mt-6 border-b-2 border-black/30 pb-8">
+    <div className="w-full flex flex-col justify-start items-start gap-2 mt-6 border-b border-black/20 pb-8">
       {/* title */}
       <p className="text-base text-black/60">Price (for 1 night)</p>
 
@@ -41,7 +41,7 @@ const InputRangePrice: FC<Props> = ({ handleSetRangePrice }) => {
         <input
           type="range"
           min={0}
-          max={5000}
+          max={2000}
           step={10}
           value={rangeValue[0]}
           onChange={(e) => setRangeValue([+e.target.value, rangeValue[1]])}
@@ -51,7 +51,7 @@ const InputRangePrice: FC<Props> = ({ handleSetRangePrice }) => {
         <input
           type="range"
           min={0}
-          max={5000}
+          max={2000}
           step={10}
           value={rangeValue[1]}
           onChange={(e) => setRangeValue([rangeValue[0], +e.target.value])}
