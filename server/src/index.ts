@@ -6,6 +6,9 @@ import authRoute from "./routes/auth.route";
 import connect from "./libs/db";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import fasilitasRoute from "./routes/fasilitas.route";
+import roomTypeRoute from "./routes/roomType.route";
+import roomRoute from "./routes/room.route";
 const init = async () => {
   try {
     // init express
@@ -36,6 +39,15 @@ const init = async () => {
 
     // api auth
     app.use("/api/auth", authRoute);
+
+    // api fasilitas
+    app.use("/api/fasilitas", fasilitasRoute);
+
+    // api room type
+    app.use("/api/room-type", roomTypeRoute);
+
+    // api room
+    app.use("/api/room", roomRoute);
 
     // start server
     app.listen(process.env.PORT, () => {

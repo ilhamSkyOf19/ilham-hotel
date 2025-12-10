@@ -6,6 +6,7 @@ import ActivationPage from "../pages/ActivationPage";
 import HomePage from "../pages/HomePage";
 import { AuthService } from "../services/auth.service";
 import LayoutPage from "../fragments/LayoutPage";
+import Grafik from "../pages/Grafik";
 
 const route = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const route = createBrowserRouter([
   {
     path: "/activation",
     element: <ActivationPage />,
+  },
+  {
+    path: "/coba",
+    element: <Grafik />,
   },
   {
     path: "/",
