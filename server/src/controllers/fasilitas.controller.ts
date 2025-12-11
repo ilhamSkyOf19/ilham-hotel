@@ -56,4 +56,103 @@ export class FasilitasController {
       next(error);
     }
   }
+
+  // read
+  static async readAll(
+    _req: Request,
+    res: Response<ResponseType<FasilitasResponseType[] | []>>,
+    next: NextFunction
+  ) {
+    try {
+      // call service
+      const response = await FasilitasService.readAll();
+
+      // response success
+      return res.status(200).json({
+        status: "success",
+        message: "fasilitas retrieved successfully",
+        data: response,
+      });
+    } catch (error) {
+      // cek error
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // update by id
+  static async updateById(
+    req: Request<{ id: string }, {}, FasilitasCreateRequestType>,
+    res: Response<ResponseType<FasilitasResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id from params
+      const { id } = req.params;
+
+      // cek fasilitas by id
+      const fasilitas = await FasilitasModel.findById(id);
+
+      // cek fasilitas
+      if (!fasilitas) {
+        return res.status(400).json({
+          status: "failed",
+          message: "fasilitas not found",
+          data: null,
+        });
+      }
+
+      // call response for update
+      const response = await FasilitasService.updateById(id, req.body);
+
+      // response success
+      return res.status(200).json({
+        status: "success",
+        message: "fasilitas updated successfully",
+        data: response,
+      });
+    } catch (error) {
+      // cek error
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // delete by id
+  static async deleteById(
+    req: Request<{ id: string }>,
+    res: Response<ResponseType<FasilitasResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id
+      const { id } = req.params;
+
+      // cek fasilitas
+      const fasilitas = await FasilitasModel.findById(id);
+
+      // cek fasilitas
+      if (!fasilitas) {
+        return res.status(400).json({
+          status: "failed",
+          message: "fasilitas not found",
+          data: null,
+        });
+      }
+
+      // call service
+      const response = await FasilitasService.deleteById(id);
+
+      // response success
+      return res.status(200).json({
+        status: "success",
+        message: "fasilitas deleted successfully",
+        data: response,
+      });
+    } catch (error) {
+      // cek error
+      console.log(error);
+      next(error);
+    }
+  }
 }

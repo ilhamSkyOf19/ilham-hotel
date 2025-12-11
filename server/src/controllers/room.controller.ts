@@ -38,4 +38,27 @@ export class RoomController {
       next(error);
     }
   }
+
+  // read all
+  static async readAll(
+    req: Request,
+    res: Response<ResponseType<RoomResponseType[] | []>>,
+    next: NextFunction
+  ) {
+    try {
+      // call service
+      const rooms = await RoomService.readAll();
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "Rooms retrieved successfully",
+        data: rooms,
+      });
+    } catch (error) {
+      // call next with error
+      console.log(error);
+      next(error);
+    }
+  }
 }

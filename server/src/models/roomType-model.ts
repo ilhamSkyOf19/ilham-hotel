@@ -1,9 +1,11 @@
 export type IRoomType = {
   roomType: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // create
-export type RoomTypeCreateRequest = IRoomType;
+export type RoomTypeCreateRequest = Pick<IRoomType, "roomType">;
 
 // response type
 export type RoomTypeResponseType = IRoomType & { _id: string };
@@ -12,6 +14,8 @@ export type RoomTypeResponseType = IRoomType & { _id: string };
 export const toRoomTypeResponseType = (
   response: IRoomType & { _id: string }
 ): RoomTypeResponseType => ({
-  ...response,
   _id: response._id,
+  roomType: response.roomType,
+  createdAt: response.createdAt,
+  updatedAt: response.updatedAt,
 });

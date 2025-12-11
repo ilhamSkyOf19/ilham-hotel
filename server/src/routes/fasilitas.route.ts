@@ -8,6 +8,9 @@ import { FasilitasController } from "../controllers/fasilitas.controller";
 // inisialisasi route
 const fasilitasRoute: Router = Router();
 
+// read public
+fasilitasRoute.get("/read", FasilitasController.readAll);
+
 // cek auth admin
 fasilitasRoute.use(authMiddleware("admin"));
 
@@ -17,6 +20,16 @@ fasilitasRoute.post(
   validationMiddleware<FasilitasCreateRequestType>(FasilitasValidation.CREATE),
   FasilitasController.create
 );
+
+// update fasilitas by id
+fasilitasRoute.patch(
+  "/update/:id",
+  validationMiddleware<FasilitasCreateRequestType>(FasilitasValidation.CREATE),
+  FasilitasController.updateById
+);
+
+// delete fasilitas by id
+fasilitasRoute.delete("/delete/:id", FasilitasController.deleteById);
 
 // export
 export default fasilitasRoute;

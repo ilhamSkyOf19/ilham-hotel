@@ -7,6 +7,9 @@ export type IFasilitas = {
 // create request
 export type FasilitasCreateRequestType = Pick<IFasilitas, "fasilitas">;
 
+// update
+export type FasilitasUpdateRequestType = Partial<FasilitasCreateRequestType>;
+
 // response
 export type FasilitasResponseType = IFasilitas & {
   _id: string;
@@ -16,6 +19,8 @@ export type FasilitasResponseType = IFasilitas & {
 export const toFasilitasResponseType = (
   response: IFasilitas & { _id: string }
 ): FasilitasResponseType => ({
-  ...response,
   _id: response._id,
+  fasilitas: response.fasilitas,
+  createdAt: response.createdAt,
+  updatedAt: response.updatedAt,
 });

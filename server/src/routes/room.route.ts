@@ -8,6 +8,9 @@ import { RoomController } from "../controllers/room.controller";
 // inisialisasi
 const roomRoute: Router = Router();
 
+// read all public
+roomRoute.get("/read", RoomController.readAll);
+
 // auth middleware
 roomRoute.use(authMiddleware("admin"));
 

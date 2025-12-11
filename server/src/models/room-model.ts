@@ -22,6 +22,7 @@ export type RoomCreateRequest = {
 };
 
 export type PopulatedRoom = {
+  map(arg0: (item: any) => RoomResponseType): unknown;
   _id: Types.ObjectId;
   roomNumber: number;
 
