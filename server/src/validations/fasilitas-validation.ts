@@ -7,11 +7,17 @@ import {
 export class FasilitasValidation {
   // create
   static readonly CREATE = object({
-    fasilitas: string("Fasilitas is required"),
+    fasilitas: string("Fasilitas berupa string").min(
+      1,
+      "Fasilitas minimal 1 karakter"
+    ),
   }).strict() satisfies ZodType<FasilitasCreateRequestType>;
 
   // update
   static readonly UPDATE = object({
-    fasilitas: string("Fasilitas is required").min(1).optional(),
+    fasilitas: string("Fasilitas berupa string").min(
+      1,
+      "Fasilitas minimal 1 karakter"
+    ),
   }).strict() satisfies ZodType<FasilitasUpdateRequestType>;
 }

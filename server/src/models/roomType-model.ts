@@ -5,7 +5,10 @@ export type IRoomType = {
 };
 
 // create
-export type RoomTypeCreateRequest = Pick<IRoomType, "roomType">;
+export type RoomTypeCreateRequestType = Pick<IRoomType, "roomType">;
+
+// update
+export type RoomTypeUpdateRequestType = RoomTypeCreateRequestType;
 
 // response type
 export type RoomTypeResponseType = IRoomType & { _id: string };

@@ -12,7 +12,7 @@ export type IRoom = {
   updatedAt: Date;
 };
 
-export type RoomCreateRequest = {
+export type RoomCreateRequestType = {
   roomNumber: number;
   roomType: string; // FE kirim string
   fasilitas: string[]; // FE kirim string[]
@@ -50,12 +50,14 @@ export type RoomResponseType = {
   roomType: {
     _id: string;
     roomType: string;
-  };
+  } | null;
 
-  fasilitas: {
-    _id: string;
-    fasilitas: string;
-  }[];
+  fasilitas:
+    | {
+        _id: string;
+        fasilitas: string;
+      }[]
+    | [];
 
   status: "available" | "unavailable";
   description: string;
@@ -74,14 +76,18 @@ export const toRoomResponseType = (room: PopulatedRoom): RoomResponseType => {
     createdAt: room.createdAt.toISOString(),
     updatedAt: room.updatedAt.toISOString(),
 
-    roomType: {
-      _id: room.roomType._id.toString(),
-      roomType: room.roomType.roomType,
-    },
+    roomType: room.roomType
+      ? {
+          _id: room.roomType._id.toString(),
+          roomType: room.roomType.roomType,
+        }
+      : null,
 
-    fasilitas: room.fasilitas.map((f) => ({
-      _id: f._id.toString(),
-      fasilitas: f.fasilitas,
-    })),
+    fasilitas: Array.isArray(room.fasilitas)
+      ? room.fasilitas.map((f) => ({
+          _id: f._id.toString(),
+          fasilitas: f.fasilitas,
+        }))
+      : [],
   };
 };

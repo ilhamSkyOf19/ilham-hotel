@@ -24,7 +24,7 @@ export class FasilitasService {
   // read fasilitas
   static async readAll(): Promise<FasilitasResponseType[] | []> {
     // call response
-    const response = await FasilitasModel.find();
+    const response = await FasilitasModel.find().exec();
 
     // return
     return response.map((item) =>
@@ -35,7 +35,7 @@ export class FasilitasService {
     );
   }
 
-  // read by email
+  // read by id
   static async readById(id: string): Promise<FasilitasResponseType | null> {
     // call response
     const response = await FasilitasModel.findById(id);
@@ -52,14 +52,32 @@ export class FasilitasService {
     });
   }
 
+  // read by id many
+  static async readByIdMany(
+    id: string[]
+  ): Promise<FasilitasResponseType[] | []> {
+    // call response
+    const response = await FasilitasModel.find({ _id: { $in: id } }).exec();
+
+    // return
+    return response.map((item) =>
+      toFasilitasResponseType({
+        ...item.toObject(),
+        _id: item._id.toString(),
+      })
+    );
+  }
+
   // update fasilitas by id
   static async updateById(
     id: string,
     data: FasilitasUpdateRequestType
   ): Promise<FasilitasResponseType | null> {
     // call response
-    const response = await FasilitasModel.findByIdAndUpdate(id, data, {
-      new: true,
+    const response = await FasilitasModel.findByIdAndUpdate(id, {
+      $set: {
+        fasilitas: data.fasilitas,
+      },
     });
 
     // cek response

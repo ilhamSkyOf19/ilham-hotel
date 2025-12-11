@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import {
   PopulatedRoom,
-  RoomCreateRequest,
+  RoomCreateRequestType,
   RoomResponseType,
   toRoomResponseType,
 } from "../models/room-model";
@@ -10,7 +10,7 @@ import RoomModel from "../schemas/room.schema";
 export class RoomService {
   // service
   static async create(
-    data: RoomCreateRequest
+    data: RoomCreateRequestType
   ): Promise<RoomResponseType | null> {
     const roomTypeId = new Types.ObjectId(data.roomType);
     const fasilitasIds = data.fasilitas.map((id) => new Types.ObjectId(id));
@@ -49,5 +49,19 @@ export class RoomService {
 
     // return
     return response.map((item) => toRoomResponseType(item));
+  }
+
+  // read by room number
+  static async readByRoomNumber(
+    roomNumber: number
+  ): Promise<RoomResponseType | null> {
+    // call response
+    const response = await RoomModel.findOne({ roomNumber })
+      .populate("roomType")
+      .populate("fasilitas")
+      .lean<PopulatedRoom>();
+
+    // return
+    return response ? toRoomResponseType(response) : null;
   }
 }

@@ -1,5 +1,5 @@
 import { z, ZodType } from "zod";
-import { RoomCreateRequest } from "../models/room-model";
+import { RoomCreateRequestType } from "../models/room-model";
 
 export class RoomValidation {
   // create
@@ -21,5 +21,5 @@ export class RoomValidation {
 
       floor: z.number().int().min(1),
     })
-    .strict() satisfies ZodType<RoomCreateRequest>;
+    .strict() satisfies ZodType<RoomCreateRequestType>;
 }

@@ -8,7 +8,7 @@ export type IFasilitas = {
 export type FasilitasCreateRequestType = Pick<IFasilitas, "fasilitas">;
 
 // update
-export type FasilitasUpdateRequestType = Partial<FasilitasCreateRequestType>;
+export type FasilitasUpdateRequestType = FasilitasCreateRequestType;
 
 // response
 export type FasilitasResponseType = IFasilitas & {

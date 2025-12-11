@@ -20,7 +20,7 @@ export class FasilitasController {
 
       // cek find fasilitas
       const fasilitas = await FasilitasModel.findOne({
-        fasilitas: body.fasilitas,
+        fasilitas: body.fasilitas.toLowerCase().trim(),
       });
 
       // cek fasilitas
