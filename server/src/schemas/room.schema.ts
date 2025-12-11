@@ -15,6 +15,7 @@ const RoomSchema = new Schema<IRoom>(
     },
     description: { type: String, required: true },
     floor: { type: Number, required: true },
+    thumbnail: { type: String, required: true },
   },
   {
     timestamps: true,

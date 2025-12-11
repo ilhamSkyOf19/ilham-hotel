@@ -4,6 +4,9 @@ import { ResponseType } from "../types/request-response";
 import { RoomService } from "../services/room.service";
 import { RoomTypeService } from "../services/roomType.service";
 import { FasilitasService } from "../services/fasilitas.service";
+import { validation } from "../validations/validation";
+import { RoomValidation } from "../validations/room-validation";
+import { FileService } from "../services/file.service";
 
 export class RoomController {
   // create
@@ -14,12 +17,27 @@ export class RoomController {
   ) {
     try {
       // get body
-      const body = req.body;
+      const { data: body } = validation<RoomCreateRequestType>(
+        RoomValidation.CREATE,
+        {
+          ...req.body,
+          roomNumber: Number(req.body.roomNumber),
+          floor: Number(req.body.floor),
+        }
+      );
+
+      // cek validation
 
       // cek existence of room number
-      const existingRoom = await RoomService.readByRoomNumber(body.roomNumber);
+      const existingRoom = await RoomService.readByRoomNumber(
+        Number(body?.roomNumber)
+      );
 
       if (existingRoom) {
+        // delete uploaded file if exists
+        if (req.file) {
+          await FileService.deleteFileFromRequest(req.file.path);
+        }
         return res.status(400).json({
           status: "failed",
           message: "Room number already exist",
@@ -28,9 +46,13 @@ export class RoomController {
       }
 
       // cek room type
-      const roomType = await RoomTypeService.readonlyById(body.roomType);
+      const roomType = await RoomTypeService.readonlyById(body?.roomType || "");
 
       if (!roomType) {
+        // delete uploaded file if exists
+        if (req.file) {
+          await FileService.deleteFileFromRequest(req.file.path);
+        }
         return res.status(400).json({
           status: "failed",
           message: "Room type not found",
@@ -40,11 +62,15 @@ export class RoomController {
 
       // cek fasilitas existence
       const fasilitasChecks = await FasilitasService.readByIdMany(
-        body.fasilitas
+        body?.fasilitas || []
       );
 
       // cek if all fasilitas exist
-      if (fasilitasChecks.length !== body.fasilitas.length) {
+      if (fasilitasChecks.length !== body?.fasilitas.length) {
+        // delete uploaded file if exists
+        if (req.file) {
+          await FileService.deleteFileFromRequest(req.file.path);
+        }
         return res.status(400).json({
           status: "failed",
           message: "One or more fasilitas not found",
@@ -53,10 +79,18 @@ export class RoomController {
       }
 
       // call service
-      const createdRoom = await RoomService.create(body);
+      const createdRoom = await RoomService.create({
+        ...body,
+        thumbnail: req.file ? req.file.filename : "",
+      });
 
       // cek response
       if (!createdRoom) {
+        // delete uploaded file if exists
+        if (req.file) {
+          await FileService.deleteFileFromRequest(req.file.path);
+        }
+
         return res.status(400).json({
           status: "failed",
           message: "Failed to create room",
@@ -71,6 +105,10 @@ export class RoomController {
         data: createdRoom,
       });
     } catch (error) {
+      // delete file if exists
+      if (req.file) {
+        await FileService.deleteFileFromRequest(req.file.path);
+      }
       // call next with error
       console.log(error);
       next(error);
@@ -79,7 +117,7 @@ export class RoomController {
 
   // read all
   static async readAll(
-    req: Request,
+    _req: Request,
     res: Response<ResponseType<RoomResponseType[] | []>>,
     next: NextFunction
   ) {

@@ -10,7 +10,7 @@ import RoomModel from "../schemas/room.schema";
 export class RoomService {
   // service
   static async create(
-    data: RoomCreateRequestType
+    data: RoomCreateRequestType & { thumbnail: string }
   ): Promise<RoomResponseType | null> {
     const roomTypeId = new Types.ObjectId(data.roomType);
     const fasilitasIds = data.fasilitas.map((id) => new Types.ObjectId(id));
@@ -23,6 +23,7 @@ export class RoomService {
       status: data.status,
       description: data.description,
       floor: data.floor,
+      thumbnail: data.thumbnail,
     });
 
     // STEP 2: query ulang + populate

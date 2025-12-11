@@ -8,14 +8,15 @@ export type IRoom = {
   status: "available" | "unavailable";
   description: string;
   floor: number;
+  thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type RoomCreateRequestType = {
   roomNumber: number;
-  roomType: string; // FE kirim string
-  fasilitas: string[]; // FE kirim string[]
+  roomType: string;
+  fasilitas: string[];
   status: "available" | "unavailable";
   description: string;
   floor: number;
@@ -41,6 +42,7 @@ export type PopulatedRoom = {
   floor: number;
   createdAt: Date;
   updatedAt: Date;
+  thumbnail: string;
 };
 
 export type RoomResponseType = {
@@ -62,6 +64,7 @@ export type RoomResponseType = {
   status: "available" | "unavailable";
   description: string;
   floor: number;
+  thumbnail: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -73,6 +76,7 @@ export const toRoomResponseType = (room: PopulatedRoom): RoomResponseType => {
     status: room.status,
     description: room.description,
     floor: room.floor,
+    thumbnail: room.thumbnail,
     createdAt: room.createdAt.toISOString(),
     updatedAt: room.updatedAt.toISOString(),
 

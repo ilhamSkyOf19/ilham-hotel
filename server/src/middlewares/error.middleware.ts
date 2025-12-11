@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseType } from "../types/request-response";
+import { ZodError } from "zod";
 
 export const errorMiddleware = (
   err: any,
@@ -9,6 +10,19 @@ export const errorMiddleware = (
 ) => {
   try {
     console.log(err);
+
+    // cek error form validation
+    if (err instanceof ZodError) {
+      // map error
+      const errorMessages = err.issues.map((err) => err.message)[0];
+
+      // return response
+      return {
+        status: "failed",
+        message: errorMessages,
+        data: null,
+      };
+    }
 
     // cek error dari mongoose duplicate key
     if (err.code === 11000) {
