@@ -1,28 +1,28 @@
 import { model, Schema } from "mongoose";
 import { IRoom } from "../models/room-model";
 
+// inisialisasi
 const RoomSchema = new Schema<IRoom>(
   {
-    roomNumber: { type: Number, required: true, unique: true },
-    roomType: { type: Schema.Types.ObjectId, ref: "RoomType", required: true },
-    fasilitas: [
-      { type: Schema.Types.ObjectId, ref: "Fasilitas", required: true },
-    ],
-    status: {
-      type: String,
-      enum: ["available", "unavailable"],
+    idHotel: {
+      type: Schema.Types.ObjectId,
+      ref: "Hotel",
       required: true,
     },
-    description: { type: String, required: true },
-    floor: { type: Number, required: true },
-    thumbnail: { type: String, required: true },
+    idRoomType: {
+      type: Schema.Types.ObjectId,
+      ref: "RoomType",
+      required: true,
+    },
+    numberRoom: { type: [Number], required: true },
+    bookedRoom: { type: [Number], required: true, default: [] },
   },
   {
     timestamps: true,
   }
 );
 
-// create model
+// model
 const RoomModel = model<IRoom>("Room", RoomSchema);
 
 // export

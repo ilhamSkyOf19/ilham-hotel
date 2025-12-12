@@ -1,12 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { RoomCreateRequestType, RoomResponseType } from "../models/room-model";
 import { ResponseType } from "../types/request-response";
-import { RoomService } from "../services/room.service";
+import { HotelService } from "../services/hotel.service";
 import { RoomTypeService } from "../services/roomType.service";
-import { FasilitasService } from "../services/fasilitas.service";
-import { validation } from "../validations/validation";
-import { RoomValidation } from "../validations/room-validation";
-import { FileService } from "../services/file.service";
+import { RoomService } from "../services/room.service";
 
 export class RoomController {
   // create
@@ -17,157 +14,113 @@ export class RoomController {
   ) {
     try {
       // get body
-      const { data: body } = validation<RoomCreateRequestType>(
-        RoomValidation.CREATE,
-        {
-          ...req.body,
-          roomNumber: Number(req.body.roomNumber),
-          floor: Number(req.body.floor),
-        }
-      );
+      const { idHotel, idRoomType, numberRoom } = req.body;
 
-      // cek validation
+      // cek id hotel
+      const hotel = await HotelService.readById(idHotel);
 
-      // cek existence of room number
-      const existingRoom = await RoomService.readByRoomNumber(
-        Number(body?.roomNumber)
-      );
-
-      if (existingRoom) {
-        // delete uploaded file if exists
-        if (req.file) {
-          await FileService.deleteFileFromRequest(req.file.path);
-        }
+      // cek hotel
+      if (!hotel) {
         return res.status(400).json({
           status: "failed",
-          message: "Room number already exist",
+          message: "hotel not found",
           data: null,
         });
       }
 
       // cek room type
-      const roomType = await RoomTypeService.readonlyById(body?.roomType || "");
+      const roomType = await RoomTypeService.readonlyById(idRoomType);
 
+      // cek room type
       if (!roomType) {
-        // delete uploaded file if exists
-        if (req.file) {
-          await FileService.deleteFileFromRequest(req.file.path);
-        }
         return res.status(400).json({
           status: "failed",
-          message: "Room type not found",
+          message: "room type not found",
           data: null,
         });
       }
 
-      // cek fasilitas existence
-      const fasilitasChecks = await FasilitasService.readByIdMany(
-        body?.fasilitas || []
-      );
-
-      // cek if all fasilitas exist
-      if (fasilitasChecks.length !== body?.fasilitas.length) {
-        // delete uploaded file if exists
-        if (req.file) {
-          await FileService.deleteFileFromRequest(req.file.path);
-        }
-        return res.status(400).json({
-          status: "failed",
-          message: "One or more fasilitas not found",
-          data: null,
-        });
-      }
-
-      // call service
-      const createdRoom = await RoomService.create({
-        ...body,
-        thumbnail: req.file ? req.file.filename : "",
+      // create room
+      const room = await RoomService.create({
+        idHotel,
+        idRoomType,
+        numberRoom,
       });
 
-      // cek response
-      if (!createdRoom) {
-        // delete uploaded file if exists
-        if (req.file) {
-          await FileService.deleteFileFromRequest(req.file.path);
-        }
-
+      // cek room
+      if (!room) {
         return res.status(400).json({
           status: "failed",
-          message: "Failed to create room",
+          message: "failed create room",
           data: null,
         });
       }
 
       // return response
-      return res.status(201).json({
+      return res.status(200).json({
         status: "success",
-        message: "Room created successfully",
-        data: createdRoom,
+        message: "success create room",
+        data: room,
       });
     } catch (error) {
-      // delete file if exists
-      if (req.file) {
-        await FileService.deleteFileFromRequest(req.file.path);
-      }
-      // call next with error
+      // cek error
       console.log(error);
       next(error);
     }
   }
 
-  // read all
+  // read room all
   static async readAll(
-    _req: Request,
+    req: Request,
     res: Response<ResponseType<RoomResponseType[] | []>>,
     next: NextFunction
   ) {
     try {
       // call service
-      const rooms = await RoomService.readAll();
+      const response = await RoomService.readAll();
 
       // return response
       return res.status(200).json({
         status: "success",
-        message: "Rooms retrieved successfully",
-        data: rooms,
+        message: "success retrieve all room",
+        data: response,
       });
     } catch (error) {
-      // call next with error
+      // cek response
       console.log(error);
       next(error);
     }
   }
 
-  // read by room number
-  static async readByRoomNumber(
-    req: Request<{ roomNumber: string }>,
+  // read room by id
+  static async readById(
+    req: Request<{ id: string }>,
     res: Response<ResponseType<RoomResponseType | null>>,
     next: NextFunction
   ) {
     try {
-      // get params
-      const { roomNumber } = req.params;
+      // get id from params
+      const { id } = req.params;
 
-      // call service
-      const room = await RoomService.readByRoomNumber(parseInt(roomNumber));
+      // call response
+      const response = await RoomService.readById(id);
 
       // cek response
-      if (!room) {
+      if (!response) {
         return res.status(404).json({
           status: "failed",
-          message: "Room not found",
+          message: "room not found",
           data: null,
         });
       }
-
       // return response
       return res.status(200).json({
         status: "success",
-        message: "Room retrieved successfully",
-        data: room,
+        message: "success retrieve room by id",
+        data: response,
       });
     } catch (error) {
-      // call next with error
+      // cek response
       console.log(error);
       next(error);
     }

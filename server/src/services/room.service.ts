@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import {
-  PopulatedRoom,
+  PayloadRoom,
   RoomCreateRequestType,
   RoomResponseType,
   toRoomResponseType,
@@ -8,61 +8,62 @@ import {
 import RoomModel from "../schemas/room.schema";
 
 export class RoomService {
-  // service
+  // create
   static async create(
-    data: RoomCreateRequestType & { thumbnail: string }
+    data: RoomCreateRequestType
   ): Promise<RoomResponseType | null> {
-    const roomTypeId = new Types.ObjectId(data.roomType);
-    const fasilitasIds = data.fasilitas.map((id) => new Types.ObjectId(id));
+    // convert _id
+    const idHotel = new Types.ObjectId(data.idHotel);
+    const idRoomType = new Types.ObjectId(data.idRoomType);
 
-    // STEP 1: create raw document
-    const created = await RoomModel.create({
-      roomNumber: data.roomNumber,
-      roomType: roomTypeId,
-      fasilitas: fasilitasIds,
-      status: data.status,
-      description: data.description,
-      floor: data.floor,
-      thumbnail: data.thumbnail,
+    // call service
+    const crated = await RoomModel.create({
+      idHotel,
+      idRoomType,
+      numberRoom: data.numberRoom,
     });
 
-    // STEP 2: query ulang + populate
-    const populated = await RoomModel.findById(created._id)
-      .populate("roomType")
-      .populate("fasilitas")
-      .lean<PopulatedRoom>();
+    // get response
+    const response = await RoomModel.findById(crated._id)
+      .populate("idHotel", "_id name")
+      .populate("idRoomType", "_id roomType")
+      .lean<PayloadRoom>();
 
-    if (!populated) {
+    // check response
+    if (!response) {
       return null;
     }
 
-    // STEP 3: mapping response API
-    return toRoomResponseType(populated);
+    // return response
+    return toRoomResponseType(response);
+  }
+
+  // read room by id
+  static async readById(id: string): Promise<RoomResponseType | null> {
+    // call response
+    const response = await RoomModel.findById(id)
+      .populate("idHotel", "_id name")
+      .populate("idRoomType", "_id roomType")
+      .lean<PayloadRoom>();
+
+    // check response
+    if (!response) {
+      return null;
+    }
+
+    // return response
+    return toRoomResponseType(response);
   }
 
   // read all
   static async readAll(): Promise<RoomResponseType[] | []> {
-    // call response
+    // call response with aggregate
     const response = await RoomModel.find()
-      .populate("roomType")
-      .populate("fasilitas")
-      .lean<PopulatedRoom[]>();
+      .populate("idHotel", "_id name")
+      .populate("idRoomType", "_id roomType")
+      .lean<PayloadRoom[]>();
 
     // return
     return response.map((item) => toRoomResponseType(item));
-  }
-
-  // read by room number
-  static async readByRoomNumber(
-    roomNumber: number
-  ): Promise<RoomResponseType | null> {
-    // call response
-    const response = await RoomModel.findOne({ roomNumber })
-      .populate("roomType")
-      .populate("fasilitas")
-      .lean<PopulatedRoom>();
-
-    // return
-    return response ? toRoomResponseType(response) : null;
   }
 }

@@ -8,6 +8,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fasilitasRoute from "./routes/fasilitas.route";
 import roomTypeRoute from "./routes/roomType.route";
+import hotelRoute from "./routes/hotel.route";
+import { errorMiddleware } from "./middlewares/error.middleware";
 import roomRoute from "./routes/room.route";
 const init = async () => {
   try {
@@ -48,6 +50,12 @@ const init = async () => {
 
     // api room
     app.use("/api/room", roomRoute);
+
+    // api hotels
+    app.use("/api/hotel", hotelRoute);
+
+    // next middleware
+    app.use(errorMiddleware);
 
     // start server
     app.listen(process.env.PORT, () => {
