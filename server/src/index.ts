@@ -11,6 +11,7 @@ import roomTypeRoute from "./routes/roomType.route";
 import hotelRoute from "./routes/hotel.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import roomRoute from "./routes/room.route";
+import galleryRoute from "./routes/gallery.route";
 const init = async () => {
   try {
     // init express
@@ -53,6 +54,9 @@ const init = async () => {
 
     // api hotels
     app.use("/api/hotel", hotelRoute);
+
+    // api gallery
+    app.use("/api/gallery", galleryRoute);
 
     // next middleware
     app.use(errorMiddleware);

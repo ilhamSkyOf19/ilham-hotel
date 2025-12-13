@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   HotelCreateRequestType,
+  HotelResponseForDisplayType,
   HotelResponseType,
 } from "../models/hotel-model";
 import { ResponseType } from "../types/request-response";
@@ -94,6 +95,29 @@ export class HotelController {
       return res.status(200).json({
         status: "success",
         message: "success retrieve all hotel",
+        data: response,
+      });
+    } catch (error) {
+      // cek response
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // read for display
+  static async readForDisplay(
+    _req: Request,
+    res: Response<ResponseType<HotelResponseForDisplayType[] | []>>,
+    next: NextFunction
+  ) {
+    try {
+      // call service
+      const response = await HotelService.readForDisplay();
+
+      // return
+      return res.status(200).json({
+        status: "success",
+        message: "success retrieve all hotel for display",
         data: response,
       });
     } catch (error) {

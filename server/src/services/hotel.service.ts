@@ -2,8 +2,10 @@ import { Types } from "mongoose";
 import {
   HotelCreateRequestType,
   HotelCreateServiceRequestType,
+  HotelResponseForDisplayType,
   HotelResponseType,
   PayloadHotel,
+  toHotelResponseForDisplayType,
   toHotelResponseType,
 } from "../models/hotel-model";
 import HotelModel from "../schemas/hotel.schema";
@@ -18,13 +20,8 @@ export class HotelService {
 
     // create hotel document
     const created = await HotelModel.create({
+      ...data,
       idFasilitas: fasilitasIds,
-      name: data.name,
-      description: data.description,
-      city: data.city,
-      country: data.country,
-      price: data.price,
-      thumbnail: data.thumbnail,
     });
 
     // findy by id to populate fasilitas
@@ -39,6 +36,15 @@ export class HotelService {
 
     // return response
     return toHotelResponseType(response);
+  }
+
+  // read for display
+  static async readForDisplay(): Promise<HotelResponseForDisplayType[] | []> {
+    // call response
+    const response = await HotelModel.find().lean<PayloadHotel[]>();
+
+    // return
+    return response.map((item) => toHotelResponseForDisplayType(item));
   }
 
   // read all

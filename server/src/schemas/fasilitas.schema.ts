@@ -1,6 +1,6 @@
 import { model, Schema, UpdateQuery } from "mongoose";
 import { IFasilitas } from "../models/fasilitas-model";
-import RoomModel from "./room.schema";
+import HotelModel from "./hotel.schema";
 
 // create schema
 const FasilitasSchema = new Schema<IFasilitas>(
@@ -46,9 +46,9 @@ FasilitasSchema.pre("findOneAndDelete", async function () {
   if (!deleted) return;
 
   // Hapus semua room yg punya FK ke fasilitas ini
-  await RoomModel.updateMany(
-    { fasilitas: deleted._id },
-    { $pull: { fasilitas: deleted._id } }
+  await HotelModel.updateMany(
+    { idFasilitas: deleted._id },
+    { $pull: { idFasilitas: deleted._id } }
   );
 });
 

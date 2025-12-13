@@ -8,7 +8,10 @@ export type IHotel = {
   city: string;
   country: string;
   price: number;
+  discount: number;
+  rating: number;
   thumbnail: string;
+  totalRoom: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -16,7 +19,12 @@ export type IHotel = {
 // create request
 export type HotelCreateRequestType = Omit<
   IHotel,
-  "createdAt" | "updatedAt" | "idFasilitas" | "thumbnail"
+  | "createdAt"
+  | "updatedAt"
+  | "idFasilitas"
+  | "thumbnail"
+  | "discount"
+  | "rating"
 > & {
   fasilitas: string[];
 };
@@ -24,7 +32,7 @@ export type HotelCreateRequestType = Omit<
 // create request for service
 export type HotelCreateServiceRequestType = Omit<
   IHotel,
-  "createdAt" | "updatedAt" | "idFasilitas"
+  "createdAt" | "updatedAt" | "idFasilitas" | "discount" | "rating"
 > & {
   idFasilitas: string[];
 };
@@ -38,6 +46,9 @@ export type PayloadHotel = {
   country: string;
   price: number;
   thumbnail: string;
+  discount: number;
+  rating: number;
+  totalRoom: number;
   idFasilitas:
     | {
         _id: string;
@@ -64,6 +75,9 @@ export const toHotelResponseType = (
     city: response.city,
     country: response.country,
     price: response.price,
+    rating: response.rating,
+    discount: response.discount,
+    totalRoom: response.totalRoom,
     thumbnail: response.thumbnail,
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
@@ -73,5 +87,26 @@ export const toHotelResponseType = (
           fasilitas: item.fasilitas,
         }))
       : [],
+  };
+};
+
+// response for display
+export type HotelResponseForDisplayType = Pick<
+  PayloadHotel,
+  "_id" | "name" | "rating" | "city" | "country" | "thumbnail" | "price"
+>;
+
+// response for display
+export const toHotelResponseForDisplayType = (
+  response: PayloadHotel
+): HotelResponseForDisplayType => {
+  return {
+    _id: response._id,
+    name: response.name,
+    rating: response.rating,
+    city: response.city,
+    country: response.country,
+    thumbnail: response.thumbnail,
+    price: response.price,
   };
 };

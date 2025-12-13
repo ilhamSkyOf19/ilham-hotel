@@ -12,6 +12,9 @@ const upload = FileService.upload("hotels", "thumbnail");
 // read all
 hotelRoute.get("/read", HotelController.readAll);
 
+// read for display
+hotelRoute.get("/read-for-display", HotelController.readForDisplay);
+
 // auth middleware
 hotelRoute.use(authMiddleware("admin"));
 

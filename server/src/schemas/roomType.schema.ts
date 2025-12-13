@@ -43,9 +43,9 @@ RoomTypeSchema.pre("findOneAndDelete", async function () {
 
   // Hapus semua room yg punya FK ke roomType ini
   await RoomModel.updateMany(
-    { roomType: deleted._id },
+    { idRoomType: deleted._id },
     {
-      $set: { roomType: null },
+      $set: { idRoomType: null },
     }
   );
 });

@@ -66,4 +66,17 @@ export class RoomService {
     // return
     return response.map((item) => toRoomResponseType(item));
   }
+
+  // read by hotel id
+  static async readRoomNumberByHotelId(id: string): Promise<number> {
+    // call response with aggregate
+    const response = await RoomModel.find({ idHotel: id })
+      .select("numberRoom")
+      .lean<{ numberRoom: number[] }[]>();
+
+    // flat room number
+    const flatRoomNumber = response.flatMap((item) => item.numberRoom).length;
+    // return
+    return flatRoomNumber;
+  }
 }

@@ -89,18 +89,32 @@ export class FileService {
   }
 
   //   delete file from request
-  static async deleteFileFromRequest(filePath: string): Promise<void> {
-    try {
-      // cek file
-      await access(filePath);
+  static async deleteFileFromRequest(
+    filePaths: string | string[]
+  ): Promise<void> {
+    // cek file
+    if (!filePaths) return;
 
-      // delete file
-      await unlink(filePath);
+    // convert array if filePaths no array
+    const paths = Array.isArray(filePaths) ? filePaths : [filePaths];
 
-      // log
-      console.log(`File at ${filePath} deleted successfully.`);
-    } catch (error) {
-      console.log(`File at ${filePath} does not exist or cannot be accessed.`);
-    }
+    // delete file
+    await Promise.all(
+      paths.map(async (filePath) => {
+        try {
+          // cek file exist
+          await access(filePath);
+
+          // delete file
+          await unlink(filePath);
+
+          // cek console
+          console.log("file deleted");
+        } catch (error) {
+          // cek console
+          console.log(error);
+        }
+      })
+    );
   }
 }

@@ -28,6 +28,20 @@ export class RoomController {
         });
       }
 
+      // cek total number room in room
+      const totalNumberRoom = await RoomService.readRoomNumberByHotelId(
+        idHotel
+      );
+
+      // cek total number room with total number in hotel
+      if (totalNumberRoom + numberRoom.length > hotel.totalRoom) {
+        return res.status(400).json({
+          status: "failed",
+          message: "total number room in hotel is not enough",
+          data: null,
+        });
+      }
+
       // cek room type
       const roomType = await RoomTypeService.readonlyById(idRoomType);
 
