@@ -7,6 +7,8 @@ import HomePage from "../pages/HomePage";
 import { AuthService } from "../services/auth.service";
 import LayoutPage from "../fragments/LayoutPage";
 import Grafik from "../pages/Grafik";
+import DashboardAdmin from "../pages/DashboardAdmin";
+import AddHotelPage from "../pages/AddHotelPage";
 
 const route = createBrowserRouter([
   {
@@ -55,6 +57,20 @@ const route = createBrowserRouter([
       {
         path: "/user",
         element: <HomePage />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <LayoutPage />,
+    children: [
+      {
+        index: true,
+        element: <DashboardAdmin />,
+      },
+      {
+        path: "hotel/add",
+        element: <AddHotelPage />,
       },
     ],
   },

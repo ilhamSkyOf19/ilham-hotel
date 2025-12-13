@@ -1,4 +1,4 @@
-import { type FC, type ReactNode } from "react";
+import { type FC } from "react";
 import { Link, useLocation } from "react-router";
 import { RiHome6Fill } from "react-icons/ri";
 import { MdHistory } from "react-icons/md";
@@ -6,6 +6,21 @@ import { FaBed } from "react-icons/fa6";
 import { MdOutlineFavorite } from "react-icons/md";
 import { HiUser } from "react-icons/hi2";
 import clsx from "clsx";
+import { BsGridFill } from "react-icons/bs";
+
+// route navigation
+const routeNavigation: { link: string; label: string }[] = [
+  { link: "/", label: "Home" },
+  { link: "/history", label: "History" },
+  { link: "/room", label: "Room" },
+  { link: "/favorite", label: "Favorite" },
+  { link: "/user", label: "User" },
+];
+
+// route navigation for dahsboard
+const routeNavigationDashboard: { link: string; label: string }[] = [
+  { link: "/dashboard", label: "Overview" },
+];
 
 const BottomNavigation: FC = () => {
   // use location
@@ -14,30 +29,33 @@ const BottomNavigation: FC = () => {
   // root segment
   const rootSegment = location.pathname.split("/")[1] || "";
 
-  // route navigation
-  const routeNavigation: { link: string; label: string }[] = [
-    { link: "/", label: "Home" },
-    { link: "/history", label: "History" },
-    { link: "/room", label: "Room" },
-    { link: "/favorite", label: "Favorite" },
-    { link: "/user", label: "User" },
-  ];
+  // use match url
+  const dashbaord = location.pathname.startsWith("/dashboard");
 
   return (
     <div className="w-full fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl px-4 flex flex-row justify-center items-center gap-2">
       {/* router navigation */}
-      {routeNavigation.map((item, index) => (
-        <ButtonNavigation
-          key={index}
-          link={item.link}
-          label={item.label}
-          active={
-            rootSegment === ""
-              ? item.link === "/"
-              : rootSegment === item.link.split("/")[1]
-          }
-        />
-      ))}
+      {dashbaord
+        ? routeNavigationDashboard.map((item) => (
+            <ButtonNavigation
+              key={item.link}
+              link={item.link}
+              label={item.label}
+              active={rootSegment === item.link.split("/")[1]}
+            />
+          ))
+        : routeNavigation.map((item, index) => (
+            <ButtonNavigation
+              key={index}
+              link={item.link}
+              label={item.label}
+              active={
+                rootSegment === ""
+                  ? item.link === "/"
+                  : rootSegment === item.link.split("/")[1]
+              }
+            />
+          ))}
     </div>
   );
 };
@@ -84,9 +102,16 @@ const ButtonNavigation: FC<PropsButtonNavigation> = ({
             active ? "text-primary-skyblue" : "text-gray-600/50"
           )}
         />
+      ) : link === "/user" ? (
+        <HiUser
+          className={clsx(
+            "text-2xl transition-colors duration-200 ease-in-out",
+            active ? "text-primary-skyblue" : "text-gray-600/50"
+          )}
+        />
       ) : (
-        link === "/user" && (
-          <HiUser
+        link === "/dashboard" && (
+          <BsGridFill
             className={clsx(
               "text-2xl transition-colors duration-200 ease-in-out",
               active ? "text-primary-skyblue" : "text-gray-600/50"
