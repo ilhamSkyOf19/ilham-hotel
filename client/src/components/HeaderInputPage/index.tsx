@@ -15,7 +15,7 @@ const HeaderInputPage: FC<Props> = ({ label }) => {
   const labels: string[] = label.split(" ");
 
   return (
-    <div className="w-full flex flex-row justify-center items-center relative">
+    <div className="w-full flex flex-row justify-center items-start relative">
       {/* title */}
       <h1 className="w-1/2 text-center text-3xl font-semibold">
         {labels[0] + " "}

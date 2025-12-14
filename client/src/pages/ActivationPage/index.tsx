@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
 import OtpInput from "react-otp-input";
 import clsx from "clsx";
-import ButtonAuth from "../../components/ButtonAuth";
+import ButtonAuth from "../../components/ButtonSubmitBox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthValidation } from "../../validations/auth-validation";
 import { useNavigate } from "react-router";

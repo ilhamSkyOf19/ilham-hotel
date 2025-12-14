@@ -6,7 +6,7 @@ import { type AuthLoginRequestType } from "../../models/auth-model";
 import { AuthValidation } from "../../validations/auth-validation";
 import InputText from "../../components/InputText";
 import InputPassword from "../../components/InputPassword";
-import ButtonAuth from "../../components/ButtonAuth";
+import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "../../services/auth.service";
 import type { ResponseType } from "../../utils/response-type";
@@ -86,7 +86,7 @@ const LoginPage: FC = () => {
 
         {/* button submit */}
         <div className="w-full px-6 mt-4">
-          <ButtonAuth type="submit" label="sign up" loading={isPending} />
+          <ButtonSubmitBox type="submit" label="sign up" loading={isPending} />
         </div>
       </form>
     </AuthLayoutPage>

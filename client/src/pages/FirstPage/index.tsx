@@ -2,7 +2,7 @@ import { type FC } from "react";
 import ImageSlider from "../../components/ImageSlider";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router";
-import ButtonAuth from "../../components/ButtonAuth";
+import ButtonAuth from "../../components/ButtonSubmitBox";
 
 const FirstPage: FC = () => {
   // navigate

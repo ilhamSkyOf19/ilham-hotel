@@ -1,8 +1,23 @@
 import { useRef, useState, type ChangeEvent, type FC } from "react";
+import type { UseFormClearErrors, UseFormSetValue } from "react-hook-form";
 import { BiSolidImageAdd } from "react-icons/bi";
 import { HiMiniTrash } from "react-icons/hi2";
+import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import LabelInput from "../LabelInput";
+import clsx from "clsx";
 
-const BoxInputImgSmall: FC = () => {
+// Props
+type Props = {
+  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
+  errorMessage?: string;
+  clearError?: UseFormClearErrors<HotelCreateServiceRequestType>;
+};
+
+const BoxInputImgSmall: FC<Props> = ({
+  setValue,
+  errorMessage,
+  clearError,
+}) => {
   // state preview
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -22,22 +37,34 @@ const BoxInputImgSmall: FC = () => {
     // cek file
     if (file) {
       // get url
-      const url = URL.createObjectURL(file);
+      setPreview(URL.createObjectURL(file));
 
-      // set preview
-      setPreview(url);
+      // set value thumbnail
+      setValue("thumbnail", file);
+
+      // clear error
+      clearError?.("thumbnail");
     }
   };
 
-  //   //   cek preview
-  //   useEffect(() => {
-  //     console.log(preview);
-  //   }, [preview]);
+  // handle remove img
+  const handleReset = () => {
+    // clear preview
+    setPreview(null);
+
+    // clear value thumbnail
+    setValue("thumbnail", new File([], ""));
+  };
 
   return (
-    <div className="w-full flex flex-col justify-start items-start gap-1.5">
+    <div className="w-full flex flex-col justify-start items-start gap-3">
       {/* label */}
-      <label htmlFor="">Thumbnail</label>
+      <LabelInput
+        label="Thumbnail"
+        htmlFor="thumbnail"
+        required
+        errorMessage={errorMessage}
+      />
 
       {/* input file hidden */}
       <input ref={refInput} type="file" onChange={handleChange} hidden />
@@ -45,7 +72,14 @@ const BoxInputImgSmall: FC = () => {
       {/* content preview */}
       <div className="w-full h-auto flex flex-row justify-start items-center gap-6">
         {/* img */}
-        <div className="w-32 h-32 flex flex-col justify-center items-center shadow-[0_2px_7px_0px_rgba(0,0,0,0.2)]  bg-gray-300/50 rounded-xl overflow-hidden relative">
+        <div
+          className={clsx(
+            "w-32 h-32 flex flex-col justify-center items-center bg-gray-300/50 rounded-xl overflow-hidden relative transition-all ease-in-out duration-100",
+            errorMessage
+              ? "shadow-[0px_2px_7px_0px_rgba(255,0,0,0.9)]"
+              : "shadow-[0_2px_7px_0px_rgba(0,0,0,0.2)]   focus-within:shadow-[0px_2px_7px_0px_rgba(66,133,244,0.9)]"
+          )}
+        >
           {/* preview */}
           {preview && (
             <img
@@ -66,14 +100,16 @@ const BoxInputImgSmall: FC = () => {
         </div>
 
         {/* trash */}
-        <button
-          type="button"
-          onClick={() => setPreview(null)}
-          className="w-11.5 h-11.5 bg-red-500 flex flex-col justify-center items-center rounded-full"
-        >
-          {/* icon */}
-          <HiMiniTrash className="text-2xl text-white" />
-        </button>
+        {preview && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="w-11.5 h-11.5 bg-red-500 flex flex-col justify-center items-center rounded-full"
+          >
+            {/* icon */}
+            <HiMiniTrash className="text-2xl text-white" />
+          </button>
+        )}
       </div>
     </div>
   );

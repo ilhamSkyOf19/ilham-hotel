@@ -25,7 +25,7 @@ export class FasilitasController {
 
       // cek fasilitas
       if (fasilitas) {
-        return res.status(400).json({
+        return res.status(409).json({
           status: "failed",
           message: "fasilitas already exist",
           data: null,

@@ -1,23 +1,41 @@
 import { type FC } from "react";
 import LabelInput from "../LabelInput";
-import type { UseFormRegisterReturn } from "react-hook-form";
+import type { UseFormRegisterReturn, UseFormSetValue } from "react-hook-form";
 import clsx from "clsx";
+import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import { formatCurrency } from "../../utils/util";
 
 // Props
 type Props = {
   register: UseFormRegisterReturn;
+  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
   errorMessage?: string;
   label: string;
   placeholder: string;
   name: string;
 };
-const BoxInputAbstrakText: FC<Props> = ({
+const BoxInputAbstrakCurrency: FC<Props> = ({
   name,
   label,
   placeholder,
   register,
   errorMessage,
+  setValue,
 }) => {
+  // handle change for convert currency
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // get value
+    const value = e.target.value;
+
+    // format to number
+    const parsedValue = Number(value.replace(/[^0-9.-]+/g, ""));
+
+    // format to currency
+    const formattedValue = formatCurrency(parsedValue);
+
+    // set value
+    setValue("price", formattedValue);
+  };
   return (
     <div className="w-full flex flex-col justify-start items-start gap-3">
       {/* label */}
@@ -41,6 +59,7 @@ const BoxInputAbstrakText: FC<Props> = ({
           {...register}
           name={name}
           type="text"
+          onChange={handleChange}
           placeholder={placeholder}
           className="py-3 px-10 w-full bg-transparent border-none outline-none text-black text-base font-medium placeholder:text-gray-400 placeholder:text-base placeholder:font-normal"
         />
@@ -49,4 +68,4 @@ const BoxInputAbstrakText: FC<Props> = ({
   );
 };
 
-export default BoxInputAbstrakText;
+export default BoxInputAbstrakCurrency;

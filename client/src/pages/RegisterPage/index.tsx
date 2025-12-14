@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserCreateRequestType } from "../../models/user-model";
 import { AuthValidation } from "../../validations/auth-validation";
 import InputText from "../../components/InputText";
-import ButtonAuth from "../../components/ButtonAuth";
+import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import InputPassword from "../../components/InputPassword";
 
 import ButtonAgreement from "../../components/ButtonAgreement";
@@ -128,7 +128,7 @@ const RegisterPage: FC = () => {
 
         {/* button submit */}
         <div className="w-full px-6 mt-4">
-          <ButtonAuth type="submit" label="sign up" loading={isPending} />
+          <ButtonSubmitBox type="submit" label="sign up" loading={isPending} />
         </div>
       </form>
     </AuthLayoutPage>

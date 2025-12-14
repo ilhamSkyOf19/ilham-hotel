@@ -1,41 +1,24 @@
-import { Types } from "mongoose";
-
 // type hotel
 export type IHotel = {
-  idFasilitas: Types.ObjectId[];
+  fasilitas: string[];
   name: string;
   description: string;
   city: string;
   country: string;
-  price: number;
-  discount: number;
-  rating: number;
-  thumbnail: string;
+  price: string;
+  discount: string;
+  rating: string;
+  thumbnail: File;
   totalRoom: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-// create request
-export type HotelCreateRequestType = Omit<
-  IHotel,
-  | "createdAt"
-  | "updatedAt"
-  | "idFasilitas"
-  | "thumbnail"
-  | "discount"
-  | "rating"
-> & {
-  fasilitas: string[];
-};
-
 // create request for service
 export type HotelCreateServiceRequestType = Omit<
   IHotel,
-  "createdAt" | "updatedAt" | "idFasilitas" | "discount" | "rating"
-> & {
-  idFasilitas: string[];
-};
+  "createdAt" | "updatedAt" | "discount" | "rating"
+>;
 
 // payload schema
 export type PayloadHotel = {

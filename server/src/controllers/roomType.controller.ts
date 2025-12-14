@@ -27,7 +27,7 @@ export class RoomTypeController {
 
       // cek room type
       if (roomType) {
-        return res.status(400).json({
+        return res.status(409).json({
           status: "failed",
           message: "room type already exist",
           data: null,

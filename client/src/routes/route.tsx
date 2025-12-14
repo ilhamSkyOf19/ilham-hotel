@@ -1,4 +1,3 @@
-import { createBrowserRouter } from "react-router";
 import FirstPage from "../pages/FirstPage";
 import RegisterPage from "../pages/RegisterPage";
 import LoginPage from "../pages/LoginPage";
@@ -9,6 +8,10 @@ import LayoutPage from "../fragments/LayoutPage";
 import Grafik from "../pages/Grafik";
 import DashboardAdmin from "../pages/DashboardAdmin";
 import AddHotelPage from "../pages/AddHotelPage";
+import { createBrowserRouter } from "react-router";
+import OtherPage from "../pages/OtherPage";
+import AddRoomTypePage from "../pages/AddRoomTypePage";
+import AddFacilityPage from "../pages/AddFacility";
 
 const route = createBrowserRouter([
   {
@@ -69,8 +72,24 @@ const route = createBrowserRouter([
         element: <DashboardAdmin />,
       },
       {
+        path: "hotel",
+        element: <AddHotelPage />,
+      },
+      {
         path: "hotel/add",
         element: <AddHotelPage />,
+      },
+      {
+        path: "other",
+        element: <OtherPage />,
+      },
+      {
+        path: "other/add-room-type",
+        element: <AddRoomTypePage />,
+      },
+      {
+        path: "other/add-facility",
+        element: <AddFacilityPage />,
       },
     ],
   },

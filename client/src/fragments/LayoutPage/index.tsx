@@ -4,7 +4,7 @@ import BottomNavigation from "../BottomNavigation";
 
 const LayoutPage: FC = () => {
   return (
-    <div className="w-screen min-h-screen flex flex-col justify-start items-start relative">
+    <div className="w-screen min-h-screen flex flex-col justify-start items-start relative pb-32">
       {/* children */}
       <Outlet />
 

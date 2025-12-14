@@ -7,6 +7,8 @@ import { MdOutlineFavorite } from "react-icons/md";
 import { HiUser } from "react-icons/hi2";
 import clsx from "clsx";
 import { BsGridFill } from "react-icons/bs";
+import { FaHotel } from "react-icons/fa";
+import { HiDotsHorizontal } from "react-icons/hi";
 
 // route navigation
 const routeNavigation: { link: string; label: string }[] = [
@@ -20,6 +22,8 @@ const routeNavigation: { link: string; label: string }[] = [
 // route navigation for dahsboard
 const routeNavigationDashboard: { link: string; label: string }[] = [
   { link: "/dashboard", label: "Overview" },
+  { link: "/dashboard/hotel", label: "Hotel" },
+  { link: "/dashboard/other", label: "Other" },
 ];
 
 const BottomNavigation: FC = () => {
@@ -28,6 +32,12 @@ const BottomNavigation: FC = () => {
 
   // root segment
   const rootSegment = location.pathname.split("/")[1] || "";
+
+  // root segment for dashboard
+  const rootSegmentDashboard = location.pathname.split("/")[2] || "";
+
+  // cek root segment
+  console.log(rootSegmentDashboard);
 
   // use match url
   const dashbaord = location.pathname.startsWith("/dashboard");
@@ -41,7 +51,11 @@ const BottomNavigation: FC = () => {
               key={item.link}
               link={item.link}
               label={item.label}
-              active={rootSegment === item.link.split("/")[1]}
+              active={
+                rootSegmentDashboard === ""
+                  ? item.link === "/dashboard"
+                  : rootSegmentDashboard === item.link.split("/")[2]
+              }
             />
           ))
         : routeNavigation.map((item, index) => (
@@ -72,7 +86,7 @@ const ButtonNavigation: FC<PropsButtonNavigation> = ({
   active,
 }) => {
   return (
-    <Link to={link} className="flex flex-col justify-start items-center  p-3">
+    <Link to={link} className="flex flex-col justify-start items-center p-3">
       {/* children */}
       {link === "/" ? (
         <RiHome6Fill
@@ -109,16 +123,28 @@ const ButtonNavigation: FC<PropsButtonNavigation> = ({
             active ? "text-primary-skyblue" : "text-gray-600/50"
           )}
         />
-      ) : (
-        link === "/dashboard" && (
-          <BsGridFill
-            className={clsx(
-              "text-2xl transition-colors duration-200 ease-in-out",
-              active ? "text-primary-skyblue" : "text-gray-600/50"
-            )}
-          />
-        )
-      )}
+      ) : link === "/dashboard" ? (
+        <BsGridFill
+          className={clsx(
+            "text-2xl transition-colors duration-200 ease-in-out",
+            active ? "text-primary-skyblue" : "text-gray-600/50"
+          )}
+        />
+      ) : link === "/dashboard/hotel" ? (
+        <FaHotel
+          className={clsx(
+            "text-2xl transition-colors duration-200 ease-in-out",
+            active ? "text-primary-skyblue" : "text-gray-600/50"
+          )}
+        />
+      ) : link === "/dashboard/other" ? (
+        <HiDotsHorizontal
+          className={clsx(
+            "text-2xl transition-colors duration-200 ease-in-out",
+            active ? "text-primary-skyblue" : "text-gray-600/50"
+          )}
+        />
+      ) : null}
 
       {/* label */}
       <p

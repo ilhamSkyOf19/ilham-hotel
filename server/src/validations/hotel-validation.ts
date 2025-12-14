@@ -1,4 +1,4 @@
-import { number, object, string, ZodType } from "zod";
+import { object, string, ZodType } from "zod";
 import { HotelCreateRequestType } from "../models/hotel-model";
 
 export class HotelValidation {
@@ -7,9 +7,10 @@ export class HotelValidation {
     name: string("Name is required")
       .min(1, "Name is required")
       .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
-    description: string("Description is required")
-      .min(1, "Description is required")
-      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
+    description: string("Description is required").min(
+      1,
+      "Description is required"
+    ),
     city: string("City is required")
       .min(1, "City is required")
       .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
@@ -20,9 +21,10 @@ export class HotelValidation {
       .min(1, "Price is required")
       .refine((value) => !isNaN(Number(value)), "Price must be a number")
       .transform((value) => Number(value)),
-    totalRoom: string("Total room is required")
-      .refine((value) => !isNaN(Number(value)), "Total room must be a number")
-      .transform((value) => Number(value)),
+    totalRoom: string("Total room is required").refine(
+      (value) => !isNaN(Number(value)),
+      "Total room must be a number"
+    ),
     fasilitas: string("Fasilitas is required")
       .transform((val) => {
         try {

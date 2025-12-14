@@ -7,7 +7,12 @@ type Props = {
   handleNavigate?: () => void;
   loading?: boolean;
 };
-const ButtonAuth: FC<Props> = ({ type, label, handleNavigate, loading }) => {
+const ButtonSubmitBox: FC<Props> = ({
+  type,
+  label,
+  handleNavigate,
+  loading,
+}) => {
   return (
     <button
       type={type}
@@ -23,4 +28,4 @@ const ButtonAuth: FC<Props> = ({ type, label, handleNavigate, loading }) => {
   );
 };
 
-export default ButtonAuth;
+export default ButtonSubmitBox;
