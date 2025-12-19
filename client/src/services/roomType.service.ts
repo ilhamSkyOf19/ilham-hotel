@@ -18,4 +18,13 @@ export class RoomTypeService {
     // return response
     return response;
   }
+
+  // read
+  static async readAll(): Promise<ResponseType<RoomTypeResponseType[] | []>> {
+    // call api
+    const response = api.get("/room-type/read").then((res) => res.data);
+
+    // return response
+    return response;
+  }
 }

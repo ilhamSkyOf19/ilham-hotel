@@ -126,4 +126,30 @@ export class HotelController {
       next(error);
     }
   }
+
+  // read by id, get data total room & id
+  static async readByIdGetTotalRoom(
+    req: Request<{ id: string }>,
+    res: Response<ResponseType<{ totalRoom: number } | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id from params
+      const { id } = req.params;
+
+      // call service
+      const response = await HotelService.readByIdGetTotalRoom(id);
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "success retrieve total room by id hotel",
+        data: response,
+      });
+    } catch (error) {
+      // cek response
+      console.log(error);
+      next(error);
+    }
+  }
 }

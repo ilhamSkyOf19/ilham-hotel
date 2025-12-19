@@ -12,6 +12,9 @@ const upload = FileService.upload("hotels", "thumbnail");
 // read all
 hotelRoute.get("/read", HotelController.readAll);
 
+// read by id, get data total room & id
+hotelRoute.get("/read-total-room/:id", HotelController.readByIdGetTotalRoom);
+
 // read for display
 hotelRoute.get("/read-for-display", HotelController.readForDisplay);
 

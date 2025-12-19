@@ -7,11 +7,23 @@ type Props = {
   htmlFor: string;
   required: boolean;
   errorMessage?: string;
+  full?: boolean;
 };
 
-const LabelInput: FC<Props> = ({ label, htmlFor, required, errorMessage }) => {
+const LabelInput: FC<Props> = ({
+  label,
+  htmlFor,
+  full = true,
+  required,
+  errorMessage,
+}) => {
   return (
-    <div className="w-full flex flex-row justify-start items-center gap-8">
+    <div
+      className={clsx(
+        "flex flex-row justify-start items-center gap-8",
+        full ? "w-full" : "w-auto"
+      )}
+    >
       {/* label */}
       <label
         htmlFor={htmlFor}

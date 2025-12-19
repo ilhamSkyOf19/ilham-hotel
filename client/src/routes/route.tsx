@@ -12,6 +12,8 @@ import { createBrowserRouter } from "react-router";
 import OtherPage from "../pages/OtherPage";
 import AddRoomTypePage from "../pages/AddRoomTypePage";
 import AddFacilityPage from "../pages/AddFacility";
+import RoomPage from "../pages/RoomPage";
+import AddRoomPage from "../pages/AddRoomPage";
 
 const route = createBrowserRouter([
   {
@@ -78,6 +80,14 @@ const route = createBrowserRouter([
       {
         path: "hotel/add",
         element: <AddHotelPage />,
+      },
+      {
+        path: "room",
+        element: <RoomPage />,
+      },
+      {
+        path: "room/add",
+        element: <AddRoomPage />,
       },
       {
         path: "other",

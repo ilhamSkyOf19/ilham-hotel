@@ -73,4 +73,22 @@ export class HotelService {
     // return response
     return toHotelResponseType(response);
   }
+
+  // read by id, data : total room & id
+  static async readByIdGetTotalRoom(
+    id: string
+  ): Promise<{ totalRoom: number } | null> {
+    // call response
+    const response = await HotelModel.findById(id)
+      .populate("idFasilitas", "_id fasilitas")
+      .lean<PayloadHotel>();
+
+    // check response
+    if (!response) {
+      return null;
+    }
+
+    // return response
+    return { totalRoom: response.totalRoom };
+  }
 }

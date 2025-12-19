@@ -19,4 +19,17 @@ export class HotelService {
     // return response
     return response;
   }
+
+  // read total room
+  static async readTotalRoom(
+    id: string
+  ): Promise<ResponseType<{ totalRoom: number } | null>> {
+    // call api
+    const response = api
+      .get(`/hotel/read-total-room/${id}`)
+      .then((res) => res.data);
+
+    // return response
+    return response;
+  }
 }
