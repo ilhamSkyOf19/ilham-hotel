@@ -1,22 +1,17 @@
 import { useEffect, useState, type FC } from "react";
 import HeaderInputPage from "../../components/HeaderInputPage";
 import BoxInputAbstrakChoose from "../../components/BoxInputAbstrakChoose";
-import { Controller, useForm } from "react-hook-form";
-import type {
-  RoomCreateRequestType,
-  RoomRequestForInput,
-} from "../../models/room-validation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RoomValidation } from "../../validations/room-validation";
+import type { RoomRequestForInput } from "../../models/room-validation";
 import LabelInput from "../../components/LabelInput";
 import { MdOutlineHorizontalRule } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import clsx from "clsx";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import { HotelService } from "../../services/hotel.service";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import loadingBlue from "../../assets/animation/loading-blue.svg";
+import { RoomService } from "../../services/room.service";
 
 const AddRoomPage: FC = () => {
   // get params from url
@@ -115,31 +110,44 @@ const AddRoomPage: FC = () => {
     }
   }, [chooseRoomType]);
 
-  // use form
-  const {
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<RoomRequestForInput>({
-    defaultValues: { idHotel: id },
-    resolver: zodResolver(RoomValidation.CREATE),
+  // mutation
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: RoomRequestForInput) => {
+      return Promise.all(
+        roomNumber.map((item) =>
+          RoomService.create({
+            idHotel: data.idHotel,
+            idRoomType: item.id,
+            numberRoom: item.room,
+          })
+        )
+      );
+    },
+
+    onSuccess: (data) => {
+      console.log(data);
+    },
+
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  // set value for room type from room number
-  useEffect(() => {
-    const setTimeOut = setTimeout(() => {
-      setValue("roomType", [
-        {
-          idRoomType: roomTypeActive.id,
-          roomType: roomTypeActive.label,
-        },
-      ]);
-    }, 500);
-
-    return () => clearTimeout(setTimeOut);
-  }, [roomNumber]);
-
   // handle submit
+  const onSubmit = async () => {
+    try {
+      // call mutation
+      return await mutateAsync({
+        idHotel: id,
+        rooms: roomNumber.map((item) => ({
+          idRoomType: item.id,
+          numberRoom: item.room,
+        })),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-start items-start pt-6 px-4">
@@ -167,7 +175,12 @@ const AddRoomPage: FC = () => {
         />
 
         {/* button submit */}
-        <ButtonSubmitBox type="submit" label="Submit" />
+        <ButtonSubmitBox
+          type="button"
+          label="Submit"
+          handleClick={onSubmit}
+          loading={isPending}
+        />
       </form>
     </div>
   );

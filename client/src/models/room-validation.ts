@@ -36,9 +36,9 @@ export type RoomCreateRequestType = Omit<
 // request for input
 export type RoomRequestForInput = {
   idHotel: string;
-  roomType: {
+  rooms: {
     idRoomType: string;
-    roomType: string;
+    numberRoom: number[];
   }[];
 };
 

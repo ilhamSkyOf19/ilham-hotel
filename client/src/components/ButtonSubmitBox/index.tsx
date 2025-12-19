@@ -6,17 +6,22 @@ type Props = {
   type: "submit" | "button";
   handleNavigate?: () => void;
   loading?: boolean;
+  handleClick?: () => void;
 };
 const ButtonSubmitBox: FC<Props> = ({
   type,
   label,
   handleNavigate,
   loading,
+  handleClick,
 }) => {
   return (
     <button
       type={type}
-      onClick={handleNavigate}
+      onClick={() => {
+        handleClick && handleClick();
+        handleNavigate && handleNavigate();
+      }}
       className="w-full bg-primary-skyblue font-bold text-white rounded-xl text-xl py-3 capitalize h-14 flex flex-row justify-center items-center"
     >
       {loading ? (
