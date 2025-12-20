@@ -9,8 +9,12 @@ import { RoomTypeValidation } from "../../validations/roomType-validation";
 import { useMutation } from "@tanstack/react-query";
 import { RoomTypeService } from "../../services/roomType.service";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router";
 
 const AddRoomTypePage: FC = () => {
+  // navigate to login page
+  const navigate = useNavigate();
+
   // use form
   const {
     register,
@@ -27,6 +31,9 @@ const AddRoomTypePage: FC = () => {
       return await RoomTypeService.create(data);
     },
     onSuccess: () => {
+      // navigate
+      navigate("/dashboard/other");
+
       console.log("success");
     },
     onError: (error) => {

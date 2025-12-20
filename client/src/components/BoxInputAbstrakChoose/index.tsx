@@ -53,8 +53,15 @@ const BoxInputAbstrakChoose: FC<Props> = ({
   return (
     <div className="w-full flex flex-col justify-start items-start gap-3">
       <div className="w-full flex flex-col justify-start items-start gap-3 relative">
-        {/* label */}
-        <LabelInput label="Pilih Tipe Kamar" htmlFor="choose" required />
+        <div className="w-full flex flex-row justify-start items-center gap-2">
+          {/* label */}
+          <LabelInput label="Pilih Tipe Kamar" htmlFor="choose" required />
+
+          {/* error */}
+          <p className="w-full text-left text-xs h-full text-red-500">
+            {errorMessage}
+          </p>
+        </div>
 
         {/* box input */}
         <div

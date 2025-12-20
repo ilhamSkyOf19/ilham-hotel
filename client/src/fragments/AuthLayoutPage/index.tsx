@@ -9,7 +9,7 @@ type Props = {
 };
 const AuthLayoutPage: FC<Props> = ({ children, type }) => {
   return (
-    <div className="w-screen min-h-screen flex flex-col justify-start items-start">
+    <div className="w-screen min-h-screen flex flex-col justify-start items-start bg-white">
       {/* header */}
       <HeaderAuth type={type} />
 

@@ -28,6 +28,7 @@ body {
     -webkit-appearance: none;
     margin: 0;
   }
+  background-color: white;
 }
 
 button {

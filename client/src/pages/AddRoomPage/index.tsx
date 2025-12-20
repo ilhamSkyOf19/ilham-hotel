@@ -14,6 +14,19 @@ import loadingBlue from "../../assets/animation/loading-blue.svg";
 import { RoomService } from "../../services/room.service";
 
 const AddRoomPage: FC = () => {
+  // state error
+  const [error, setError] = useState<
+    {
+      data: "typeRoom" | "roomNumber";
+      message: string;
+    }[]
+  >([]);
+
+  // clear error
+  const clearError = (field: string) => {
+    setError((prev) => prev.filter((item) => item.data !== field));
+  };
+
   // get params from url
   const { id = "693e7e57e8b45861c2674815" } = useParams();
 
@@ -44,6 +57,9 @@ const AddRoomPage: FC = () => {
 
   // handle set room number in room active
   const handleSetRoomNumber = (room: number) => {
+    // clear error
+    clearError("roomNumber");
+
     setRoomNumber((prev) => {
       const exist = prev.find((item) => item.id === roomTypeActive.id);
 
@@ -90,8 +106,14 @@ const AddRoomPage: FC = () => {
     label: string;
     id: string;
   }) => {
-    // cek existence
-    if (chooseRoomType.includes({ label, id })) {
+    // clear error field choose room type
+    clearError("typeRoom");
+
+    const isExist = chooseRoomType.some(
+      (item) => item.id === id && item.label === label
+    );
+
+    if (isExist) {
       setChooseRoomType((prev) => prev.filter((item) => item.id !== id));
     } else {
       setChooseRoomType((prev) => [...prev, { label, id }]);
@@ -136,6 +158,29 @@ const AddRoomPage: FC = () => {
   // handle submit
   const onSubmit = async () => {
     try {
+      // cek choose type room
+      if (chooseRoomType.length === 0 && roomNumber.length === 0) {
+        setError((prev) => [
+          ...prev,
+          { data: "roomNumber", message: "Jumlah kamar tidak sesuai" },
+        ]);
+        setError((prev) => [
+          ...prev,
+          { data: "typeRoom", message: "Mohon Pilih tipe kamar" },
+        ]);
+
+        return;
+      } else if (chooseRoomType.length === 0) {
+        return setError((prev) => [
+          ...prev,
+          { data: "typeRoom", message: "Mohon Pilih tipe kamar" },
+        ]);
+      } else if (roomNumber.length === 0) {
+        return setError((prev) => [
+          ...prev,
+          { data: "roomNumber", message: "Mohon Pilih jumlah kamar" },
+        ]);
+      }
       // call mutation
       return await mutateAsync({
         idHotel: id,
@@ -158,6 +203,7 @@ const AddRoomPage: FC = () => {
       <form className="w-full flex flex-col justify-start items-start gap-4 mt-8">
         {/* input choose for room type */}
         <BoxInputAbstrakChoose
+          errorMessage={error.find((item) => item.data === "typeRoom")?.message}
           handleChooseRoomType={handleChooseRoomType}
           chooseRoomType={chooseRoomType}
           handleRemoveChooseRoomType={handleRemoveChooseRoomType}
@@ -165,6 +211,9 @@ const AddRoomPage: FC = () => {
 
         {/* input room number */}
         <InputRoomNumber
+          errorMessage={
+            error.find((item) => item.data === "roomNumber")?.message
+          }
           idHotel={id}
           chooseRoomType={chooseRoomType}
           handleActiveModalRoomType={() => {}}
@@ -201,6 +250,7 @@ type InputRoomNumberProps = {
   }[];
   handleSetRoomNumber: (room: number) => void;
   idHotel: string;
+  errorMessage?: string;
 };
 const InputRoomNumber: FC<InputRoomNumberProps> = ({
   chooseRoomType,
@@ -209,6 +259,7 @@ const InputRoomNumber: FC<InputRoomNumberProps> = ({
   roomNumber,
   handleSetRoomNumber,
   idHotel,
+  errorMessage,
 }) => {
   // state modal choose room type for room number
   const [modalRoomType, setModalRoomType] = useState<boolean>(false);
@@ -246,7 +297,7 @@ const InputRoomNumber: FC<InputRoomNumberProps> = ({
         {/* room type input */}
 
         <div
-          className="flex flex-row justify-start items-center gap-1"
+          className="flex flex-row justify-start items-center gap-1 cursor-pointer"
           onClick={() => handleActiveModalRoomType()}
         >
           <p className="text-sm capitalize ">{roomTypeActive.label}</p>
@@ -340,6 +391,11 @@ const InputRoomNumber: FC<InputRoomNumberProps> = ({
           <div className="w-4 h-4 bg-gray-300 rounded-sm" />
           <p className="text-xs">Disabled</p>
         </div>
+      </div>
+
+      {/* error message  */}
+      <div className="w-full flex flex-row justify-start items-start h-6">
+        <p className="text-xs text-red-500">{errorMessage}</p>
       </div>
     </div>
   );

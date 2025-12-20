@@ -44,7 +44,7 @@ const BottomNavigation: FC = () => {
   const dashbaord = location.pathname.startsWith("/dashboard");
 
   return (
-    <div className="w-full fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl px-4 flex flex-row justify-center items-center gap-2">
+    <div className="w-screen fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl px-4 flex flex-row justify-center items-center gap-2">
       {/* router navigation */}
       {dashbaord
         ? routeNavigationDashboard.map((item) => (
