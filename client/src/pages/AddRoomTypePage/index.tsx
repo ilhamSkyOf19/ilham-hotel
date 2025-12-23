@@ -1,17 +1,31 @@
-import { type FC } from "react";
+import { useEffect, type FC } from "react";
 import HeaderInputPage from "../../components/HeaderInputPage";
 import BoxInputAbstrakText from "../../components/BoxInputAbstrakText";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import { useForm } from "react-hook-form";
-import type { RoomTypeCreateRequestType } from "../../models/roomType-model";
+import type {
+  RoomTypeCreateRequestType,
+  RoomTypeResponseType,
+  RoomTypeUpdateRequestType,
+} from "../../models/roomType-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RoomTypeValidation } from "../../validations/roomType-validation";
 import { useMutation } from "@tanstack/react-query";
 import { RoomTypeService } from "../../services/roomType.service";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
+import type { ResponseType } from "../../utils/response-type";
 
 const AddRoomTypePage: FC = () => {
+  // loader
+  const dataUpdate =
+    useLoaderData() as ResponseType<RoomTypeResponseType | null>;
+
+  // debug update
+  useEffect(() => {
+    console.log(dataUpdate);
+  }, [dataUpdate]);
+
   // navigate to login page
   const navigate = useNavigate();
 
@@ -21,14 +35,25 @@ const AddRoomTypePage: FC = () => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<RoomTypeCreateRequestType>({
-    resolver: zodResolver(RoomTypeValidation.CREATE),
+  } = useForm<RoomTypeCreateRequestType | RoomTypeUpdateRequestType>({
+    defaultValues: {
+      roomType: dataUpdate?.data?.roomType,
+    },
+    resolver: zodResolver(
+      dataUpdate?.data ? RoomTypeValidation.UPDATE : RoomTypeValidation.CREATE
+    ),
   });
 
   // use mutation
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (data: RoomTypeCreateRequestType) => {
-      return await RoomTypeService.create(data);
+    mutationFn: (
+      data: RoomTypeCreateRequestType | RoomTypeUpdateRequestType
+    ) => {
+      if (dataUpdate.data) {
+        return RoomTypeService.updateById(dataUpdate.data._id, data);
+      } else {
+        return RoomTypeService.create(data);
+      }
     },
     onSuccess: () => {
       // navigate
@@ -43,15 +68,20 @@ const AddRoomTypePage: FC = () => {
         if (error.response?.status === 409) {
           // set error already exist
           setError("roomType", { message: error.response?.data.message });
+        } else if (error.response?.status === 400) {
+          // set error already exist
+          setError("roomType", { message: error.response?.data.message });
         }
       }
 
-      console.log("error");
+      console.log(error);
     },
   });
 
   // on submit
-  const onSubmit = async (data: RoomTypeCreateRequestType) => {
+  const onSubmit = async (
+    data: RoomTypeCreateRequestType | RoomTypeUpdateRequestType
+  ) => {
     try {
       // call mutation
       return await mutateAsync(data);

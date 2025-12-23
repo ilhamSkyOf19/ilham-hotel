@@ -54,7 +54,7 @@ const OtherPage: FC = () => {
               key={item._id}
               id={item._id}
               label={item.roomType}
-              linkUpdate="/"
+              linkUpdate={`/dashboard/other/update-room-type`}
               handleDelete={handleDelete}
             />
           ))

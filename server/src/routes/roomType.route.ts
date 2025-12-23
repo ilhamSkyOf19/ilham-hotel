@@ -14,6 +14,9 @@ const roomTypeRoute: Router = Router();
 // read all public
 roomTypeRoute.get("/read", RoomTypeController.readAll);
 
+// read by id all public
+roomTypeRoute.get("/read-detail/:id", RoomTypeController.readById);
+
 // auth middleware
 roomTypeRoute.use(authMiddleware("admin"));
 

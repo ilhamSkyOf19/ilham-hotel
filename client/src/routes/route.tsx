@@ -14,6 +14,7 @@ import AddRoomTypePage from "../pages/AddRoomTypePage";
 import AddFacilityPage from "../pages/AddFacility";
 import RoomPage from "../pages/RoomPage";
 import AddRoomPage from "../pages/AddRoomPage";
+import { RoomTypeService } from "../services/roomType.service";
 
 const route = createBrowserRouter([
   {
@@ -95,6 +96,13 @@ const route = createBrowserRouter([
       },
       {
         path: "other/add-room-type",
+        element: <AddRoomTypePage />,
+      },
+      {
+        path: "other/update-room-type/:id",
+        loader: async ({ params }) => {
+          return await RoomTypeService.readonlyById(params.id!);
+        },
         element: <AddRoomTypePage />,
       },
       {
