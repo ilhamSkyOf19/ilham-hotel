@@ -11,6 +11,9 @@ const fasilitasRoute: Router = Router();
 // read public
 fasilitasRoute.get("/read", FasilitasController.readAll);
 
+// read by id for public
+fasilitasRoute.get("/read-detail/:id", FasilitasController.readById);
+
 // cek auth admin
 fasilitasRoute.use(authMiddleware("admin"));
 

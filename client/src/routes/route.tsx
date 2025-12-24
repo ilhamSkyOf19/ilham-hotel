@@ -15,6 +15,7 @@ import AddFacilityPage from "../pages/AddFacility";
 import RoomPage from "../pages/RoomPage";
 import AddRoomPage from "../pages/AddRoomPage";
 import { RoomTypeService } from "../services/roomType.service";
+import { FasilitasService } from "../services/fasilitas.service";
 
 const route = createBrowserRouter([
   {
@@ -101,12 +102,29 @@ const route = createBrowserRouter([
       {
         path: "other/update-room-type/:id",
         loader: async ({ params }) => {
-          return await RoomTypeService.readonlyById(params.id!);
+          try {
+            return await RoomTypeService.readonlyById(params.id!);
+          } catch (error) {
+            console.log("error", error);
+            return;
+          }
         },
         element: <AddRoomTypePage />,
       },
       {
         path: "other/add-facility",
+        element: <AddFacilityPage />,
+      },
+      {
+        path: "other/update-facility/:id",
+        loader: async ({ params }) => {
+          try {
+            return await FasilitasService.readById(params.id!);
+          } catch (error) {
+            console.log("error", error);
+            return;
+          }
+        },
         element: <AddFacilityPage />,
       },
     ],

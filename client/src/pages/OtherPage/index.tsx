@@ -1,13 +1,49 @@
-import { type FC, type ReactNode } from "react";
+import { useState, type FC, type ReactNode } from "react";
 import HeaderDashboardData from "../../components/HeaderDashboardData";
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { RoomTypeService } from "../../services/roomType.service";
 import { FasilitasService } from "../../services/fasilitas.service";
 import LoadingBlue from "../../components/LoadingBlue";
 import CardLongData from "../../components/CardLongData";
 import ButtonAddText from "../../components/ButtonAddText";
+import ModalComponent from "../../components/ModalComponent";
+import ContentModalDelete from "../../components/ContentModalDelete";
 
 const OtherPage: FC = () => {
+  // inisialisi query client
+  const queryClient = useQueryClient();
+  // state modal active
+  const [modalActive, setModalActive] = useState<{
+    id: string;
+    type: "fasilitas" | "roomType" | "none";
+    active: boolean;
+  }>({
+    id: "",
+    type: "none",
+    active: false,
+  });
+
+  // handle close modal
+  const handleModalClose = () => {
+    setModalActive({
+      id: "",
+      type: "none",
+      active: false,
+    });
+  };
+
+  // handle active modal
+  const handleModalActive = (
+    type: "fasilitas" | "roomType" | "none",
+    id: string
+  ) => {
+    setModalActive({
+      id: id,
+      type: type,
+      active: true,
+    });
+  };
+
   // query
   const datas = useQueries({
     queries: [
@@ -29,16 +65,47 @@ const OtherPage: FC = () => {
     ],
   });
 
+  // use mutation for delete room type
+  const deleteRoomTypeMutation = useMutation({
+    mutationFn: RoomTypeService.deleteById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["roomType"] });
+      handleModalClose();
+    },
+  });
+
+  // use mutation for delete fasilitas
+
+  const deleteFasilitasMutation = useMutation({
+    mutationFn: FasilitasService.deleteById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fasilitas"] });
+      handleModalClose();
+    },
+  });
+
+  // handle delete
+  const handleDelete = async (id: string) => {
+    try {
+      // room type
+      if (modalActive.type === "roomType") {
+        await deleteRoomTypeMutation.mutateAsync(id);
+      }
+
+      // fasilitas
+      if (modalActive.type === "fasilitas") {
+        await deleteFasilitasMutation.mutateAsync(id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // destructure data
   const [dataRoomType, dataFasilitas] = datas;
 
-  // handle delete dummy
-  const handleDelete = (id: string) => {
-    return console.log(id);
-  };
-
   return (
-    <div className="w-full flex flex-col justify-start items-start pt-6 px-4">
+    <div className="w-full flex flex-col justify-start items-start pt-6 px-4 relative">
       {/* header */}
       <HeaderDashboardData label="other" />
 
@@ -55,7 +122,7 @@ const OtherPage: FC = () => {
               id={item._id}
               label={item.roomType}
               linkUpdate={`/dashboard/other/update-room-type`}
-              handleDelete={handleDelete}
+              handleDelete={() => handleModalActive("roomType", item._id)}
             />
           ))
         ) : (
@@ -75,14 +142,30 @@ const OtherPage: FC = () => {
               key={item._id}
               id={item._id}
               label={item.fasilitas}
-              linkUpdate="/"
-              handleDelete={handleDelete}
+              linkUpdate="/dashboard/other/update-facility"
+              handleDelete={() => handleModalActive("fasilitas", item._id)}
             />
           ))
         ) : (
           <p className="text-base font-semibold text-black">Tidak ada data</p>
         )}
       </ContainerData>
+
+      {/* modal delete */}
+      <ModalComponent
+        active={modalActive.active}
+        handleClose={() => handleModalClose()}
+      >
+        <ContentModalDelete
+          handleClose={() => handleModalClose()}
+          handleDelete={() => handleDelete(modalActive.id)}
+          loading={
+            modalActive.type === "roomType"
+              ? deleteRoomTypeMutation.isPending
+              : deleteFasilitasMutation.isPending
+          }
+        />
+      </ModalComponent>
     </div>
   );
 };

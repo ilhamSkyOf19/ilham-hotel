@@ -53,4 +53,17 @@ export class RoomTypeService {
     // return response
     return response;
   }
+
+  // delete by id
+  static async deleteById(
+    id: string
+  ): Promise<ResponseType<RoomTypeResponseType | null>> {
+    // call api
+    const response = api
+      .delete(`/room-type/delete/${id}`)
+      .then((res) => res.data);
+
+    // return response
+    return response;
+  }
 }

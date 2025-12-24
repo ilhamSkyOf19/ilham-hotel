@@ -7,7 +7,7 @@ type Props = {
   id: string;
   label: string;
   linkUpdate: string;
-  handleDelete: (id: string) => void;
+  handleDelete: () => void;
 };
 
 const CardLongData: FC<Props> = ({ id, label, linkUpdate, handleDelete }) => {
@@ -21,7 +21,7 @@ const CardLongData: FC<Props> = ({ id, label, linkUpdate, handleDelete }) => {
       {/* button action */}
       <div className="flex-1 flex flex-row justify-end items-center gap-2">
         {/* button delete */}
-        <ButtonDeleteText handleDelete={() => handleDelete(id)} />
+        <ButtonDeleteText handleDelete={() => handleDelete()} />
 
         {/* button update */}
         <ButtonUpdateText linkUpdate={linkUpdate} id={id} />

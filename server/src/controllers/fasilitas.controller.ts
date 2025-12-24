@@ -80,6 +80,39 @@ export class FasilitasController {
     }
   }
 
+  // read by id
+  static async readById(
+    req: Request<{ id: string }>,
+    res: Response<ResponseType<FasilitasResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // call service
+      const response = await FasilitasService.readById(req.params.id);
+
+      // cek response
+      if (!response) {
+        return res.status(404).json({
+          status: "failed",
+          message: "fasilitas not found",
+          data: null,
+        });
+      }
+
+      // response success
+      return res.status(200).json({
+        status: "success",
+        message: "fasilitas retrieved successfully",
+        data: response,
+      });
+    } catch (error) {
+      // cek erorr
+      console.log(error);
+      // next
+      next(error);
+    }
+  }
+
   // update by id
   static async updateById(
     req: Request<{ id: string }, {}, FasilitasCreateRequestType>,
@@ -91,13 +124,22 @@ export class FasilitasController {
       const { id } = req.params;
 
       // cek fasilitas by id
-      const fasilitas = await FasilitasModel.findById(id);
+      const fasilitas = await FasilitasService.readById(id);
 
       // cek fasilitas
       if (!fasilitas) {
         return res.status(400).json({
           status: "failed",
           message: "fasilitas not found",
+          data: null,
+        });
+      }
+
+      // cek the same request
+      if (fasilitas.fasilitas === req.body.fasilitas.trim()) {
+        return res.status(409).json({
+          status: "failed",
+          message: "fasilitas not the same",
           data: null,
         });
       }

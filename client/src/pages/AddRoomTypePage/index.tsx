@@ -23,7 +23,7 @@ const AddRoomTypePage: FC = () => {
 
   // debug update
   useEffect(() => {
-    console.log(dataUpdate);
+    console.log("debug", dataUpdate);
   }, [dataUpdate]);
 
   // navigate to login page
@@ -49,7 +49,7 @@ const AddRoomTypePage: FC = () => {
     mutationFn: (
       data: RoomTypeCreateRequestType | RoomTypeUpdateRequestType
     ) => {
-      if (dataUpdate.data) {
+      if (dataUpdate && dataUpdate.data) {
         return RoomTypeService.updateById(dataUpdate.data._id, data);
       } else {
         return RoomTypeService.create(data);
