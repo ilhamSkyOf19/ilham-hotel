@@ -1,9 +1,6 @@
 import { useState, type FC } from "react";
 import HeaderHomePage from "../../fragments/homePage/HeaderHomePage";
-import { FiSearch } from "react-icons/fi";
-import { useForm, type UseFormRegister } from "react-hook-form";
-import InputRaw from "../../components/InputRaw";
-import { PiSlidersHorizontal } from "react-icons/pi";
+import { useForm } from "react-hook-form";
 import ModalComponent from "../../components/ModalComponent";
 import TitleSeAll from "../../components/TitleSeeAll";
 import CardLarge from "../../components/CardLarge";
@@ -11,6 +8,7 @@ import kamar1 from "../../assets/thumb/kamar-3.jpg";
 import kamar2 from "../../assets/thumb/kamar-2.jpg";
 import ModalFilter from "../../fragments/homePage/ModalFilter";
 import CardMedium from "../../components/CardMedium";
+import SearchHotel from "../../components/SearchHotel";
 
 const location: string[] = [
   "New York, USA",
@@ -140,40 +138,6 @@ const HomePage: FC = () => {
           setAccommodation={setAccommodation}
         />
       </ModalComponent>
-    </div>
-  );
-};
-
-// search hotel
-type SearchHotelProps = {
-  register: UseFormRegister<{ search: string }>;
-  handleOpenModal: (active: boolean) => void;
-};
-const SearchHotel: FC<SearchHotelProps> = ({ register, handleOpenModal }) => {
-  return (
-    <div className="w-[90vw] flex flex-row justify-between items-start gap-3 mt-6">
-      {/* search */}
-      <div className="flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 py-2">
-        {/* icon search  */}
-        <FiSearch className="text-3xl text-primary-skyblue" />
-
-        {/* input */}
-        <InputRaw
-          type="text"
-          name="search"
-          placeholder="Search hotel..."
-          register={register("search")}
-        />
-      </div>
-
-      {/* filter */}
-      <button
-        type="button"
-        onClick={() => handleOpenModal(true)}
-        className="flex-1 h-full bg-primary-skyblue flex flex-row justify-center items-center rounded-xl"
-      >
-        <PiSlidersHorizontal className="text-3xl text-white" />
-      </button>
     </div>
   );
 };

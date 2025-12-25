@@ -11,7 +11,7 @@ export type IHotel = {
   discount: number;
   rating: number;
   thumbnail: string;
-  totalRoom: string;
+  totalRoom: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -109,4 +109,18 @@ export const toHotelResponseForDisplayType = (
     thumbnail: response.thumbnail,
     price: response.price,
   };
+};
+
+// type filter
+export type FilterTypeForQuery = {
+  minPrice?: string;
+  maxPrice?: string;
+  fasilitas?: string;
+};
+
+// type filter
+export type FilterType = {
+  minPrice?: number;
+  maxPrice?: number;
+  fasilitas?: string[];
 };

@@ -65,7 +65,7 @@ export class AuthService {
   // resend
   static async resend(): Promise<ResponseType<UserResponseType | null>> {
     // call api
-    const response = await api.post("/auth/resend").then((res) => res.data);
+    const response = api.post("/auth/resend").then((res) => res.data);
 
     return response;
   }
@@ -73,7 +73,7 @@ export class AuthService {
   // get auth for activation
   static async getAuthActivation(): Promise<ResponseType<PayloadType | null>> {
     // call api
-    const response = await api
+    const response = api
       .get("/auth/get-auth-activation")
       .then((res) => res.data);
 
@@ -85,7 +85,7 @@ export class AuthService {
     ResponseType<Omit<UserResponseType, "_id" | "isActive"> | null>
   > {
     // call api
-    const response = await api.get(`/auth/get-auth`).then((res) => res.data);
+    const response = api.get(`/auth/get-auth`).then((res) => res.data);
 
     return response;
   }

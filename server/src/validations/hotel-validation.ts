@@ -1,5 +1,9 @@
-import { object, string, ZodType } from "zod";
-import { HotelCreateRequestType } from "../models/hotel-model";
+import { array, number, object, string, ZodType } from "zod";
+import {
+  FilterType,
+  FilterTypeForQuery,
+  HotelCreateRequestType,
+} from "../models/hotel-model";
 
 export class HotelValidation {
   // create
@@ -21,10 +25,10 @@ export class HotelValidation {
       .min(1, "Price is required")
       .refine((value) => !isNaN(Number(value)), "Price must be a number")
       .transform((value) => Number(value)),
-    totalRoom: string("Total room is required").refine(
-      (value) => !isNaN(Number(value)),
-      "Total room must be a number"
-    ),
+    totalRoom: string("Price is required")
+      .min(1, "Price is required")
+      .refine((value) => !isNaN(Number(value)), "Price must be a number")
+      .transform((value) => Number(value)),
     fasilitas: string("Fasilitas is required")
       .transform((val) => {
         try {
@@ -42,4 +46,26 @@ export class HotelValidation {
         );
       }),
   }).strict() satisfies ZodType<HotelCreateRequestType>;
+
+  // vaidasi params query
+  static readonly FILTER = object({
+    minPrice: string("Min Price is required")
+      .min(1, "Min Price is required")
+      .regex(/^[0-9]+$/, { message: "Min Price Only letters allowed" })
+      .optional(),
+    maxPrice: string("Max Price is required")
+      .min(1, "Max Price is required")
+      .regex(/^[0-9]+$/, { message: "Max Price Only letters allowed" })
+      .optional(),
+    fasilitas: string()
+      .optional()
+      .refine(
+        (val) => {
+          if (!val) return true; // optional, boleh kosong
+          const arr = val.split(","); // split sementara untuk validasi saja
+          return arr.every((id) => /^[0-9a-fA-F]{24}$/.test(id));
+        },
+        { message: "Each id must be a valid ObjectId" }
+      ),
+  }).strict() satisfies ZodType<FilterTypeForQuery>;
 }

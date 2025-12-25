@@ -9,13 +9,15 @@ import Grafik from "../pages/Grafik";
 import DashboardAdmin from "../pages/DashboardAdmin";
 import AddHotelPage from "../pages/AddHotelPage";
 import { createBrowserRouter } from "react-router";
-import OtherPage from "../pages/OtherPage";
 import AddRoomTypePage from "../pages/AddRoomTypePage";
 import AddFacilityPage from "../pages/AddFacility";
-import RoomPage from "../pages/RoomPage";
 import AddRoomPage from "../pages/AddRoomPage";
 import { RoomTypeService } from "../services/roomType.service";
 import { FasilitasService } from "../services/fasilitas.service";
+import DashboardOtherPage from "../pages/DashboardOtherPage";
+import DashboardHotelPage from "../pages/DashboardHotelPage";
+import HotelDetailPage from "../pages/HotelDetailPage";
+import { HotelService } from "../services/hotel.service";
 
 const route = createBrowserRouter([
   {
@@ -77,7 +79,14 @@ const route = createBrowserRouter([
       },
       {
         path: "hotel",
-        element: <AddHotelPage />,
+        element: <DashboardHotelPage />,
+      },
+      {
+        path: "hotel/detail/:id",
+        loader: async ({ params }) => {
+          return await HotelService.readDetail(params.id!);
+        },
+        element: <HotelDetailPage />,
       },
       {
         path: "hotel/add",
@@ -85,15 +94,11 @@ const route = createBrowserRouter([
       },
       {
         path: "room",
-        element: <RoomPage />,
-      },
-      {
-        path: "room/add",
         element: <AddRoomPage />,
       },
       {
         path: "other",
-        element: <OtherPage />,
+        element: <DashboardOtherPage />,
       },
       {
         path: "other/add-room-type",

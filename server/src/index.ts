@@ -12,6 +12,7 @@ import hotelRoute from "./routes/hotel.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import roomRoute from "./routes/room.route";
 import galleryRoute from "./routes/gallery.route";
+import path from "path";
 const init = async () => {
   try {
     // init express
@@ -27,6 +28,9 @@ const init = async () => {
         credentials: true, // izin cookie, session, token HttpOnly
       })
     );
+
+    // folder static
+    app.use(express.static(path.join(__dirname, "../public")));
 
     // connect db
     await connect();

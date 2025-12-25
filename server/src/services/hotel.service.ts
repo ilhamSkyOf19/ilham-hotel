@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import {
+  FilterType,
   HotelCreateRequestType,
   HotelCreateServiceRequestType,
   HotelResponseForDisplayType,
@@ -90,5 +91,37 @@ export class HotelService {
 
     // return response
     return { totalRoom: response.totalRoom };
+  }
+
+  // read hotel by filter
+  static async readHotelByFilter(
+    filter: FilterType
+  ): Promise<HotelResponseForDisplayType[] | []> {
+    const { minPrice, maxPrice, fasilitas } = filter;
+
+    // call response
+    const response = await HotelModel.find({
+      ...(minPrice || maxPrice
+        ? {
+            price: {
+              ...(minPrice ? { $gte: minPrice } : {}),
+              ...(maxPrice ? { $lte: maxPrice } : {}),
+            },
+          }
+        : {}),
+      ...(fasilitas && fasilitas.length > 0
+        ? {
+            idFasilitas: {
+              $all: fasilitas.map((id) => new Types.ObjectId(id)),
+            },
+          }
+        : {}),
+    })
+      .limit(10)
+      .populate("idFasilitas")
+      .lean<PayloadHotel[]>();
+
+    // return
+    return response.map((item) => toHotelResponseForDisplayType(item));
   }
 }

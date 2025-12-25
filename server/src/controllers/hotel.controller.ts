@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  FilterTypeForQuery,
   HotelCreateRequestType,
   HotelResponseForDisplayType,
   HotelResponseType,
@@ -148,6 +149,73 @@ export class HotelController {
       });
     } catch (error) {
       // cek response
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // read by filter
+  static async readByFilter(
+    req: Request<{}, {}, {}, FilterTypeForQuery>,
+    res: Response<ResponseType<HotelResponseForDisplayType[] | []>>,
+    next: NextFunction
+  ) {
+    try {
+      // get query from params
+      const { fasilitas, maxPrice, minPrice } = req.query;
+
+      // conver fasilitas
+      const fasilitasArray: string[] = fasilitas ? fasilitas.split(",") : [];
+
+      // call service
+      const response = await HotelService.readHotelByFilter({
+        fasilitas: fasilitasArray,
+        minPrice: Number(minPrice || ""),
+        maxPrice: Number(maxPrice || ""),
+      });
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "success read hotel",
+        data: response,
+      });
+    } catch (error) {
+      // cek error
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // read detail by id full data
+  static async readDetail(
+    req: Request<{ id: string }>,
+    res: Response<ResponseType<HotelResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id from params
+      const { id } = req.params;
+
+      // get service
+      const response = await HotelService.readById(id);
+
+      // cek response
+      if (!response) {
+        return res.status(400).json({
+          status: "failed",
+          message: "data not found",
+          data: null,
+        });
+      }
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "success read data",
+        data: response,
+      });
+    } catch (error) {
       console.log(error);
       next(error);
     }

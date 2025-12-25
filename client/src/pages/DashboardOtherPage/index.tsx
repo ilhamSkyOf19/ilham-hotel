@@ -9,7 +9,7 @@ import ButtonAddText from "../../components/ButtonAddText";
 import ModalComponent from "../../components/ModalComponent";
 import ContentModalDelete from "../../components/ContentModalDelete";
 
-const OtherPage: FC = () => {
+const DashboardOtherPage: FC = () => {
   // inisialisi query client
   const queryClient = useQueryClient();
   // state modal active
@@ -202,4 +202,4 @@ const ContainerData: FC<ContainerDataProps> = ({
   );
 };
 
-export default OtherPage;
+export default DashboardOtherPage;
