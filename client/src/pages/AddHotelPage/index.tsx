@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { HotelValidation } from "../../validations/hotel-validation";
 import { HotelService } from "../../services/hotel.service";
 import BoxInputAbstrakCurrency from "../../components/BoxInputAbstrakCurrency";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const AddHotelPage: FC = () => {
   // navigate

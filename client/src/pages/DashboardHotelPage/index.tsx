@@ -8,20 +8,24 @@ import { useQuery } from "@tanstack/react-query";
 import { HotelService } from "../../services/hotel.service";
 import CardMedium from "../../components/CardMedium";
 import loadingIcon from "../../assets/animation/loading-blue.svg";
+import { Helmet } from "react-helmet-async";
 
 const DashboardHotelPage: FC = () => {
   // state filter
   const [filter, setFilter] = useState<{
     fasilitas?: string;
-    minPirce?: string;
+    minPrice?: string;
     maxPrice?: string;
   }>({});
+
+  // search
+  const [search, setSearch] = useState<string>("");
 
   // state modal
   const [active, setActive] = useState(false);
 
   // state facility
-  const [facility, setFacility] = useState<number[]>([]);
+  const [facility, setFacility] = useState<string[]>([]);
 
   // state accommodation
   const [accommodation, setAccommodation] = useState<string[]>([]);
@@ -38,7 +42,35 @@ const DashboardHotelPage: FC = () => {
   };
 
   // use form
-  const { register } = useForm<{ search: string }>();
+  const {
+    register,
+    watch,
+    setError,
+    formState: { errors },
+    clearErrors,
+  } = useForm<{ search: string }>();
+
+  const searchValue = watch("search");
+
+  useEffect(() => {
+    // cek search if max character
+    if (searchValue && searchValue.length >= 20) {
+      setError("search", {
+        message: "max character",
+      });
+
+      return;
+    }
+
+    // clear errors
+    clearErrors("search");
+
+    const timer = setTimeout(() => {
+      setSearch(searchValue);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [searchValue]);
 
   // handle submit
   const handleSubmit = () => {
@@ -46,7 +78,7 @@ const DashboardHotelPage: FC = () => {
 
     setFilter({
       fasilitas: facility.join(","),
-      minPirce: String(rangePrice[0]),
+      minPrice: String(rangePrice[0]),
       maxPrice: String(rangePrice[1]),
     });
 
@@ -60,67 +92,81 @@ const DashboardHotelPage: FC = () => {
       "dashboardHotel",
       filter.fasilitas,
       filter.maxPrice,
-      filter.minPirce,
+      filter.minPrice,
+      search,
     ],
     queryFn: () =>
       HotelService.readByFilter({
         fasilitas: filter.fasilitas,
-        minPrice: filter.minPirce,
+        minPrice: filter.minPrice,
         maxPrice: filter.maxPrice,
+        search,
       }),
   });
 
-  // debug
-  useEffect(() => {
-    console.log(hotel);
-  }, [hotel]);
-
   return (
-    <div className="w-full h-screen flex flex-col justify-start items-center mt-8 relative">
-      {/* title */}
-      <HeaderDashboardData label="hotels" />
+    <>
+      {/* helmet */}
+      <Helmet>
+        <title>Dashboard | Hotel</title>
+      </Helmet>
 
-      {/* search component */}
-      <SearchHotel register={register} handleOpenModal={setActive} />
+      <div className="w-full h-screen flex flex-col justify-start items-center mt-8 relative">
+        {/* title */}
+        <HeaderDashboardData label="hotels" />
 
-      {/* container card small hotel */}
-      <div className="w-full flex flex-col justify-start items-start gap-4 mt-8 px-4 pb-32">
-        {isLoading ? (
-          <div className="w-full h-full flex flex-col justify-center items-center">
-            <img src={loadingIcon} alt="laoding" className="w-12" />
-          </div>
-        ) : hotel && hotel.data && hotel.data.length > 0 ? (
-          hotel.data.map((item, _) => (
-            <CardMedium
-              key={item._id}
-              discount={0}
-              location={`${item.city}, ${item.country}`}
-              price={item.price}
-              rating={item.rating}
-              thumbnail={item.thumbnail}
-              title={item.name}
-              linkDetail={`/dashboard/hotel/detail/${item._id}`}
-            />
-          ))
-        ) : (
-          <p>tidak ada data</p>
-        )}
-      </div>
-
-      {/* pagination number */}
-      {/* <PaginationNumber /> */}
-
-      {/* modal filter*/}
-      <ModalComponent active={active} handleClose={handleClose}>
-        <ModalFilter
-          handleClose={handleClose}
-          handleSetRangePrice={handleSetRangePrice}
-          handleSubmit={handleSubmit}
-          setFacility={setFacility}
-          setAccommodation={setAccommodation}
+        {/* search component */}
+        <SearchHotel
+          register={register}
+          handleOpenModal={setActive}
+          errors={errors?.search?.message}
         />
-      </ModalComponent>
-    </div>
+
+        {/* container card small hotel */}
+        <div className="w-full flex flex-col justify-start items-start gap-4 mt-8 px-4 pb-32">
+          {isLoading ? (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+              <img src={loadingIcon} alt="laoding" className="w-12" />
+            </div>
+          ) : hotel && hotel.data && hotel.data.length > 0 ? (
+            hotel.data.map((item, _) => (
+              <CardMedium
+                key={item._id}
+                discount={0}
+                location={`${item.city}, ${item.country}`}
+                price={item.price}
+                rating={item.rating}
+                thumbnail={item.thumbnail}
+                title={item.name}
+                linkDetail={`/dashboard/hotel/detail/${item._id}`}
+              />
+            ))
+          ) : (
+            <div className="w-full h-[40vh] flex flex-col justify-center items-center">
+              <p className="text-center">
+                <span className="text-primary-skyblue font-medium">Hotel</span>{" "}
+                tidak tersedia
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* pagination number */}
+        {/* <PaginationNumber /> */}
+
+        {/* modal filter*/}
+        <ModalComponent active={active} handleClose={handleClose}>
+          <ModalFilter
+            filter={filter}
+            handleClose={handleClose}
+            handleSetRangePrice={handleSetRangePrice}
+            handleSubmit={handleSubmit}
+            setFacility={setFacility}
+            setAccommodation={setAccommodation}
+          />
+        </ModalComponent>
+      </div>
+    </>
   );
 };
 

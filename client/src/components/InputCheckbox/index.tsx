@@ -9,7 +9,7 @@ const InputCheckbox: FC<Props> = ({ handleCheckbox, label, checked }) => {
     <button
       type="button"
       onClick={handleCheckbox}
-      className="w-full flex flex-row justify-start items-center gap-2"
+      className="w-full flex flex-row justify-start items-center gap-1"
     >
       {/* checkbox */}
       <div className="w-5.5 h-5.5 border border-primary-skyblue rounded-md overflow-hidden flex flex-row justify-center items-center">
@@ -19,7 +19,7 @@ const InputCheckbox: FC<Props> = ({ handleCheckbox, label, checked }) => {
       </div>
 
       {/* label */}
-      <p className="text-black text-sm ">{label}</p>
+      <p className="text-black text-sm">{label}</p>
     </button>
   );
 };

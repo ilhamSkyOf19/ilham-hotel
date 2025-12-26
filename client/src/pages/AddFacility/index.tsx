@@ -13,7 +13,7 @@ import { FasilitasValidation } from "../../validations/fasilitas-validation";
 import { useMutation } from "@tanstack/react-query";
 import { FasilitasService } from "../../services/fasilitas.service";
 import { AxiosError } from "axios";
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import type { ResponseType } from "../../utils/response-type";
 
 const AddFacilityPage: FC = () => {

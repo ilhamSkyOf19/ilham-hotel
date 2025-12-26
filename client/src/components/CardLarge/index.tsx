@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { GrFavorite } from "react-icons/gr";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import ContentCard from "../ContentCard";
 
 type Props = {

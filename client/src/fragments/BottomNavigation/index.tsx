@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { RiHome6Fill } from "react-icons/ri";
 import { MdHistory } from "react-icons/md";
 import { FaBed } from "react-icons/fa6";

@@ -13,7 +13,7 @@ import { RoomTypeValidation } from "../../validations/roomType-validation";
 import { useMutation } from "@tanstack/react-query";
 import { RoomTypeService } from "../../services/roomType.service";
 import { AxiosError } from "axios";
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import type { ResponseType } from "../../utils/response-type";
 
 const AddRoomTypePage: FC = () => {

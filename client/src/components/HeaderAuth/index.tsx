@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 // props
 type Props = {

@@ -59,6 +59,7 @@ export class HotelService {
           minPrice: params.minPrice,
           maxPrice: params.maxPrice,
           fasilitas: params.fasilitas,
+          search: params.search,
         },
       })
       .then((res) => res.data);

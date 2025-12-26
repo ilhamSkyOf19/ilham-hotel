@@ -3,17 +3,28 @@ import type { UseFormRegister } from "react-hook-form";
 import { FiSearch } from "react-icons/fi";
 import InputRaw from "../InputRaw";
 import { PiSlidersHorizontal } from "react-icons/pi";
+import clsx from "clsx";
 
 // search hotel
 type SearchHotelProps = {
   register: UseFormRegister<{ search: string }>;
   handleOpenModal: (active: boolean) => void;
+  errors?: string;
 };
-const SearchHotel: FC<SearchHotelProps> = ({ register, handleOpenModal }) => {
+const SearchHotel: FC<SearchHotelProps> = ({
+  register,
+  handleOpenModal,
+  errors,
+}) => {
   return (
     <div className="w-[90vw] flex flex-row justify-between items-start gap-3 mt-6">
       {/* search */}
-      <div className="flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 py-2">
+      <div
+        className={clsx(
+          "flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 py-2  transition-all duration-200 ease-in-out",
+          errors ? "ring-1 ring-red-500" : "ring-1 ring-transparent"
+        )}
+      >
         {/* icon search  */}
         <FiSearch className="text-3xl text-primary-skyblue" />
 

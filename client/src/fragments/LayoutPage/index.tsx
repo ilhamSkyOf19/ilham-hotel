@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Outlet } from "react-router";
+import { Outlet } from "react-router-dom";
 import BottomNavigation from "../BottomNavigation";
 
 const LayoutPage: FC = () => {

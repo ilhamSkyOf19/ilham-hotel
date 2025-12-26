@@ -113,6 +113,7 @@ export const toHotelResponseForDisplayType = (
 
 // type filter
 export type FilterTypeForQuery = {
+  search?: string;
   minPrice?: string;
   maxPrice?: string;
   fasilitas?: string;
@@ -120,6 +121,7 @@ export type FilterTypeForQuery = {
 
 // type filter
 export type FilterType = {
+  search?: string;
   minPrice?: number;
   maxPrice?: number;
   fasilitas?: string[];

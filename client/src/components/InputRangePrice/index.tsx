@@ -3,13 +3,23 @@ import { formatCurrency } from "../../utils/util";
 
 type Props = {
   handleSetRangePrice: (value: number[]) => void;
+  minPrice: number;
+  maxPrice: number;
 };
 
-const InputRangePrice: FC<Props> = ({ handleSetRangePrice }) => {
+const InputRangePrice: FC<Props> = ({
+  handleSetRangePrice,
+  minPrice,
+  maxPrice,
+}) => {
   // state value
   const [rangeValue, setRangeValue] = useState<number[]>([0, 0]);
 
-  //
+  // cek min price
+  useEffect(() => {
+    setRangeValue([minPrice, maxPrice]);
+  }, [minPrice, maxPrice]);
+
   useEffect(() => {
     // set setelah 2 detik
     const timer = setTimeout(() => {

@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import ContentCard from "../ContentCard";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 // props
 type Props = {

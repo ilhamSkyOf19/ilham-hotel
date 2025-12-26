@@ -49,6 +49,7 @@ export class HotelValidation {
 
   // vaidasi params query
   static readonly FILTER = object({
+    search: string("Min Price is required").max(40, "max search").optional(),
     minPrice: string("Min Price is required")
       .min(1, "Min Price is required")
       .regex(/^[0-9]+$/, { message: "Min Price Only letters allowed" })

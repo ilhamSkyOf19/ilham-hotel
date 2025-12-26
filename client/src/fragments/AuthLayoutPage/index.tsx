@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from "react";
 import HeaderAuth from "../../components/HeaderAuth";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
 
 type Props = {

@@ -8,7 +8,7 @@ import LayoutPage from "../fragments/LayoutPage";
 import Grafik from "../pages/Grafik";
 import DashboardAdmin from "../pages/DashboardAdmin";
 import AddHotelPage from "../pages/AddHotelPage";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import AddRoomTypePage from "../pages/AddRoomTypePage";
 import AddFacilityPage from "../pages/AddFacility";
 import AddRoomPage from "../pages/AddRoomPage";

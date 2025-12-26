@@ -9,7 +9,7 @@ import clsx from "clsx";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import { HotelService } from "../../services/hotel.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import loadingBlue from "../../assets/animation/loading-blue.svg";
 import { RoomService } from "../../services/room.service";
 

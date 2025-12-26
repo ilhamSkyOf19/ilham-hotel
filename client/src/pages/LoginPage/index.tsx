@@ -11,7 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "../../services/auth.service";
 import type { ResponseType } from "../../utils/response-type";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: FC = () => {
   // navigate

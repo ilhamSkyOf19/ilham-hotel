@@ -97,7 +97,7 @@ export class HotelService {
   static async readHotelByFilter(
     filter: FilterType
   ): Promise<HotelResponseForDisplayType[] | []> {
-    const { minPrice, maxPrice, fasilitas } = filter;
+    const { minPrice, maxPrice, fasilitas, search } = filter;
 
     // call response
     const response = await HotelModel.find({
@@ -116,7 +116,17 @@ export class HotelService {
             },
           }
         : {}),
+      ...(search
+        ? {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { city: { $regex: search, $options: "i" } },
+              { country: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {}),
     })
+      .sort({ createAt: -1 })
       .limit(10)
       .populate("idFasilitas")
       .lean<PayloadHotel[]>();

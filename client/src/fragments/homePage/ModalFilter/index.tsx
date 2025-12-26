@@ -1,16 +1,20 @@
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useMemo, useState, type FC } from "react";
 import { IoClose } from "react-icons/io5";
 import InputRangePrice from "../../../components/InputRangePrice";
 import InputCheckbox from "../../../components/InputCheckbox";
 import ToggleSwitch from "../../../components/ToggleSwitch";
 import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { FasilitasService } from "../../../services/fasilitas.service";
+import loadingBlue from "../../../assets/animation/loading-blue.svg";
 
 type Props = {
   handleClose: () => void;
   handleSetRangePrice: (value: number[]) => void;
   handleSubmit: () => void;
-  setFacility: (value: number[]) => void;
+  setFacility: (value: string[]) => void;
   setAccommodation: (value: string[]) => void;
+  filter: { fasilitas?: string; minPrice?: string; maxPrice?: string };
 };
 const ModalFilter: FC<Props> = ({
   handleClose,
@@ -18,7 +22,15 @@ const ModalFilter: FC<Props> = ({
   handleSubmit,
   setFacility,
   setAccommodation,
+  filter,
 }) => {
+  // fasilitas active
+  const fasilitasActive = useMemo(() => {
+    return filter.fasilitas
+      ? filter.fasilitas.split(",").map((id) => id.trim())
+      : [];
+  }, [filter.fasilitas]);
+
   return (
     <div className="w-full h-screen flex flex-col justify-start item-start">
       <div className="w-full flex flex-col justify-center items-center relative">
@@ -36,10 +48,17 @@ const ModalFilter: FC<Props> = ({
       </div>
 
       {/* range price */}
-      <InputRangePrice handleSetRangePrice={handleSetRangePrice} />
+      <InputRangePrice
+        handleSetRangePrice={handleSetRangePrice}
+        minPrice={Number(filter.minPrice ?? 0)}
+        maxPrice={Number(filter.maxPrice ?? 0)}
+      />
 
       {/* facility */}
-      <Facility handleSetFacility={setFacility} />
+      <Facility
+        handleSetFacility={setFacility}
+        fasilitasActive={fasilitasActive}
+      />
 
       {/* type of accommodation */}
       <TypeOfAccommodation handleSetAccommodation={setAccommodation} />
@@ -62,13 +81,23 @@ const ModalFilter: FC<Props> = ({
 
 // facility
 type FacilityProps = {
-  handleSetFacility: (id: number[]) => void;
+  handleSetFacility: (id: string[]) => void;
+  fasilitasActive?: string[];
 };
-const Facility: FC<FacilityProps> = ({ handleSetFacility }) => {
+const Facility: FC<FacilityProps> = ({
+  handleSetFacility,
+  fasilitasActive,
+}) => {
+  // get data from serice
+  const { data: fasilitas, isLoading } = useQuery({
+    queryKey: ["fasilitasModal"],
+    queryFn: () => FasilitasService.readAll(),
+  });
+
   // state facility
-  const [ChooseFacility, setFacility] = useState<number[]>([]);
+  const [ChooseFacility, setFacility] = useState<string[]>([]);
   // handle set facility
-  const handleChooseFacility = (id: number) => {
+  const handleChooseFacility = (id: string) => {
     // cek
     if (ChooseFacility.includes(id)) {
       setFacility((prev) => prev.filter((item) => item !== id));
@@ -77,6 +106,13 @@ const Facility: FC<FacilityProps> = ({ handleSetFacility }) => {
       setFacility((prev) => [...prev, id]);
     }
   };
+
+  // set choose fasilitas
+  useEffect(() => {
+    if (fasilitasActive) {
+      setFacility(fasilitasActive);
+    }
+  }, [fasilitasActive]);
 
   // set choose
   useEffect(() => {
@@ -92,17 +128,31 @@ const Facility: FC<FacilityProps> = ({ handleSetFacility }) => {
     <div className="w-full flex flex-col justify-start items-start mt-6 gap-4 border-b border-black/20 pb-8">
       <p className="text-base text-black/60">Facility</p>
       {/* checkbox */}
-      <div className="grid grid-cols-2 gap-4 justify-between w-full">
-        {[1, 2, 3, 4].map((id) => (
-          <div key={id} className="col-span-1">
-            <InputCheckbox
-              handleCheckbox={() => handleChooseFacility(id)}
-              label={`Facility ${id}`}
-              checked={ChooseFacility.includes(id)}
-            />
+      {isLoading ? (
+        <div className="w-full h-32 flex flex-col justify-center items-center">
+          <img src={loadingBlue} alt="loading" className="w-9" />
+        </div>
+      ) : (
+        fasilitas &&
+        fasilitas?.data &&
+        (fasilitas.data.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 justify-between w-full">
+            {fasilitas.data.map((item, _) => (
+              <div key={item._id} className="col-span-1">
+                <InputCheckbox
+                  handleCheckbox={() => handleChooseFacility(item._id)}
+                  label={item.fasilitas}
+                  checked={ChooseFacility.includes(item._id)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="w-full h-12 flex flex-col justify-center items-center">
+            <p className="text-sm">Fasilitas tidak tersedia</p>
+          </div>
+        ))
+      )}
     </div>
   );
 };

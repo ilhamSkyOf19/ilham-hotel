@@ -6,7 +6,7 @@ import clsx from "clsx";
 import ButtonAuth from "../../components/ButtonSubmitBox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthValidation } from "../../validations/auth-validation";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "../../services/auth.service";
 import type { ResponseType } from "../../utils/response-type";
