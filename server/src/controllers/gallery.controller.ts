@@ -78,4 +78,37 @@ export class GalleryController {
       next(error);
     }
   }
+
+  // read detail by id hotel
+  static async readByIdHotel(
+    req: Request<{ idHotel: string }, {}, {}, { limit?: string }>,
+    res: Response<ResponseType<GalleryResponseType[] | []>>,
+    next: NextFunction
+  ) {
+    try {
+      // get query
+      const { limit } = req.query;
+
+      // get params
+      const { idHotel } = req.params;
+
+      // cal service
+      const response = await GalleryService.readByIdHotel({
+        idHotel: idHotel,
+        limit: Number(limit ?? 0),
+      });
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "gallery berhasil di baca",
+        data: response,
+      });
+    } catch (error) {
+      // cek error
+      console.log(error);
+
+      next(error);
+    }
+  }
 }

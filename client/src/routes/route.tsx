@@ -40,13 +40,7 @@ const route = createBrowserRouter([
     path: "/coba",
     element: <Grafik />,
   },
-  {
-    path: "hotel/detail",
-    // loader: async ({ params }) => {
-    //   return await HotelService.readDetail(params.id!);
-    // },
-    element: <HotelDetailPage />,
-  },
+
   {
     path: "/",
     loader: async () => {
@@ -92,6 +86,13 @@ const route = createBrowserRouter([
       {
         path: "hotel/add",
         element: <AddHotelPage />,
+      },
+      {
+        path: "hotel/detail",
+        // loader: async ({ params }) => {
+        //   return await HotelService.readDetail(params.id!);
+        // },
+        element: <HotelDetailPage />,
       },
       {
         path: "room",

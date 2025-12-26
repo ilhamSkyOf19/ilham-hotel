@@ -9,6 +9,9 @@ const galleryRoute: Router = Router();
 // inisialisasi file service
 const upload = FileService.upload("galleries", "images");
 
+// read by id hotel
+galleryRoute.get("/read-by-id-hotel/:idHotel", GalleryController.readByIdHotel);
+
 // auth middleware
 galleryRoute.use(authMiddleware("admin"));
 

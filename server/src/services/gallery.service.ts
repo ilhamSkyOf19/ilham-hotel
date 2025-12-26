@@ -27,4 +27,20 @@ export class GalleryService {
     // response
     return toGalleryResponseType(payload);
   }
+
+  // read by id hotel
+  static async readByIdHotel(req: {
+    idHotel: string;
+    limit?: number;
+  }): Promise<GalleryResponseType[] | []> {
+    // call schema
+    const response = await GalleryModel.find({
+      idHotel: req.idHotel,
+    })
+      .limit(req.limit ?? 0)
+      .lean<PayloadGallery[]>();
+
+    // response
+    return response.map((item) => toGalleryResponseType(item));
+  }
 }
