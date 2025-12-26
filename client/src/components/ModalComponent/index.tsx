@@ -11,6 +11,7 @@ const ModalComponent: FC<Props> = ({ children, active, handleClose }) => {
     <Modal
       isOpen={active}
       onRequestClose={handleClose}
+      bodyOpenClassName="modal-open"
       appElement={document.getElementById("root")!}
       style={{
         overlay: {

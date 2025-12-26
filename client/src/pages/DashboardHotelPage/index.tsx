@@ -10,6 +10,13 @@ import CardMedium from "../../components/CardMedium";
 import loadingIcon from "../../assets/animation/loading-blue.svg";
 
 const DashboardHotelPage: FC = () => {
+  // state filter
+  const [filter, setFilter] = useState<{
+    fasilitas?: string;
+    minPirce?: string;
+    maxPrice?: string;
+  }>({});
+
   // state modal
   const [active, setActive] = useState(false);
 
@@ -36,20 +43,31 @@ const DashboardHotelPage: FC = () => {
   // handle submit
   const handleSubmit = () => {
     // set timer 1.5 second
-    const timer = setTimeout(() => {
-      console.log(rangePrice, accommodation, facility);
 
-      // close modal
-      handleClose();
-    }, 1300);
+    setFilter({
+      fasilitas: facility.join(","),
+      minPirce: String(rangePrice[0]),
+      maxPrice: String(rangePrice[1]),
+    });
 
-    return () => clearTimeout(timer);
+    // modal close
+    handleClose();
   };
 
   // use query
   const { data: hotel, isLoading } = useQuery({
-    queryKey: ["dashboardHotel"],
-    queryFn: () => HotelService.readByFilter({}),
+    queryKey: [
+      "dashboardHotel",
+      filter.fasilitas,
+      filter.maxPrice,
+      filter.minPirce,
+    ],
+    queryFn: () =>
+      HotelService.readByFilter({
+        fasilitas: filter.fasilitas,
+        minPrice: filter.minPirce,
+        maxPrice: filter.maxPrice,
+      }),
   });
 
   // debug
