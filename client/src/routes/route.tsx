@@ -18,6 +18,7 @@ import DashboardOtherPage from "../pages/DashboardOtherPage";
 import DashboardHotelPage from "../pages/DashboardHotelPage";
 import HotelDetailPage from "../pages/HotelDetailPage";
 import { HotelService } from "../services/hotel.service";
+import AddGallery from "../pages/AddGallery";
 
 const route = createBrowserRouter([
   {
@@ -93,6 +94,10 @@ const route = createBrowserRouter([
         //   return await HotelService.readDetail(params.id!);
         // },
         element: <HotelDetailPage />,
+      },
+      {
+        path: "hotel/detail/add-gallery",
+        element: <AddGallery />,
       },
       {
         path: "room",
