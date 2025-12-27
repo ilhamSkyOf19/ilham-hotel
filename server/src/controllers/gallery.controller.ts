@@ -56,7 +56,7 @@ export class GalleryController {
 
       //   call service
       const response = await GalleryService.create({
-        ...body,
+        idHotel: body.idHotel,
         images: files.map((file) => file.filename),
       });
 
@@ -81,21 +81,17 @@ export class GalleryController {
 
   // read detail by id hotel
   static async readByIdHotel(
-    req: Request<{ idHotel: string }, {}, {}, { limit?: string }>,
-    res: Response<ResponseType<GalleryResponseType[] | []>>,
+    req: Request<{ idHotel: string }>,
+    res: Response<ResponseType<GalleryResponseType | null>>,
     next: NextFunction
   ) {
     try {
-      // get query
-      const { limit } = req.query;
-
       // get params
       const { idHotel } = req.params;
 
       // cal service
       const response = await GalleryService.readByIdHotel({
         idHotel: idHotel,
-        limit: Number(limit ?? 0),
       });
 
       // return response

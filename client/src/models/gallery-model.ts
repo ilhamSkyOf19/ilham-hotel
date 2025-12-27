@@ -6,12 +6,13 @@ export type IGallery = {
 };
 
 // payload schema
-export type PayloadGallery = Omit<IGallery, "idHotel"> & {
+export type PayloadGallery = Omit<IGallery, "idHotel" | "images"> & {
   _id: string;
   idHotel: {
     _id: string;
     name: string;
   };
+  images: string[];
 };
 
 // request create
@@ -24,12 +25,13 @@ export type GalleryCreateRequestType = Omit<
 };
 
 // response for gallery
-export type GalleryResponseType = Omit<IGallery, "idHotel"> & {
+export type GalleryResponseType = Omit<IGallery, "idHotel" | "images"> & {
   _id: string;
   idHotel: {
     _id: string;
     name: string;
   };
+  images: string[];
 };
 
 // to response gallery

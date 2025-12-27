@@ -34,3 +34,10 @@ export const getPaginationWindow = (
 
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 };
+
+// generate url img
+export const generateUrlImg = (data: { img: string; path: string }): string => {
+  return `${import.meta.env.VITE_BASE_LOCAL_URL_IMG_SERVER}/${data.path}/${
+    data.img
+  }`;
+};

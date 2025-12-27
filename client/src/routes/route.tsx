@@ -89,14 +89,14 @@ const route = createBrowserRouter([
         element: <AddHotelPage />,
       },
       {
-        path: "hotel/detail",
-        // loader: async ({ params }) => {
-        //   return await HotelService.readDetail(params.id!);
-        // },
+        path: "hotel/detail/:id",
+        loader: async ({ params }) => {
+          return await HotelService.readDetail(params.id!);
+        },
         element: <HotelDetailPage />,
       },
       {
-        path: "hotel/detail/add-gallery",
+        path: "hotel/detail/:id/add-gallery",
         element: <AddGallery />,
       },
       {

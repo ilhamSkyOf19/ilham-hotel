@@ -12,35 +12,36 @@ export class GalleryService {
     req: GalleryCreateRequestType
   ): Promise<GalleryResponseType | null> {
     // call schema
-    const response = await GalleryModel.create(req);
-
-    // get payload
-    const payload = await GalleryModel.findById(
-      response._id
+    const response = await GalleryModel.findOneAndUpdate(
+      { idHotel: req.idHotel },
+      {
+        $set: { idHotel: req.idHotel },
+        $push: { images: { $each: req.images } },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
     ).lean<PayloadGallery>();
 
-    // cek payload
-    if (!payload) {
-      return null;
-    }
-
     // response
-    return toGalleryResponseType(payload);
+    return toGalleryResponseType(response);
   }
 
   // read by id hotel
   static async readByIdHotel(req: {
     idHotel: string;
-    limit?: number;
-  }): Promise<GalleryResponseType[] | []> {
+  }): Promise<GalleryResponseType | null> {
     // call schema
-    const response = await GalleryModel.find({
+    const response = await GalleryModel.findOne({
       idHotel: req.idHotel,
-    })
-      .limit(req.limit ?? 0)
-      .lean<PayloadGallery[]>();
+    }).lean<PayloadGallery>();
 
+    // cek payload
+    if (!response) {
+      return null;
+    }
     // response
-    return response.map((item) => toGalleryResponseType(item));
+    return toGalleryResponseType(response);
   }
 }

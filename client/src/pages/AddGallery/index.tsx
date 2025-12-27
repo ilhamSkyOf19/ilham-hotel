@@ -9,13 +9,19 @@ import { GalleryService } from "../../services/gallery.service";
 import { TbTrashFilled } from "react-icons/tb";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import clsx from "clsx";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddGallery: FC = () => {
+  // get use params
+  const { id: idHotel } = useParams<{ id: string }>();
+
+  // navigate
+  const navigate = useNavigate();
   // use form
-  const { watch, setValue, handleSubmit, control } =
+  const { watch, setValue, handleSubmit, control, reset } =
     useForm<GalleryCreateRequestType>({
       defaultValues: {
-        idHotel: "693c33ac8c90013f8a236ecd",
+        idHotel: idHotel ?? "",
       },
       resolver: zodResolver(GalleryValidation.CREATE),
     });
@@ -27,7 +33,12 @@ const AddGallery: FC = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (formData: FormData) => GalleryService.create(formData),
     onSuccess: (data) => {
+      // reset
+      reset();
+
       console.log(data);
+      // navigate
+      navigate(`/dashboard/hotel/detail/${idHotel}`);
     },
     onError: (error) => {
       console.log(error);
