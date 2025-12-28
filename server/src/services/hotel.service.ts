@@ -118,11 +118,7 @@ export class HotelService {
         : {}),
       ...(search
         ? {
-            $or: [
-              { name: { $regex: search, $options: "i" } },
-              { city: { $regex: search, $options: "i" } },
-              { country: { $regex: search, $options: "i" } },
-            ],
+            $text: { $search: search },
           }
         : {}),
     })

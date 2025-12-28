@@ -41,3 +41,29 @@ export const generateUrlImg = (data: { img: string; path: string }): string => {
     data.img
   }`;
 };
+
+// get start
+export const getStars = (
+  star: number
+): {
+  bintangPenuh: number;
+  bintangSetengah: boolean;
+  bintangKosong: number;
+} => {
+  // max star
+  const maxStar: number = 5;
+
+  // get bintang penuh
+  const bintangPenuh: number = Math.floor(star > 5 ? 5 : star);
+  // get setengah bintang
+  const bintangSetengah: boolean = (star > 5 ? 5 : star) % 1 >= 0.5; //
+  // get bintang kosong
+  const bintangKosong: number =
+    maxStar - bintangPenuh - (bintangSetengah ? 1 : 0); // 5 - 3 - (1) = 1;
+
+  return {
+    bintangPenuh,
+    bintangSetengah,
+    bintangKosong,
+  };
+};

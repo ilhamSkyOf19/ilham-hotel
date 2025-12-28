@@ -7,6 +7,10 @@ import { useParams } from "react-router-dom";
 import SectionGallery from "../../fragments/hotelDetailPage/SectionGallery";
 import { useQueries } from "@tanstack/react-query";
 import { GalleryService } from "../../services/gallery.service";
+import SectionAbout from "../../fragments/hotelDetailPage/SectionAbout";
+import { HotelService } from "../../services/hotel.service";
+import type { HotelResponseType } from "../../models/hotel-model";
+import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
@@ -15,23 +19,25 @@ const HotelDetailPage: FC = () => {
   // get params
   const { id: idHotel } = useParams<{ id: string }>();
 
-  // const { data: hotel, isLoading } = useQuery({
-  //   queryKey: ["hotelDetailForDasboard", idHotel],
-  //   queryFn: () => HotelService.readDetail(idHotel!),
-  // });
-
   // query galleries
   const datas = useQueries({
     queries: [
+      // galleris
       {
         queryKey: ["galleryForThumbnailHotelDetail", idHotel],
         queryFn: () => GalleryService.readByIdHotel(idHotel!),
+      },
+
+      // hotel
+      {
+        queryKey: ["hotelDetailForDasboard", idHotel],
+        queryFn: () => HotelService.readDetail(idHotel!),
       },
     ],
   });
 
   // desctruct
-  const [galleries] = datas;
+  const [galleries, hotel] = datas;
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -46,6 +52,8 @@ const HotelDetailPage: FC = () => {
       <ComponentContent
         idHotel={idHotel ?? ""}
         galleries={galleries?.data?.data?.images ?? []}
+        hotel={hotel.data?.data ?? undefined}
+        loading={hotel.isLoading}
       />
     </div>
   );
@@ -54,18 +62,22 @@ const HotelDetailPage: FC = () => {
 type ComponentContentProps = {
   idHotel: string;
   galleries: string[];
+  hotel?: HotelResponseType;
+  loading: boolean;
 };
 
 // component content
 const ComponentContent: FC<ComponentContentProps> = ({
   idHotel,
   galleries,
+  hotel,
+  loading,
 }) => {
   // state sction active
   const [sectionActive, setSectionActive] = useState<string>("about");
 
   return (
-    <div className="w-full h-screen flex flex-col justify-start items-center mt-4">
+    <div className="w-full flex flex-col justify-start items-center mt-4">
       {/* disc & rating & total review */}
       <div className="w-full flex flex-row justify-between items-center  px-4">
         {/* disc */}
@@ -75,7 +87,7 @@ const ComponentContent: FC<ComponentContentProps> = ({
       {/* title & address */}
       <div className="w-full flex flex-col justify-start items-start gap-0.5 mt-4  px-4">
         {/* title */}
-        <h1 className="text-2xl font-medium">HarborHaven Hideaway</h1>
+        <h1 className="text-2xl font-medium">{hotel?.name ?? ""}</h1>
 
         {/* address */}
         {/* link */}
@@ -85,7 +97,7 @@ const ComponentContent: FC<ComponentContentProps> = ({
           rel="noopener noreferrer"
           className="text-sm font-light text-gray-400 hover:text-primary-skyblue transition-all duration-150 ease-in-out flex flex-row justify-start items-center gap-1 group hover:underline"
         >
-          Metro, Lampung
+          {hotel?.city ?? ""}, {hotel?.country ?? ""}
           {/* icon */}
           <FaLocationArrow className="text-base text-primary-skyblue scale-0 group-hover:scale-100 transition-all duration-200 ease-in-out origin-bottom-left" />
         </a>
@@ -112,6 +124,18 @@ const ComponentContent: FC<ComponentContentProps> = ({
       {sectionActive === "gallery" && (
         <SectionGallery idHotel={idHotel} galleries={galleries} />
       )}
+
+      {/* content about */}
+      {sectionActive === "about" && (
+        <SectionAbout
+          fasilitas={hotel?.fasilitas.map((item) => item.fasilitas) ?? []}
+          description={hotel?.description ?? ""}
+          loading={loading}
+        />
+      )}
+
+      {/* content review */}
+      {sectionActive === "review" && <SectionReview />}
     </div>
   );
 };

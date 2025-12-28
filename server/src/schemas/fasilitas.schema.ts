@@ -40,12 +40,12 @@ FasilitasSchema.pre("findOneAndUpdate", function () {
   }
 });
 
-// update room schema after delete fasilitas
+// update hotel schema after delete fasilitas
 FasilitasSchema.pre("findOneAndDelete", async function () {
   const deleted = await this.model.findOne(this.getFilter());
   if (!deleted) return;
 
-  // Hapus semua room yg punya FK ke fasilitas ini
+  // Hapus semua fasilitas di hotel yg punya FK ke fasilitas ini
   await HotelModel.updateMany(
     { idFasilitas: deleted._id },
     { $pull: { idFasilitas: deleted._id } }

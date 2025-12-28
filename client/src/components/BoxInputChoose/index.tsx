@@ -37,8 +37,6 @@ const BoxInputChoose: FC<Props> = ({
 
   // set value for fasilitas
   useEffect(() => {
-    // cek
-    console.log(active);
     const time = setTimeout(() => {
       setValue(
         "fasilitas",

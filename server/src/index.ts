@@ -7,10 +7,8 @@ import connect from "./libs/db";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import fasilitasRoute from "./routes/fasilitas.route";
-import roomTypeRoute from "./routes/roomType.route";
 import hotelRoute from "./routes/hotel.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import roomRoute from "./routes/room.route";
 import galleryRoute from "./routes/gallery.route";
 import path from "path";
 const init = async () => {
@@ -49,12 +47,6 @@ const init = async () => {
 
     // api fasilitas
     app.use("/api/fasilitas", fasilitasRoute);
-
-    // api room type
-    app.use("/api/room-type", roomTypeRoute);
-
-    // api room
-    app.use("/api/room", roomRoute);
 
     // api hotels
     app.use("/api/hotel", hotelRoute);

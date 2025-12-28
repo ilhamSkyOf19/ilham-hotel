@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { IHotel } from "../models/hotel-model";
-import RoomModel from "./room.schema";
 
 const HotelSchema = new Schema<IHotel>(
   {
@@ -22,15 +21,12 @@ const HotelSchema = new Schema<IHotel>(
   }
 );
 
-// delete room afte delete hotel
-HotelSchema.pre("findOneAndDelete", async function () {
-  const deleted = await this.model.findOne(this.getFilter());
+// index
 
-  // cek deleted
-  if (!deleted) return;
-
-  // delete room schema
-  await RoomModel.deleteMany({ idHotel: deleted._id });
+HotelSchema.index({
+  name: "text",
+  city: "text",
+  country: "text",
 });
 
 // create model

@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useEffect, type FC } from "react";
 import HeaderInputPage from "../../components/HeaderInputPage";
 import BoxInputAbstrakText from "../../components/BoxInputAbstrakText";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
@@ -30,6 +30,7 @@ const AddFacilityPage: FC = () => {
     handleSubmit,
     formState: { errors },
     setError,
+    setFocus,
   } = useForm<FasilitasCreateRequestType | FasilitasUpdateRequestType>({
     defaultValues: {
       fasilitas: dataUpdate?.data?.fasilitas,
@@ -85,7 +86,11 @@ const AddFacilityPage: FC = () => {
     }
   };
 
-  // delete data
+  // on focus
+
+  useEffect(() => {
+    setFocus("fasilitas");
+  }, [setFocus]);
 
   return (
     <div className="w-full flex flex-col justify-start items-start gap-6 pt-6 px-4 relative">
