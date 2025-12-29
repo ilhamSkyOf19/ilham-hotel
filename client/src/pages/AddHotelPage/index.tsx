@@ -13,9 +13,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { HotelValidation } from "../../validations/hotel-validation";
 import { HotelService } from "../../services/hotel.service";
 import BoxInputAbstrakCurrency from "../../components/BoxInputAbstrakCurrency";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AddHotelPage: FC = () => {
+  // location
+  const location = useLocation();
+
+  // get state from location
+  const locationState = location.state?.from;
+
   // navigate
   const navigate = useNavigate();
   // query client for display fasilitas
@@ -77,6 +83,7 @@ const AddHotelPage: FC = () => {
       formData.append("city", data.city);
       formData.append("country", data.country);
       formData.append("price", data.price);
+      formData.append("linkMaps", data.linkMaps);
       formData.append("totalRoom", data.totalRoom);
       formData.append("fasilitas", JSON.stringify(data.fasilitas));
 
@@ -90,7 +97,11 @@ const AddHotelPage: FC = () => {
   return (
     <div className="w-screen h-full flex flex-col justify-start items-center pt-6 px-4">
       {/* header */}
-      <HeaderInputPage label="Add Hotel" />
+      <HeaderInputPage
+        label="Add Hotel"
+        linkBack="/dashboard/hotel"
+        locationState={locationState}
+      />
 
       {/* content input */}
       <form
@@ -100,19 +111,10 @@ const AddHotelPage: FC = () => {
         {/* name */}
         <BoxInputAbstrakText
           name="name"
-          label="name"
+          label="name hotel"
           placeholder="Enter name"
           register={register("name")}
           errorMessage={errors.name?.message}
-        />
-
-        {/* city */}
-        <BoxInputAbstrakText
-          name="city"
-          label="city"
-          placeholder="Enter city"
-          register={register("city")}
-          errorMessage={errors.city?.message}
         />
 
         {/* price */}
@@ -123,15 +125,6 @@ const AddHotelPage: FC = () => {
           register={register("price")}
           errorMessage={errors.price?.message}
           setValue={setValue}
-        />
-
-        {/* country */}
-        <BoxInputAbstrakText
-          name="country"
-          label="country"
-          placeholder="Enter country"
-          register={register("country")}
-          errorMessage={errors.country?.message}
         />
 
         {/* description */}
@@ -150,6 +143,33 @@ const AddHotelPage: FC = () => {
           placeholder="Enter total room"
           register={register("totalRoom")}
           errorMessage={errors.totalRoom?.message}
+        />
+
+        {/* city */}
+        <BoxInputAbstrakText
+          name="city"
+          label="city"
+          placeholder="Enter city"
+          register={register("city")}
+          errorMessage={errors.city?.message}
+        />
+
+        {/* country */}
+        <BoxInputAbstrakText
+          name="country"
+          label="country"
+          placeholder="Enter country"
+          register={register("country")}
+          errorMessage={errors.country?.message}
+        />
+
+        {/* country */}
+        <BoxInputAbstrakText
+          name="linkMaps"
+          label="link maps"
+          placeholder="Enter link maps"
+          register={register("linkMaps")}
+          errorMessage={errors.linkMaps?.message}
         />
 
         {/* input thumbnail */}

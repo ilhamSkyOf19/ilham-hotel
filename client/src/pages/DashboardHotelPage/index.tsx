@@ -9,8 +9,13 @@ import { HotelService } from "../../services/hotel.service";
 import CardMedium from "../../components/CardMedium";
 import loadingIcon from "../../assets/animation/loading-blue.svg";
 import { Helmet } from "react-helmet-async";
+import { MdAdd } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHotelPage: FC = () => {
+  // navigate
+  const navigate = useNavigate();
+
   // state filter
   const [filter, setFilter] = useState<{
     fasilitas?: string;
@@ -165,6 +170,19 @@ const DashboardHotelPage: FC = () => {
             setAccommodation={setAccommodation}
           />
         </ModalComponent>
+
+        {/* button add */}
+        <button
+          type="button"
+          onClick={() =>
+            navigate("/dashboard/hotel/add", {
+              state: { from: "/dashboard/hotel" },
+            })
+          }
+          className="fixed z-30 bottom-24 overflow-hidden right-4 w-12 h-12 rounded-full bg-primary-green flex flex-row justify-center items-center before:content-[''] before:inset-0 before:bg-black/20 before:absolute before:opacity-0 before:transition-opacity before:duration-200 before:ease-in-out hover:before:opacity-100"
+        >
+          <MdAdd className="text-3xl text-white" />
+        </button>
       </div>
     </>
   );

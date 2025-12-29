@@ -15,6 +15,7 @@ const HotelSchema = new Schema<IHotel>(
     rating: { type: Number, required: true, default: 0 },
     totalRoom: { type: Number, required: true },
     discount: { type: Number, required: true, default: 0 },
+    linkMaps: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -8,6 +8,7 @@ export type IHotel = {
   price: string;
   discount: string;
   rating: string;
+  linkMaps: string;
   thumbnail: File;
   totalRoom: string;
   createdAt: Date;
@@ -31,6 +32,7 @@ export type PayloadHotel = {
   thumbnail: string;
   discount: number;
   rating: number;
+  linkMaps: string;
   totalRoom: number;
   idFasilitas:
     | {
@@ -62,6 +64,7 @@ export const toHotelResponseType = (
     discount: response.discount,
     totalRoom: response.totalRoom,
     thumbnail: response.thumbnail,
+    linkMaps: response.linkMaps,
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
     fasilitas: response.idFasilitas

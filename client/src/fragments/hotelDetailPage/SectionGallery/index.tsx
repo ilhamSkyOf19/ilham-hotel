@@ -1,8 +1,9 @@
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { generateUrlImg } from "../../../utils/util";
 import { FaArrowRightLong } from "react-icons/fa6";
+import ModalImage from "../../../components/ModalImage";
 // Props
 type Props = {
   idHotel: string;
@@ -13,8 +14,14 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
   // navigate
   const navigate = useNavigate();
 
+  // state modal active
+  const [modalActive, setModalActive] = useState<{
+    active: boolean;
+    img: string;
+  }>({ active: false, img: "" });
+
   return (
-    <div className="w-full flex flex-col justify-start items-start px-4 pt-5 pb-32">
+    <div className="w-full flex flex-col justify-start items-start px-4 pt-5">
       {/* header */}
       <div className="w-full flex flex-row justify-between items-center">
         {/* title */}
@@ -40,7 +47,15 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
         {galleries.length > 0 ? (
           galleries
             .slice(0, 6)
-            .map((image, index) => <CardImage key={index} image={image} />)
+            .map((image, index) => (
+              <CardImage
+                key={index}
+                image={image}
+                handleModalActive={() =>
+                  setModalActive({ active: true, img: image })
+                }
+              />
+            ))
         ) : (
           <div className="col-span-2 flex flex-row justify-center items-center">
             <p className="text-sm text-center">Tidak ada gambar</p>
@@ -64,6 +79,13 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
           <FaArrowRightLong className="text-white text-lg" />
         </button>
       </div>
+
+      {/* modal image */}
+      <ModalImage
+        active={modalActive.active}
+        img={modalActive.img}
+        handleClose={() => setModalActive({ active: false, img: "" })}
+      />
     </div>
   );
 };
@@ -71,17 +93,22 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
 // card img
 type CardImageProps = {
   image: string;
+  handleModalActive: () => void;
 };
-const CardImage: FC<CardImageProps> = ({ image }) => {
+const CardImage: FC<CardImageProps> = ({ image, handleModalActive }) => {
   return (
-    <div className="col-span-1 h-48 bg-black rounded-2xl overflow-hidden shrink-0 relative before:content-[''] before:absolute before:inset-0 before:bg-black/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out">
+    <button
+      type="button"
+      onClick={() => handleModalActive()}
+      className="col-span-1 h-48 bg-black rounded-2xl overflow-hidden shrink-0 relative before:content-[''] before:absolute before:inset-0 before:bg-black/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out"
+    >
       <img
         src={generateUrlImg({ path: "galleries", img: image })}
         alt="image"
         className="w-full h-full object-cover"
         loading="lazy"
       />
-    </div>
+    </button>
   );
 };
 

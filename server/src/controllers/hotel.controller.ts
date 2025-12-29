@@ -11,6 +11,7 @@ import { HotelValidation } from "../validations/hotel-validation";
 import { FasilitasService } from "../services/fasilitas.service";
 import { FileService } from "../services/file.service";
 import { HotelService } from "../services/hotel.service";
+import { GalleryService } from "../services/gallery.service";
 
 export class HotelController {
   // create
@@ -63,6 +64,12 @@ export class HotelController {
           data: null,
         });
       }
+
+      // call service gallery add
+      await GalleryService.create({
+        idHotel: response._id,
+        images: [response.thumbnail],
+      });
 
       // return response
       return res.status(201).json({

@@ -10,7 +10,7 @@ import { HotelValidation } from "../validations/hotel-validation";
 const hotelRoute: Router = Router();
 
 // inisialisasi file service
-const upload = FileService.upload("hotels", "thumbnail");
+const upload = FileService.upload("galleries", "thumbnail");
 
 // read all
 hotelRoute.get("/read", HotelController.readAll);

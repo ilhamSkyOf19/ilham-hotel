@@ -1,6 +1,5 @@
-import { array, number, object, string, ZodType } from "zod";
+import { object, string, ZodType } from "zod";
 import {
-  FilterType,
   FilterTypeForQuery,
   HotelCreateRequestType,
 } from "../models/hotel-model";
@@ -15,6 +14,7 @@ export class HotelValidation {
       1,
       "Description is required"
     ),
+    linkMaps: string("Link Maps is required").min(1, "Link Maps is required"),
     city: string("City is required")
       .min(1, "City is required")
       .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),

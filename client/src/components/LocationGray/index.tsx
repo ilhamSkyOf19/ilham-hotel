@@ -6,12 +6,12 @@ type Props = {
 };
 const LocationGray: FC<Props> = ({ address }) => {
   return (
-    <div className="w-full flex flex-row justify-start items-center gap-1 mt-1">
+    <div className="w-full flex flex-row justify-start items-center gap-2 mt-1">
       {/* icon location */}
       <FaLocationDot className="text-lg text-gray-400" />
 
       {/* address */}
-      <h2 className="text-sm font-medium text-gray-400">{address}</h2>
+      <h2 className="text-sm font-medium text-gray-400 text-left">{address}</h2>
     </div>
   );
 };

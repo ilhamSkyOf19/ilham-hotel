@@ -3,7 +3,7 @@ import clsx from "clsx";
 import DiscRating from "../../components/DiscRating";
 import { FaLocationArrow } from "react-icons/fa6";
 import ComponentPhoto from "../../fragments/hotelDetailPage/ComponentPhoto";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import SectionGallery from "../../fragments/hotelDetailPage/SectionGallery";
 import { useQueries } from "@tanstack/react-query";
 import { GalleryService } from "../../services/gallery.service";
@@ -11,11 +11,18 @@ import SectionAbout from "../../fragments/hotelDetailPage/SectionAbout";
 import { HotelService } from "../../services/hotel.service";
 import type { HotelResponseType } from "../../models/hotel-model";
 import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
+import { formatCurrency } from "../../utils/util";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
 
 const HotelDetailPage: FC = () => {
+  // location
+  const location = useLocation();
+
+  // get state from location
+  const locationState = location.state?.from;
+
   // get params
   const { id: idHotel } = useParams<{ id: string }>();
 
@@ -40,12 +47,13 @@ const HotelDetailPage: FC = () => {
   const [galleries, hotel] = datas;
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col justify-center items-center relative">
       {/* photo */}
       <ComponentPhoto
         idHotel={idHotel ?? ""}
         galleries={galleries?.data?.data?.images ?? []}
         isLoading={galleries?.isLoading ?? false}
+        locationState={locationState}
       />
 
       {/* content */}
@@ -55,6 +63,32 @@ const HotelDetailPage: FC = () => {
         hotel={hotel.data?.data ?? undefined}
         loading={hotel.isLoading}
       />
+
+      {/* navbar payment */}
+      <div className="w-screen fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl px-6 py-2 flex flex-row justify-start items-center gap-2 ">
+        {/* total price */}
+        <div className="flex-1 flex flex-col justify-start items-item-center">
+          <h4 className="text-base text-black capitalize">total price</h4>
+
+          {/* price */}
+          <h4 className="text-lg text-black font-medium">
+            {formatCurrency(323)}{" "}
+            <span className="text-xs ml-0.5 text-gray-600 font-medium">
+              /night
+            </span>
+          </h4>
+        </div>
+
+        {/* button */}
+        <div className="flex-2 h-full flex flex-row justify-end items-center ">
+          <button
+            type="button"
+            className="h-full px-10 text-lg capitalize font-medium text-white bg-primary-skyblue rounded-full relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/20 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
+          >
+            book now
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -95,7 +129,7 @@ const ComponentContent: FC<ComponentContentProps> = ({
 
         {/* address */}
         <a
-          href="https://maps.app.goo.gl/y91yfPTzh2WiaWVW7"
+          href={hotel?.linkMaps ?? ""}
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm font-light text-gray-400 hover:text-primary-skyblue transition-all duration-150 ease-in-out flex flex-row justify-start items-center gap-1 group hover:underline"

@@ -16,9 +16,15 @@ type Props = {
   idHotel: string;
   galleries: string[];
   isLoading: boolean;
+  locationState?: string;
 };
 
-const ComponentPhoto: FC<Props> = ({ idHotel, galleries, isLoading }) => {
+const ComponentPhoto: FC<Props> = ({
+  idHotel,
+  galleries,
+  isLoading,
+  locationState,
+}) => {
   // navigate
   const navigate = useNavigate();
 
@@ -29,6 +35,8 @@ const ComponentPhoto: FC<Props> = ({ idHotel, galleries, isLoading }) => {
   const handleActiveThumb = (index: number) => {
     setActiveThumb(index);
   };
+
+  // console.log(galleries);
 
   return (
     <div className="w-full h-[50vh] flex flex-col justify-start items-center relative">
@@ -57,7 +65,15 @@ const ComponentPhoto: FC<Props> = ({ idHotel, galleries, isLoading }) => {
         <div className="w-full flex flex-row justify-between items-center">
           {/* icon back */}
           <div className="flex-1 flex flex-row justify-start items-center ">
-            <ContainerButton handleBack={() => navigate("/dashboard/hotel")}>
+            <ContainerButton
+              handleBack={() => {
+                if (locationState) {
+                  navigate(-1);
+                } else {
+                  navigate("/dashboard/hotel");
+                }
+              }}
+            >
               <BsArrowLeft className="text-xl" />
             </ContainerButton>
           </div>
@@ -174,7 +190,7 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
       onClick={() => {
         navigate(
           `/dashboard/hotel/detail/${idHotel}/${
-            !img ? "galleries" : "add-gallery"
+            img ? "galleries" : "add-gallery"
           }`,
           {
             state: {

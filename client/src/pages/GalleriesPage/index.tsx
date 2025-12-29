@@ -6,7 +6,7 @@ import { GalleryService } from "../../services/gallery.service";
 import { generateUrlImg } from "../../utils/util";
 import loadingBue from "../../assets/animation/loading-blue.svg";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
-import ModalComponent from "../../components/ModalComponent";
+import ModalImage from "../../components/ModalImage";
 
 const GalleriesPage: FC = () => {
   // state modal
@@ -141,19 +141,11 @@ const GalleriesPage: FC = () => {
       </div>
 
       {/* modal image */}
-      <ModalComponent
+      <ModalImage
         active={modalActive.active}
+        img={modalActive.img}
         handleClose={() => setModalActive({ active: false, img: "" })}
-        bgTransparent={true}
-        fullWidth={true}
-      >
-        <img
-          src={generateUrlImg({ path: "galleries", img: modalActive.img })}
-          alt="image gallery"
-          className="object-cover"
-          loading="lazy"
-        />
-      </ModalComponent>
+      />
     </div>
   );
 };

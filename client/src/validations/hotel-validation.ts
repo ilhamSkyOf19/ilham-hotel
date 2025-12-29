@@ -27,5 +27,6 @@ export class HotelValidation {
       .instanceof(File)
       .refine((file) => file.size > 0, "Thumbnail is required"),
     fasilitas: array(z.string()).min(1, "Fasilitas is required"),
+    linkMaps: string("Link Maps is required").min(1, "Link Maps is required"),
   }).strict() satisfies ZodType<HotelCreateServiceRequestType>;
 }

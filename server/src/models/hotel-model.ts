@@ -3,6 +3,8 @@ import { Types } from "mongoose";
 // type hotel
 export type IHotel = {
   idFasilitas: Types.ObjectId[];
+  // idReview: Types.ObjectId[];
+  linkMaps: string;
   name: string;
   description: string;
   city: string;
@@ -49,6 +51,7 @@ export type PayloadHotel = {
   discount: number;
   rating: number;
   totalRoom: number;
+  linkMaps: string;
   idFasilitas:
     | {
         _id: string;
@@ -79,6 +82,7 @@ export const toHotelResponseType = (
     discount: response.discount,
     totalRoom: response.totalRoom,
     thumbnail: response.thumbnail,
+    linkMaps: response.linkMaps,
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
     fasilitas: response.idFasilitas
