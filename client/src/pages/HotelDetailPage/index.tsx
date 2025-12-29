@@ -90,7 +90,6 @@ const ComponentContent: FC<ComponentContentProps> = ({
         <h1 className="text-2xl font-medium">{hotel?.name ?? ""}</h1>
 
         {/* address */}
-        {/* link */}
         <a
           href="https://maps.app.goo.gl/y91yfPTzh2WiaWVW7"
           target="_blank"

@@ -165,8 +165,10 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
   idHotel,
 }) => {
   return (
-    <button
-      type="button"
+    <Link
+      to={`/dashboard/hotel/detail/${idHotel}/${
+        img ? "galleries" : "add-gallery"
+      }`}
       className="flex-1 h-full bg-gray-200 rounded-xl overflow-hidden relative"
     >
       {/* img */}
@@ -185,14 +187,11 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
           />
         </>
       ) : (
-        <Link
-          to={`/dashboard/hotel/detail/${idHotel}/add-gallery`}
-          className="w-full h-full bg-gray-200 flex flex-col justify-center items-center"
-        >
+        <div className="w-full h-full bg-gray-200 flex flex-col justify-center items-center">
           <MdAddPhotoAlternate className="text-3xl text-gray-400" />
-        </Link>
+        </div>
       )}
-    </button>
+    </Link>
   );
 };
 

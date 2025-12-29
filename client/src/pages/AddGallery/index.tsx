@@ -181,6 +181,7 @@ const ComponentInputGallery: FC<ComponentInputGalleryProps> = ({
         {/* input */}
         <input
           type="file"
+          multiple
           ref={refInput}
           accept=".png,.jpg,.jpeg,.wepb,image/png,image/jpeg,image/wepb"
           hidden={true}

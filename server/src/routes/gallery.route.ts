@@ -18,7 +18,7 @@ galleryRoute.use(authMiddleware("admin"));
 // create
 galleryRoute.post(
   "/create",
-  upload.array("images", 2),
+  upload.array("images", 5),
   GalleryController.create
 );
 

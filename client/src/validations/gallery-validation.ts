@@ -15,6 +15,7 @@ export class GalleryValidation {
       (files) => files instanceof Array && files.length > 0,
       "file harus di isi"
     )
+      .refine((file) => file.length <= 5, "maksimal upload 5 file")
       .refine((files) =>
         files.every(
           (file) => file.size <= MAX_FILE_SIZE,
