@@ -11,6 +11,7 @@ import hotelRoute from "./routes/hotel.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import galleryRoute from "./routes/gallery.route";
 import path from "path";
+import reviewRoute from "./routes/review.route";
 const init = async () => {
   try {
     // init express
@@ -53,6 +54,9 @@ const init = async () => {
 
     // api gallery
     app.use("/api/gallery", galleryRoute);
+
+    // api review
+    app.use("/api/review", reviewRoute);
 
     // next middleware
     app.use(errorMiddleware);

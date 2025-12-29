@@ -45,7 +45,7 @@ export class FasilitasController {
       }
 
       // response success
-      return res.status(200).json({
+      return res.status(201).json({
         status: "success",
         message: "fasilitas created",
         data: response,

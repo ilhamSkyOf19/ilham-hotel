@@ -33,6 +33,11 @@ const UserSchema = new Schema<IUser>(
       type: String,
       default: "default.png",
     },
+    title: {
+      type: String,
+      enum: ["BEGINNER", "REGULAR", "VERIFIED"],
+      default: "BEGINNER",
+    },
     isActive: {
       type: Boolean,
       default: false,

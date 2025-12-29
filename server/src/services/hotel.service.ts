@@ -93,6 +93,19 @@ export class HotelService {
     return { totalRoom: response.totalRoom };
   }
 
+  // read by id for cek
+  static async readByIdforCheck(id: string): Promise<boolean> {
+    // call model
+    const response = HotelModel.findById(id);
+
+    // cek response
+    if (!response) {
+      return false;
+    }
+
+    return true;
+  }
+
   // read hotel by filter
   static async readHotelByFilter(
     filter: FilterType

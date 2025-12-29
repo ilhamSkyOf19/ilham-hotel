@@ -150,6 +150,23 @@ export class AuthService {
     });
   }
 
+  // read user by email
+  static async readUserById(id: string): Promise<UserResponseType | null> {
+    // call model
+    const response = await UserModel.findOne({ _id: id });
+
+    // cek response
+    if (!response) {
+      return null;
+    }
+
+    // return
+    return toUserResponseType({
+      ...response.toObject(),
+      _id: response._id.toString(),
+    });
+  }
+
   // update code
   static async resend(email: string): Promise<UserResponseType | null> {
     const response = await UserModel.findOneAndUpdate(
