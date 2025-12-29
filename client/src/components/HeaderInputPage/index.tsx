@@ -7,9 +7,16 @@ import { useNavigate } from "react-router-dom";
 type Props = {
   label: string;
   textFullColor?: boolean;
+  linkBack: string;
+  locationState?: string;
 };
 
-const HeaderInputPage: FC<Props> = ({ label, textFullColor }) => {
+const HeaderInputPage: FC<Props> = ({
+  label,
+  textFullColor,
+  linkBack,
+  locationState,
+}) => {
   // navigate
   const navigate = useNavigate();
   // destructure label
@@ -34,7 +41,15 @@ const HeaderInputPage: FC<Props> = ({ label, textFullColor }) => {
       <button
         type="button"
         className="absolute left-0"
-        onClick={() => navigate(-1)}
+        onClick={() => {
+          if (locationState) {
+            // normal SPA navigation → back natural
+            navigate(-1);
+          } else {
+            // kemungkinan refresh / direct access
+            navigate(linkBack);
+          }
+        }}
       >
         <FaArrowLeft className="text-3xl text-primary-skyblue" />
       </button>

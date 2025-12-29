@@ -3,7 +3,7 @@ import hotelDummy from "../../../assets/thumb/kamar-2.jpg";
 import { BsArrowLeft } from "react-icons/bs";
 import { IoShareSocialSharp } from "react-icons/io5";
 import { GrFavorite } from "react-icons/gr";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { generateUrlImg } from "../../../utils/util";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import clsx from "clsx";
@@ -57,7 +57,7 @@ const ComponentPhoto: FC<Props> = ({ idHotel, galleries, isLoading }) => {
         <div className="w-full flex flex-row justify-between items-center">
           {/* icon back */}
           <div className="flex-1 flex flex-row justify-start items-center ">
-            <ContainerButton handleBack={() => navigate(-1)}>
+            <ContainerButton handleBack={() => navigate("/dashboard/hotel")}>
               <BsArrowLeft className="text-xl" />
             </ContainerButton>
           </div>
@@ -164,11 +164,25 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
   img,
   idHotel,
 }) => {
+  // navigate
+  const navigate = useNavigate();
+  // get pathname
+  const location = useLocation().pathname;
   return (
-    <Link
-      to={`/dashboard/hotel/detail/${idHotel}/${
-        img ? "galleries" : "add-gallery"
-      }`}
+    <button
+      type="button"
+      onClick={() => {
+        navigate(
+          `/dashboard/hotel/detail/${idHotel}/${
+            !img ? "galleries" : "add-gallery"
+          }`,
+          {
+            state: {
+              from: location,
+            },
+          }
+        );
+      }}
       className="flex-1 h-full bg-gray-200 rounded-xl overflow-hidden relative"
     >
       {/* img */}
@@ -177,7 +191,7 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
           {/* overlay black */}
           <div className="w-full h-full absolute bg-black/60 z-10 flex flex-col justify-center items-center">
             <p className="text-base font-semibold text-white">
-              <span className="ml-1">+</span> 10
+              <span className="ml-1">+</span> 5
             </p>
           </div>
           <img
@@ -191,7 +205,7 @@ const CardButtonOtherthumb: FC<CardButtonOtherthumbProps> = ({
           <MdAddPhotoAlternate className="text-3xl text-gray-400" />
         </div>
       )}
-    </Link>
+    </button>
   );
 };
 

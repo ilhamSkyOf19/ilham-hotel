@@ -5,8 +5,16 @@ type Props = {
   children: ReactNode;
   active: boolean;
   handleClose: () => void;
+  bgTransparent?: boolean;
+  fullWidth?: boolean;
 };
-const ModalComponent: FC<Props> = ({ children, active, handleClose }) => {
+const ModalComponent: FC<Props> = ({
+  children,
+  active,
+  handleClose,
+  bgTransparent,
+  fullWidth,
+}) => {
   return (
     <Modal
       isOpen={active}
@@ -15,7 +23,7 @@ const ModalComponent: FC<Props> = ({ children, active, handleClose }) => {
       appElement={document.getElementById("root")!}
       style={{
         overlay: {
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: "rgba(0,0,0,0.7)",
           zIndex: 9999, // pastikan lebih tinggi dari elemen lain
           display: "flex",
           justifyContent: "center", // horizontal center
@@ -24,11 +32,12 @@ const ModalComponent: FC<Props> = ({ children, active, handleClose }) => {
         content: {
           position: "relative",
           inset: "unset",
-          width: "85%",
+          width: fullWidth ? "auto" : "85%",
           maxHeight: "90%",
           height: "auto",
           borderRadius: "20px",
-          backgroundColor: "white",
+          border: "none",
+          backgroundColor: bgTransparent ? "transparent" : "white",
         },
       }}
     >

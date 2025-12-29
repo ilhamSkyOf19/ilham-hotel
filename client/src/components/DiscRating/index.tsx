@@ -10,9 +10,13 @@ const DiscRating: FC<Props> = ({ discount, rating, reviews }) => {
   return (
     <div className="w-full flex flex-row justify-between items-center">
       {/* discount */}
-      <h2 className="bg-primary-gray/30 text-xs font-medium text-primary-skyblue rounded-lg py-2 px-3">
-        {`${discount}%`} Off
-      </h2>
+      {discount > 0 ? (
+        <h2 className="bg-primary-gray/30 text-xs font-medium text-primary-skyblue rounded-lg py-2 px-3">
+          {`${discount}%`} Off
+        </h2>
+      ) : (
+        <div className="flex-1" />
+      )}
 
       {/* rating */}
       <div className="flex flex-row justify-start items-center gap-1">

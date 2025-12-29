@@ -81,13 +81,17 @@ const ComponentContent: FC<ComponentContentProps> = ({
       {/* disc & rating & total review */}
       <div className="w-full flex flex-row justify-between items-center  px-4">
         {/* disc */}
-        <DiscRating discount={10} rating={4.5} reviews={320} />
+        <DiscRating
+          discount={hotel?.discount ?? 0}
+          rating={4.5}
+          reviews={320}
+        />
       </div>
 
       {/* title & address */}
       <div className="w-full flex flex-col justify-start items-start gap-0.5 mt-4  px-4">
         {/* title */}
-        <h1 className="text-2xl font-medium">{hotel?.name ?? ""}</h1>
+        <h1 className="text-2xl font-semibold">{hotel?.name ?? ""}</h1>
 
         {/* address */}
         <a

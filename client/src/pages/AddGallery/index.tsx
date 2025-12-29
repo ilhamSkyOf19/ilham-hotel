@@ -9,9 +9,15 @@ import { GalleryService } from "../../services/gallery.service";
 import { TbTrashFilled } from "react-icons/tb";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import clsx from "clsx";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddGallery: FC = () => {
+  // location
+  const location = useLocation();
+
+  // get location state
+  const locationState: string | undefined = location.state?.from;
+
   // get use params
   const { id: idHotel } = useParams<{ id: string }>();
 
@@ -69,7 +75,11 @@ const AddGallery: FC = () => {
   return (
     <div className="w-full flex flex-col justify-start items-start gap-6 pt-6 px-4 relative">
       {/* header */}
-      <HeaderInputPage label="Add Gallery" />
+      <HeaderInputPage
+        label="Add Gallery"
+        linkBack={`/dashboard/hotel/detail/${idHotel}`}
+        locationState={locationState}
+      />
 
       {/* form input */}
       <form

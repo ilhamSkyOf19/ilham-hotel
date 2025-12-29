@@ -13,10 +13,15 @@ import { FasilitasValidation } from "../../validations/fasilitas-validation";
 import { useMutation } from "@tanstack/react-query";
 import { FasilitasService } from "../../services/fasilitas.service";
 import { AxiosError } from "axios";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import type { ResponseType } from "../../utils/response-type";
 
 const AddFacilityPage: FC = () => {
+  // location
+  const location = useLocation();
+
+  // get location state
+  const locationState: string | undefined = location.state?.from;
   // navigate
   const navigate = useNavigate();
 
@@ -97,6 +102,8 @@ const AddFacilityPage: FC = () => {
       {/* header */}
       <HeaderInputPage
         label={`${dataUpdate && dataUpdate.data ? "Update" : "Add"} Facility`}
+        linkBack="/dashboard/other"
+        locationState={locationState}
       />
 
       {/* form */}
