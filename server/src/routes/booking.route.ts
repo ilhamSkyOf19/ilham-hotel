@@ -13,7 +13,7 @@ bookingRoute.use(authMiddleware("admin"));
 
 // payment
 bookingRoute.post(
-  "/payment",
+  "/payment-hotel",
   validationMiddleware<BookingCreateRequestType>(BookingValidation.CREATE),
   BookingController.booking
 );
