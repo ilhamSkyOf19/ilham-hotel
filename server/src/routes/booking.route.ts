@@ -13,10 +13,9 @@ bookingRoute.use(authMiddleware("admin"));
 
 // payment
 bookingRoute.post(
-  "/payment-hotel",
+  "/",
   validationMiddleware<BookingCreateRequestType>(BookingValidation.CREATE),
   BookingController.booking
 );
-
 // export default
 export default bookingRoute;
