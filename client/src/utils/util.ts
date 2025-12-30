@@ -5,6 +5,30 @@ export const formatTime = (ms: number = 0): string => {
   return `${m}:${s < 10 ? "0" + s : s}`;
 };
 
+// format date
+export const formatDate = (date: Date): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+  }).format(date);
+};
+
+// get local today date
+export const getTodayLocal = (date: Date = new Date()): string => {
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().split("T")[0];
+};
+
+// add month for max
+export const addMonths = (date: Date, months: number): Date => {
+  const d = new Date(date);
+
+  d.setMonth(d.getMonth() + months);
+
+  return d;
+};
+
 // format currency
 export const formatCurrency = (value: number): string => {
   return value.toLocaleString("en-US", {
