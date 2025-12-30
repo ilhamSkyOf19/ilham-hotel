@@ -19,6 +19,8 @@ const init = async () => {
     // init express
     const app = express();
 
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
     // cookie
     app.use(cookieParser());
 
@@ -36,9 +38,7 @@ const init = async () => {
     // connect db
     await connect();
 
-    // json parse
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    // json pars
 
     // api test
     app.get("/", (_, res) => {
