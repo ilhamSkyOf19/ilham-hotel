@@ -43,24 +43,19 @@ export class BookingService {
   static async updateStateById(
     idBooking: string,
     status: "pending" | "success" | "failed"
-  ): Promise<BookingResponseType | null> {
-    // call model
-    const response = await BookingModel.updateOne(
-      {
-        _id: idBooking,
-      },
+  ): Promise<boolean> {
+    const result = await BookingModel.updateOne(
+      { _id: idBooking },
       {
         $set: {
           status,
-          active: status === "success" ? true : false,
+          active: status === "success",
         },
       }
-    )
-      .populate("user", "_id email")
-      .populate("hotel", "_id name")
-      .lean<PayloadBooking>();
+    );
 
-    // return
-    return response;
+    console.log("UPDATE RESULT:", result);
+
+    return result.matchedCount === 1;
   }
 }
