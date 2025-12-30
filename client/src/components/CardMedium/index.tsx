@@ -26,7 +26,7 @@ const CardMedium: FC<Props> = ({
   // navigate
   const navigate = useNavigate();
   return (
-    <div className="w-full h-44 flex flex-row justify-start items-start bg-white shadow-[0_0_10px_0px_rgba(0,0,0,0.1)] rounded-xl px-4 py-2 gap-2">
+    <div className="w-full h-44 flex flex-row justify-start items-start bg-white shadow-[0_0_10px_0px_rgba(0,0,0,0.1)] rounded-xl px-4 py-2 gap-3">
       {/* thumbnail */}
       <div className="flex-4 h-full bg-black rounded-lg overflow-hidden group">
         <img

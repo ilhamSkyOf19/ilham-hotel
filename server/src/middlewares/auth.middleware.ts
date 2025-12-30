@@ -2,10 +2,11 @@ import { NextFunction, Response } from "express";
 import { AuthRequest, ResponseType } from "../types/request-response";
 import { PayloadType } from "../types/payload";
 import jwt from "jsonwebtoken";
+import { AuthService } from "../services/auth.service";
 
 const authMiddleware =
   (role: "customer" | "admin" | "activation") =>
-  (
+  async (
     req: AuthRequest,
     res: Response<ResponseType<PayloadType | null>>,
     next: NextFunction
@@ -29,10 +30,22 @@ const authMiddleware =
         process.env.SECRET_KEY as string
       ) as PayloadType;
 
+      // cek from database
+      const findUser = await AuthService.readUserById(payload._id);
+
+      // cek find user
+      if (!findUser) {
+        return res.status(401).json({
+          status: "failed",
+          message: "Unauthorized admin",
+          data: null,
+        });
+      }
+
       // cek role
       switch (role) {
         case "admin":
-          if (payload.role !== "admin") {
+          if (findUser.role !== "admin") {
             return res.status(401).json({
               status: "failed",
               message: "Unauthorized admin",
@@ -41,7 +54,7 @@ const authMiddleware =
           }
           break;
         case "activation":
-          if (payload.role !== "customer") {
+          if (findUser.role !== "customer") {
             return res.status(401).json({
               status: "failed",
               message: "Unauthorized admin",
@@ -50,7 +63,7 @@ const authMiddleware =
           }
           break;
         case "customer":
-          if (payload.role !== "customer" && payload.isActive === false) {
+          if (findUser.role !== "customer" && findUser.isActive === false) {
             return res.status(401).json({
               status: "failed",
               message: "Unauthorized customer",
