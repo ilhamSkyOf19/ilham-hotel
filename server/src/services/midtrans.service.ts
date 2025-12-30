@@ -18,7 +18,7 @@ export class MidtransService {
     // payload for midtrans
     const payload = {
       transaction_details: {
-        order_id: `hotel-${req.idTransaction}`,
+        order_id: `BOOKING-${req.idTransaction}`,
         gross_amount: req.grossAmount,
       },
       credit_card: {
