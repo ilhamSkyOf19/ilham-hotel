@@ -38,8 +38,6 @@ const init = async () => {
     // connect db
     await connect();
 
-    // json pars
-
     // api test
     app.get("/", (_, res) => {
       res.send("Hello World!");
