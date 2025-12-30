@@ -12,14 +12,11 @@ const bookingRoute: Router = Router();
 bookingRoute.use(authMiddleware("admin"));
 
 // payment
-// bookingRoute.post(
-//   "/payment-hotel",
-//   validationMiddleware<BookingCreateRequestType>(BookingValidation.CREATE),
-//   BookingController.booking
-// );
+bookingRoute.post(
+  "/payment-hotel",
+  validationMiddleware<BookingCreateRequestType>(BookingValidation.CREATE),
+  BookingController.booking
+);
 
-bookingRoute.post("/payment-hotel", (req, res) => {
-  res.json({ success: true, body: req.body });
-});
 // export default
 export default bookingRoute;
