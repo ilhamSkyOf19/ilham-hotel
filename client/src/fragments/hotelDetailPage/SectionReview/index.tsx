@@ -2,12 +2,20 @@ import { useState, type FC } from "react";
 import { PiSlidersHorizontal } from "react-icons/pi";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { getStars } from "../../../utils/util";
-import peopleDumy from "../../../assets/people/people.jpg";
+
 import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { ReviewService } from "../../../services/review.service";
+import loadingBlue from "../../../assets/animation/loading-blue.svg";
+import ComponentAvatarCircle from "../../../components/ComponentAvatarCircle";
 
 const filter: string[] = ["verified", "latest", "with photos"];
 
-const SectionReview: FC = () => {
+type Props = {
+  idHotel: string;
+};
+
+const SectionReview: FC<Props> = ({ idHotel }) => {
   // state choose filter
   const [chooseFilter, setChooseFilter] = useState<string[]>([]);
 
@@ -19,6 +27,13 @@ const SectionReview: FC = () => {
       setChooseFilter((prev) => [...prev, choose]);
     }
   };
+
+  // query reviews
+  const { data: reviews, isLoading } = useQuery({
+    queryKey: ["review", "readAllByIdHote", idHotel],
+    queryFn: () => ReviewService.readAllByIdHotel(idHotel),
+  });
+
   return (
     <div className="w-full flex flex-col justify-start items-start pt-5">
       {/* header */}
@@ -44,11 +59,26 @@ const SectionReview: FC = () => {
       {/* list review */}
       <div className="w-full flex flex-col justify-start items-start gap-6 px-4 mt-8">
         {/* card review */}
-        <CardReview />
-        <CardReview />
-        <CardReview />
-        <CardReview />
-        <CardReview />
+        {isLoading ? (
+          <div className="w-full flex flex-row justify-center items-center">
+            <img src={loadingBlue} alt="loading" className="w-10" />
+          </div>
+        ) : reviews?.data && reviews.data?.length > 0 ? (
+          reviews.data.map((item, index) => (
+            <CardReview
+              key={index}
+              fullName={item.user.fullName}
+              review={item.review}
+              rating={item.rating}
+              title={item.user.title}
+              avatar={item.user.avatar}
+            />
+          ))
+        ) : (
+          <div className="w-full flex flex-row justify-center items-center">
+            <p className="text-sm">Tidak ada review</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -93,44 +123,49 @@ const ButtonChooseFilter: FC<ButtonChooseFilterProps> = ({
   );
 };
 
-// card review
-const CardReview: FC = () => {
+// card reviewt
+type CardReviewProps = {
+  fullName: string;
+  title: "BEGINNER" | "REGULAR" | "VERIFIED";
+  review: string;
+  rating: number;
+  avatar: string;
+};
+const CardReview: FC<CardReviewProps> = ({
+  fullName,
+  rating,
+  review,
+  title,
+  avatar,
+}) => {
   // inisialisasi get stars
   const stars: {
     bintangPenuh: number;
     bintangSetengah: boolean;
     bintangKosong: number;
-  } = getStars(4.8);
+  } = getStars(rating);
 
   return (
     <div className="w-full flex flex-col justify-start items-start px-5 py-4 gap-2 bg-white shadow-[0px_2px_7px_rgba(0,0,0,0.25)] rounded-xl">
       {/* profile */}
       <div className="w-full flex flex-row justify-start items-start gap-3">
         {/* photo */}
-        <div className="w-13 h-13 rounded-full bg-gray-300 overflow-hidden">
-          <img
-            src={peopleDumy}
-            alt="avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <ComponentAvatarCircle img={avatar} title={title} />
+
+        {/* label */}
         <div className="flex flex-col justify-start items-start">
           {/* name */}
-          <p className="text-base font-medium capitalize">Robert Kuilvert</p>
+          <p className="text-base font-medium capitalize">{fullName}</p>
 
           {/* title */}
-          <p className="text-sm font-light text-gray-500 capitalize pt-0.5">
-            New Guest
+          <p className="text-sm font-light text-gray-500 capitalize pt-0.5 -mt-1">
+            {title.toLowerCase()}
           </p>
         </div>
       </div>
 
       {/* review */}
-      <p className="text-sm text-black">
-        Hotel nyaman bersih pelayanan ramah fasilitas lengkap booking mudah
-        harga sesuai kualitas kamar rapi staf profesional pengalaman menginap
-        menyenangkan direkomendasikan.
-      </p>
+      <p className="text-sm text-black mt-2">{review}</p>
 
       {/* ratings */}
       <div className="w-full flex flex-row justify-start items-start gap-1">

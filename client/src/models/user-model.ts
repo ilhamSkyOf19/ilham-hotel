@@ -7,6 +7,7 @@ export interface IUser {
   role: "admin" | "customer";
   password: string;
   avatar: string;
+  title?: "BEGINNER" | "REGULAR" | "VERIFIED";
   isActive: boolean;
   activateCode: string;
   createdAt: string;
@@ -34,6 +35,7 @@ export const toUserResponseType = (
   email: user.email,
   phone: user.phone,
   role: user.role,
+  title: user.title,
   avatar: user.avatar,
   isActive: user.isActive,
   createdAt: user.createdAt,

@@ -1,9 +1,7 @@
-import { Types } from "mongoose";
-
 // iReview
 export type iReview = {
-  user: Types.ObjectId;
-  hotel: Types.ObjectId;
+  user: string;
+  hotel: string;
   review: string;
   rating: number;
   createdAt: Date;
@@ -23,7 +21,7 @@ export type PayloadReview = {
   user: {
     _id: string;
     fullName: string;
-    title: string;
+    title: "BEGINNER" | "REGULAR" | "VERIFIED";
     avatar: string;
   };
   hotel: {

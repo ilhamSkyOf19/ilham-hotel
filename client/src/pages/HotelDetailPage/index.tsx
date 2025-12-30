@@ -172,7 +172,7 @@ const ComponentContent: FC<ComponentContentProps> = ({
       )}
 
       {/* content review */}
-      {sectionActive === "review" && <SectionReview />}
+      {sectionActive === "review" && <SectionReview idHotel={idHotel} />}
     </div>
   );
 };
