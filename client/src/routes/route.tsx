@@ -17,9 +17,6 @@ import HotelDetailPage from "../pages/HotelDetailPage";
 // import { HotelService } from "../services/hotel.service";
 import AddGallery from "../pages/AddGallery";
 import GalleriesPage from "../pages/GalleriesPage";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../store/store";
-import { setUser } from "../store/userSlice";
 
 const route = createBrowserRouter([
   {
@@ -46,17 +43,7 @@ const route = createBrowserRouter([
   {
     path: "/",
     loader: async () => {
-      const user = await AuthService.getAuthUser();
-
-      // set ke redux
-      const dispatch = useDispatch<AppDispatch>();
-
-      // set user
-      if (user.data) {
-        dispatch(setUser(user.data));
-      }
-
-      return;
+      return await AuthService.getAuthUser();
     },
     element: <LayoutPage />,
     children: [
@@ -80,56 +67,57 @@ const route = createBrowserRouter([
         path: "/user",
         element: <HomePage />,
       },
-    ],
-  },
-  {
-    path: "/dashboard",
-    element: <LayoutPage />,
-    children: [
-      {
-        index: true,
-        element: <DashboardAdmin />,
-      },
-      {
-        path: "hotel",
-        element: <DashboardHotelPage />,
-      },
 
+      // dashboard admin
       {
-        path: "hotel/add",
-        element: <AddHotelPage />,
-      },
-      {
-        path: "hotel/detail/:id",
-        element: <HotelDetailPage />,
-      },
-      {
-        path: "hotel/detail/:id/galleries",
-        element: <GalleriesPage />,
-      },
-      {
-        path: "hotel/detail/:id/add-gallery",
-        element: <AddGallery />,
-      },
-      {
-        path: "other",
-        element: <DashboardOtherPage />,
-      },
-      {
-        path: "other/add-facility",
-        element: <AddFacilityPage />,
-      },
-      {
-        path: "other/update-facility/:id",
-        loader: async ({ params }) => {
-          try {
-            return await FasilitasService.readById(params.id!);
-          } catch (error) {
-            console.log("error", error);
-            return;
-          }
-        },
-        element: <AddFacilityPage />,
+        path: "/dashboard",
+        children: [
+          {
+            index: true,
+            element: <DashboardAdmin />,
+          },
+          {
+            path: "hotel",
+            element: <DashboardHotelPage />,
+          },
+
+          {
+            path: "hotel/add",
+            element: <AddHotelPage />,
+          },
+          {
+            path: "hotel/detail/:id",
+            element: <HotelDetailPage />,
+          },
+          {
+            path: "hotel/detail/:id/galleries",
+            element: <GalleriesPage />,
+          },
+          {
+            path: "hotel/detail/:id/add-gallery",
+            element: <AddGallery />,
+          },
+          {
+            path: "other",
+            element: <DashboardOtherPage />,
+          },
+          {
+            path: "other/add-facility",
+            element: <AddFacilityPage />,
+          },
+          {
+            path: "other/update-facility/:id",
+            loader: async ({ params }) => {
+              try {
+                return await FasilitasService.readById(params.id!);
+              } catch (error) {
+                console.log("error", error);
+                return;
+              }
+            },
+            element: <AddFacilityPage />,
+          },
+        ],
       },
     ],
   },

@@ -1,8 +1,38 @@
-import { type FC } from "react";
-import { matchPath, Outlet, useLocation } from "react-router-dom";
+import { Suspense, useEffect, type FC } from "react";
+import {
+  matchPath,
+  Outlet,
+  useLoaderData,
+  useLocation,
+} from "react-router-dom";
 import BottomNavigation from "../BottomNavigation";
+import type { ResponseType } from "../../utils/response-type";
+import type { UserResponseType } from "../../models/user-model";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/userSlice";
 
 const LayoutPage: FC = () => {
+  // get loader
+  const user = useLoaderData() as ResponseType<Omit<
+    UserResponseType,
+    "_id" | "isActive"
+  > | null>;
+
+  // set dispatch redux
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        setUser({
+          email: user?.data?.email,
+          fullName: user?.data?.fullName,
+          role: user?.data?.role,
+        })
+      );
+    }
+  }, [user, dispatch]);
+
   // location path
   const location = useLocation();
   // use match
@@ -14,7 +44,9 @@ const LayoutPage: FC = () => {
   return (
     <div className="w-screen min-h-screen flex flex-col justify-start items-start relative pb-32">
       {/* children */}
-      <Outlet />
+      <Suspense fallback={<div className="w-full h-screen bg-white" />}>
+        <Outlet />
+      </Suspense>
 
       {/* bottom navigation */}
       {!hotelDetail && <BottomNavigation />}

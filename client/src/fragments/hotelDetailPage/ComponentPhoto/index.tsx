@@ -99,14 +99,14 @@ const ComponentPhoto: FC<Props> = ({
               // cek index end
               item === 5 ? (
                 <CardButtonOtherthumb
-                  idHotel={idHotel ?? ""}
                   key={item}
+                  idHotel={idHotel ?? ""}
                   img={galleries[index]}
                 />
               ) : (
                 <CardChooseThumb
-                  handleActiveThumb={() => handleActiveThumb(index)}
                   key={item}
+                  handleActiveThumb={() => handleActiveThumb(index)}
                   img={galleries[index]}
                 />
               )

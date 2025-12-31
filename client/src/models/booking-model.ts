@@ -36,7 +36,7 @@ export type PayloadBooking = {
 };
 
 // create request
-export type BookingCreateRequestType = Pick<IBooking, "visitor" | "user"> & {
+export type BookingCreateRequestType = Pick<IBooking, "visitor"> & {
   hotel: string;
   checkIn: string;
   checkOut: string;

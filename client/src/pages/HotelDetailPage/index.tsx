@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState, type FC } from "react";
 import clsx from "clsx";
-import DiscRating from "../../components/DiscRating";
-import { FaLocationArrow } from "react-icons/fa6";
 import ComponentPhoto from "../../fragments/hotelDetailPage/ComponentPhoto";
 import { useLocation, useParams } from "react-router-dom";
 import SectionGallery from "../../fragments/hotelDetailPage/SectionGallery";
@@ -12,10 +10,10 @@ import { HotelService } from "../../services/hotel.service";
 import type { HotelResponseType } from "../../models/hotel-model";
 import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
 import { formatCurrency } from "../../utils/util";
-import InputDateforBook from "../../components/InputDateForBook";
-import ButtonSubmitBox from "../../components/ButtonSubmitBox";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/rootReducer";
+import BookingSection from "../../fragments/hotelDetailPage/BookingSection";
+import HeaderComponent from "../../fragments/hotelDetailPage/HeaderComponent";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
@@ -28,9 +26,6 @@ const HotelDetailPage: FC = () => {
   useEffect(() => {
     console.log("User Data:", userData);
   }, [userData]);
-
-  // state visitor
-  const [visitorCount, setVisitorCount] = useState<number>(1);
 
   // state modal booking
   const [isModalBookingOpen, setIsModalBookingOpen] = useState<boolean>(false);
@@ -136,76 +131,15 @@ const HotelDetailPage: FC = () => {
           />
         ) : (
           hotel?.data && (
-            <div className="w-full h-full flex flex-col justify-start items-start pb-12 overflow-y-scroll">
-              {/* button line */}
-              <button
-                type="button"
-                onClick={() => setIsModalBookingOpen(false)}
-                className="w-full flex flex-row justify-center items-center py-1.5 mb-4 group"
-              >
-                <div className="w-32 h-1.5 bg-gray-300 rounded-full group-hover:bg-gray-300 transition-all duration-200 ease-in-out" />
-              </button>
-
-              {/* header */}
-              <div className="w-full relative pb-8 before:content-[''] before:absolute before:inset-x-4 before:bottom-0 before:h-px before:bg-black/20">
-                <HeaderComponent
-                  nameHotel={hotel?.data?.data?.name ?? ""}
-                  linkMaps={hotel?.data?.data?.linkMaps ?? ""}
-                  city={hotel?.data?.data?.city ?? ""}
-                  country={hotel?.data?.data?.country ?? ""}
-                  discount={hotel?.data?.data?.discount ?? 0}
-                />
-              </div>
-
-              {/* content book */}
-              <div className="w-full flex flex-col justify-start items-start py-4 px-4">
-                {/* header */}
-                <h1 className="text-base text-gray-400 uppercase">
-                  book hotel
-                </h1>
-
-                {/* checkin */}
-                <InputDateforBook title="Check In" />
-
-                {/* check out */}
-                <InputDateforBook title="Check Out" />
-
-                {/* visitor */}
-                <div className="w-full flex flex-col justify-start items-start gap-3 mt-4">
-                  {/* title */}
-                  <h2 className="text-xl text-black">Visitor</h2>
-
-                  <div className="w-full flex flex-row justify-start items-start flex-wrap gap-3">
-                    {/* card visitor */}
-                    {[1, 2, 3].map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setVisitorCount(item)}
-                        type="button"
-                        className={clsx(
-                          "py-2 px-6 rounded-md text-sm capitalize hover:bg-primary-skyblue hover:text-white transition-all duration-200 ease-in-out",
-                          visitorCount === item
-                            ? "bg-primary-skyblue text-white"
-                            : "bg-gray-200/70 text-black"
-                        )}
-                      >
-                        {item} visitor
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* button booking */}
-              <div className="w-full px-4 mt-2">
-                <ButtonSubmitBox
-                  label="booking"
-                  type="button"
-                  handleClick={() => {}}
-                  handleNavigate={() => {}}
-                />
-              </div>
-            </div>
+            <BookingSection
+              handleModalClose={() => setIsModalBookingOpen(false)}
+              idHotel={idHotel ?? ""}
+              nameHotel={hotel?.data?.data?.name ?? ""}
+              city={hotel?.data?.data?.city ?? ""}
+              country={hotel?.data?.data?.country ?? ""}
+              discount={hotel?.data?.data?.discount ?? 0}
+              linkMaps={hotel?.data?.data?.linkMaps ?? ""}
+            />
           )
         )}
       </div>
@@ -334,49 +268,6 @@ const ButtonBooking: FC<ButtonBookinProps> = ({ handleModalActive }) => {
         >
           book now
         </button>
-      </div>
-    </div>
-  );
-};
-
-// header component
-type HeaderComponentProps = {
-  nameHotel: string;
-  linkMaps: string;
-  city: string;
-  country: string;
-  discount: number;
-};
-const HeaderComponent: FC<HeaderComponentProps> = ({
-  nameHotel,
-  linkMaps,
-  city,
-  country,
-  discount,
-}) => {
-  return (
-    <div className="w-full flex flex-col justify-start items-start">
-      <div className="w-full flex flex-row justify-between items-center  px-4">
-        {/* disc */}
-        <DiscRating discount={discount} rating={4.5} reviews={320} />
-      </div>
-
-      {/* title & address */}
-      <div className="w-full flex flex-col justify-start items-start gap-0.5 mt-4  px-4">
-        {/* title */}
-        <h1 className="text-2xl font-semibold">{nameHotel}</h1>
-
-        {/* address */}
-        <a
-          href={linkMaps}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-light text-gray-400 hover:text-primary-skyblue transition-all duration-150 ease-in-out flex flex-row justify-start items-center gap-1 group hover:underline"
-        >
-          {city}, {country}
-          {/* icon */}
-          <FaLocationArrow className="text-base text-primary-skyblue scale-0 group-hover:scale-100 transition-all duration-200 ease-in-out origin-bottom-left" />
-        </a>
       </div>
     </div>
   );

@@ -129,7 +129,7 @@ const HomePage: FC = () => {
       </div>
 
       {/* modal filter*/}
-      <ModalComponent active={active} handleClose={handleClose}>
+      {/* <ModalComponent active={active} handleClose={handleClose}>
         <ModalFilter
           handleClose={handleClose}
           handleSetRangePrice={handleSetRangePrice}
@@ -137,7 +137,7 @@ const HomePage: FC = () => {
           setFacility={setFacility}
           setAccommodation={setAccommodation}
         />
-      </ModalComponent>
+      </ModalComponent> */}
     </div>
   );
 };

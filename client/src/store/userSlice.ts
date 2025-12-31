@@ -2,14 +2,10 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { PayloadType } from "../models/auth-model";
 
 // type transaction state
-const initialState: PayloadType = {
-  _id: "",
+const initialState: Pick<PayloadType, "email" | "fullName" | "role"> = {
   email: "",
   fullName: "",
-  isActive: false,
   role: "customer",
-  createAt: "",
-  updatedAt: "",
 };
 
 // create transaction slice
@@ -17,7 +13,12 @@ const UserSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<Partial<PayloadType>>) => {
+    setUser: (
+      state,
+      action: PayloadAction<
+        Partial<Pick<PayloadType, "email" | "fullName" | "role">>
+      >
+    ) => {
       Object.assign(state, action.payload ?? {});
     },
     logout: () => ({ ...initialState }),

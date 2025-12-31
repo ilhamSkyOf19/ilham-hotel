@@ -1,12 +1,13 @@
-import { useRef, useState, type ChangeEvent, type FC } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FC } from "react";
 import { addMonths, formatDate, getTodayLocal } from "../../utils/util";
 import { MdDateRange } from "react-icons/md";
 import clsx from "clsx";
 
 type Props = {
   title: string;
+  handleCheckDate: (date: string) => void;
 };
-const InputDateforBook: FC<Props> = ({ title }) => {
+const InputDateforBook: FC<Props> = ({ title, handleCheckDate }) => {
   // state open
   const [isOpen, setIsOpen] = useState<boolean>(false);
   // state check in
@@ -16,6 +17,11 @@ const InputDateforBook: FC<Props> = ({ title }) => {
 
   // ref check in
   const refInput = useRef<HTMLInputElement>(null);
+
+  // set handle check date
+  useEffect(() => {
+    handleCheckDate(isInputValue);
+  }, [isInputValue]);
 
   return (
     <div className="w-full flex flex-col justify-start items-start gap-4 mt-3">
