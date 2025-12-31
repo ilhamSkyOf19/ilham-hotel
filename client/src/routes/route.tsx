@@ -14,9 +14,12 @@ import { FasilitasService } from "../services/fasilitas.service";
 import DashboardOtherPage from "../pages/DashboardOtherPage";
 import DashboardHotelPage from "../pages/DashboardHotelPage";
 import HotelDetailPage from "../pages/HotelDetailPage";
-import { HotelService } from "../services/hotel.service";
+// import { HotelService } from "../services/hotel.service";
 import AddGallery from "../pages/AddGallery";
 import GalleriesPage from "../pages/GalleriesPage";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { setUser } from "../store/userSlice";
 
 const route = createBrowserRouter([
   {
@@ -43,7 +46,17 @@ const route = createBrowserRouter([
   {
     path: "/",
     loader: async () => {
-      return await AuthService.getAuthUser();
+      const user = await AuthService.getAuthUser();
+
+      // set ke redux
+      const dispatch = useDispatch<AppDispatch>();
+
+      // set user
+      if (user.data) {
+        dispatch(setUser(user.data));
+      }
+
+      return;
     },
     element: <LayoutPage />,
     children: [

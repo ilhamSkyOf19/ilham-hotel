@@ -14,11 +14,21 @@ import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
 import { formatCurrency } from "../../utils/util";
 import InputDateforBook from "../../components/InputDateForBook";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/rootReducer";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
 
 const HotelDetailPage: FC = () => {
+  // get data user
+  const userData = useSelector((state: RootState) => state.user);
+
+  // debug user data
+  useEffect(() => {
+    console.log("User Data:", userData);
+  }, [userData]);
+
   // state visitor
   const [visitorCount, setVisitorCount] = useState<number>(1);
 
