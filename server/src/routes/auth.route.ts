@@ -23,11 +23,7 @@ authRoute.post(
 );
 
 // get auth user
-authRoute.get(
-  "/get-auth",
-  authMiddleware("customer"),
-  AuthController.getAuthUser
-);
+authRoute.get("/get-auth", authMiddleware("user"), AuthController.getAuthUser);
 
 // activation code
 authRoute.post(

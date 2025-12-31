@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { AuthService } from "../services/auth.service";
 
 const authMiddleware =
-  (role: "customer" | "admin" | "activation") =>
+  (role: "customer" | "admin" | "activation" | "user") =>
   async (
     req: AuthRequest,
     res: Response<ResponseType<PayloadType | null>>,
@@ -44,6 +44,15 @@ const authMiddleware =
 
       // cek role
       switch (role) {
+        case "user":
+          if (findUser.role !== "admin" && findUser.role !== "customer") {
+            return res.status(401).json({
+              status: "failed",
+              message: "Unauthorized user",
+              data: null,
+            });
+          }
+          break;
         case "admin":
           if (findUser.role !== "admin") {
             return res.status(401).json({

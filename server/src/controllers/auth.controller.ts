@@ -260,11 +260,19 @@ export class AuthController {
       });
 
       //   set cookie
+      // res.cookie("token", token, {
+      //   httpOnly: true,
+      //   secure: false, // ⬅️ development
+      //   sameSite: "lax", // NONE tidak boleh jika secure:false
+      //   maxAge: 60 * 60 * 1000,
+      // });
+
+      // set cookie if production
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false, // ⬅️ development
-        sameSite: "lax", // NONE tidak boleh jika secure:false
-        maxAge: 60 * 60 * 1000,
+        secure: true,
+        sameSite: "none",
+        maxAge: 60 * 60 * 1000, // 1 jam
       });
 
       // response
