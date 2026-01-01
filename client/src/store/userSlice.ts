@@ -1,14 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { PayloadType } from "../models/auth-model";
 
-// type transaction state
+// type user state
 const initialState: Pick<PayloadType, "email" | "fullName" | "role"> = {
   email: "",
   fullName: "",
   role: "customer",
 };
 
-// create transaction slice
+// create user slice
 const UserSlice = createSlice({
   name: "user",
   initialState,

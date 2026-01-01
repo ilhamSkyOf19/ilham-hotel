@@ -61,7 +61,7 @@ export const getPaginationWindow = (
 
 // generate url img
 export const generateUrlImg = (data: { img: string; path: string }): string => {
-  return `${import.meta.env.VITE_BASE_LOCAL_URL_IMG_SERVER}/${data.path}/${
+  return `${import.meta.env.VITE_BASE_PRODUCTION_URL_IMG_SERVER}/${data.path}/${
     data.img
   }`;
 };
@@ -90,4 +90,37 @@ export const getStars = (
     bintangSetengah,
     bintangKosong,
   };
+};
+
+// get total days between two dates
+export const getTotalDays = (checkIn: Date, checkOut: Date): number => {
+  // start
+  const start = new Date(
+    checkIn.getFullYear(),
+    checkIn.getMonth(),
+    checkIn.getDate()
+  );
+  const end = new Date(
+    checkOut.getFullYear(),
+    checkOut.getMonth(),
+    checkOut.getDate()
+  );
+
+  // check
+  if (end <= start) return 0;
+
+  const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+  // return
+  return Math.ceil((end.getTime() - start.getTime()) / MS_PER_DAY);
+};
+
+// add Days
+export const addDays = (date: Date, day: number): Date => {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + day);
+};
+
+// min Days
+export const minDays = (date: Date, day: number): Date => {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() - day);
 };

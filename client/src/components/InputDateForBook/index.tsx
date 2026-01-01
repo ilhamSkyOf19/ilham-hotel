@@ -1,54 +1,51 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FC } from "react";
-import { addMonths, formatDate, getTodayLocal } from "../../utils/util";
+import { useRef, type ChangeEvent, type FC } from "react";
+import {
+  addDays,
+  addMonths,
+  formatDate,
+  getTodayLocal,
+  minDays,
+} from "../../utils/util";
 import { MdDateRange } from "react-icons/md";
 import clsx from "clsx";
 
 type Props = {
   title: string;
-  handleCheckDate: (date: string) => void;
+  handleCheckDate: (date: Date) => void;
+  checkIn?: Date;
+  checkOut?: Date;
+  valueLabel: Date;
 };
-const InputDateforBook: FC<Props> = ({ title, handleCheckDate }) => {
-  // state open
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  // state check in
-  const [isInputValue, setInputValue] = useState<string>(
-    formatDate(new Date())
-  );
-
+const InputDateforBook: FC<Props> = ({
+  title,
+  handleCheckDate,
+  checkIn,
+  checkOut,
+  valueLabel,
+}) => {
   // ref check in
   const refInput = useRef<HTMLInputElement>(null);
-
-  // set handle check date
-  useEffect(() => {
-    handleCheckDate(isInputValue);
-  }, [isInputValue]);
 
   return (
     <div className="w-full flex flex-col justify-start items-start gap-4 mt-3">
       {/* title */}
-      <h2 className="text-xl text-black">{title}</h2>
+      <h2 className="text-xl text-black font-medium">{title}</h2>
 
       {/* date */}
       <div className="w-full flex flex-row justify-start items-center gap-3">
         {/* label */}
         <button
           type="button"
-          onClick={() => {
-            setIsOpen(!isOpen);
-            refInput.current?.showPicker(), console.log("klik");
-          }}
           className={clsx(
-            "w-[50vw] py-2.5 px-4 border border-gray-400 rounded-lg flex flex-row justify-start items-center transition-all duration-200 ease-in-out",
-            isOpen ? "ring-2 ring-primary-skyblue" : "ring-2 ring-transparent"
+            "w-[50vw] py-2.5 px-4 border border-gray-400 rounded-lg flex flex-row justify-start items-center transition-all duration-200 ease-in-out"
           )}
         >
-          <p className="text-base">{isInputValue}</p>
+          <p className="text-base">{formatDate(valueLabel)}</p>
         </button>
         {/* icon */}
         <button
           type="button"
           onClick={() => {
-            setIsOpen(!isOpen);
             refInput.current?.showPicker(), console.log("klik");
           }}
         >
@@ -60,22 +57,24 @@ const InputDateforBook: FC<Props> = ({ title, handleCheckDate }) => {
       <input
         ref={refInput}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          // set open
-          setIsOpen(false);
           //   get value
           const value = e.target?.value;
 
           if (!value) {
-            setInputValue(formatDate(new Date())); // atau null
+            handleCheckDate(valueLabel);
             return;
           }
 
-          setInputValue(formatDate(new Date(value)));
+          handleCheckDate(new Date(value));
         }}
         type="date"
         name="checkIn"
-        min={getTodayLocal()}
-        max={getTodayLocal(addMonths(new Date(), 3))}
+        min={checkIn ? getTodayLocal(addDays(checkIn, 1)) : getTodayLocal()}
+        max={
+          checkOut
+            ? getTodayLocal(minDays(checkOut, 1))
+            : getTodayLocal(addMonths(new Date(), 3))
+        }
         hidden={true}
       />
     </div>

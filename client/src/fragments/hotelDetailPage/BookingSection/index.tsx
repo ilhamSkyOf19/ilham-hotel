@@ -1,4 +1,4 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import HeaderComponent from "../HeaderComponent";
 import InputDateforBook from "../../../components/InputDateForBook";
 import clsx from "clsx";
@@ -7,6 +7,17 @@ import { useMutation } from "@tanstack/react-query";
 import type { BookingCreateRequestType } from "../../../models/booking-model";
 import { BookingService } from "../../../services/booking.service";
 import { useNavigate } from "react-router-dom";
+import {
+  addDays,
+  formatCurrency,
+  formatDate,
+  getTotalDays,
+} from "../../../utils/util";
+import { loadMidtransSnap } from "../../../utils/midtrans";
+import { store } from "../../../store/store";
+import { setBooking } from "../../../store/bookingSlice";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/rootReducer";
 
 type Props = {
   handleModalClose: () => void;
@@ -16,6 +27,7 @@ type Props = {
   country: string;
   discount: number;
   linkMaps: string;
+  price: number;
 };
 
 const BookingSection: FC<Props> = ({
@@ -26,21 +38,68 @@ const BookingSection: FC<Props> = ({
   country,
   discount,
   linkMaps,
+  price,
 }) => {
+  // get data from redux
+  const dataBooking = useSelector((state: RootState) => state.booking);
+
+  // get discount
+  const totalDiscount: number = price * (10 / 100);
+
+  // state total days
+  const [isTotalPrice, setIsTotalPrice] = useState<number>(0);
+  // state visitor
+  const [visitorCount, setVisitorCount] = useState<number>(1);
+
   // navigate
   const navigate = useNavigate();
 
   // state check in & check out
   const [checkDate, setCheckDate] = useState<{
-    checkIn: string;
-    checkOut: string;
+    checkIn: Date;
+    checkOut: Date;
   }>({
-    checkIn: "",
-    checkOut: "",
+    checkIn: new Date(),
+    checkOut: addDays(new Date(), 1),
   });
 
+  // set check date
+  useEffect(() => {
+    // cek id hotel
+    if (idHotel !== dataBooking.idHotel) return;
+
+    // set check date
+    setCheckDate({
+      checkIn: new Date(dataBooking.checkIn),
+      checkOut: new Date(dataBooking.checkOut),
+    });
+
+    // cek data booking
+    console.log("data", dataBooking);
+  }, []);
+
+  // debug checkDate
+  useEffect(() => {
+    const totalDays: number = getTotalDays(
+      checkDate.checkIn,
+      checkDate.checkOut
+    );
+
+    // set total price
+    setIsTotalPrice((price - totalDiscount) * totalDays);
+
+    // set redux
+    store.dispatch(
+      setBooking({
+        idHotel: idHotel,
+        checkIn: checkDate.checkIn.toISOString(),
+        checkOut: checkDate.checkOut.toISOString(),
+      })
+    );
+  }, [checkDate]);
+
   //   handle check date
-  const handleCheckDate = (type: "checkIn" | "checkOut", date: string) => {
+  const handleCheckDate = (type: "checkIn" | "checkOut", date: Date) => {
     setCheckDate((prev) => ({
       ...prev,
       [type]: date,
@@ -52,17 +111,17 @@ const BookingSection: FC<Props> = ({
     mutationFn: async (data: BookingCreateRequestType) => {
       return BookingService.booking(data);
     },
-    onSuccess: (data) => {
-      if (window.snap) {
-        window.snap.pay(data?.data?.token!, {
-          onSuccess: () => navigate("/"),
-          onPending: () => navigate("/"),
-          onError: () => navigate("/"),
-          onClose: () => navigate("/"),
-        });
-      } else {
-        alert("Snap belum siap, coba reload halaman.");
-      }
+    onSuccess: async (data) => {
+      // load midtrans snap
+      await loadMidtransSnap();
+
+      // snap midtrans
+      window.snap.pay(data?.data?.token!, {
+        onSuccess: () => navigate("/"),
+        onPending: () => navigate("/"),
+        onError: () => navigate("/"),
+        onClose: () => navigate("/"),
+      });
 
       console.log("Booking successful:", data);
     },
@@ -83,15 +142,13 @@ const BookingSection: FC<Props> = ({
         hotel: idHotel,
         checkIn: checkInDate,
         checkOut: checkOutDate,
-        visitor: 1,
+        visitor: visitorCount,
       });
     } catch (error) {
       console.log("Error booking:", error);
     }
   };
 
-  // state visitor
-  const [visitorCount, setVisitorCount] = useState<number>(1);
   return (
     <div className="w-full h-full flex flex-col justify-start items-start pb-12 overflow-y-scroll">
       {/* button line */}
@@ -123,18 +180,22 @@ const BookingSection: FC<Props> = ({
         <InputDateforBook
           title="Check In"
           handleCheckDate={(date) => handleCheckDate("checkIn", date)}
+          valueLabel={checkDate.checkIn}
+          checkOut={checkDate.checkOut}
         />
 
-        {/* check out */}
+        {/* checkout */}
         <InputDateforBook
           title="Check Out"
           handleCheckDate={(date) => handleCheckDate("checkOut", date)}
+          valueLabel={checkDate.checkOut}
+          checkIn={checkDate.checkIn}
         />
 
         {/* visitor */}
         <div className="w-full flex flex-col justify-start items-start gap-3 mt-4">
           {/* title */}
-          <h2 className="text-xl text-black">Visitor</h2>
+          <h2 className="text-xl text-black font-medium">Visitor</h2>
 
           <div className="w-full flex flex-row justify-start items-start flex-wrap gap-3">
             {/* card visitor */}
@@ -155,6 +216,14 @@ const BookingSection: FC<Props> = ({
             ))}
           </div>
         </div>
+
+        {/* bill */}
+        <BillComponent
+          checkIn={checkDate.checkIn}
+          checkOut={checkDate.checkOut}
+          discount={totalDiscount}
+          totalPrice={isTotalPrice}
+        />
       </div>
 
       {/* button booking */}
@@ -166,6 +235,65 @@ const BookingSection: FC<Props> = ({
           handleClick={() => handleBooking()}
           handleNavigate={() => {}}
         />
+      </div>
+    </div>
+  );
+};
+
+// bill
+type BillComponentProps = {
+  checkIn: Date;
+  checkOut: Date;
+  discount: number;
+  totalPrice: number;
+};
+
+const BillComponent: FC<BillComponentProps> = ({
+  checkIn,
+  checkOut,
+  discount,
+  totalPrice,
+}) => {
+  return (
+    <div className="w-full flex flex-col justify-start items-start mt-8 gap-3">
+      {/* title */}
+      <h2 className="text-xl text-black font-medium">Bill</h2>
+
+      {/* check in & check out */}
+      <div className="w-full flex flex-col justify-start items-start gap-1">
+        {/* header */}
+        <h3 className="text-base text-primary-skyblue font-medium">In - Out</h3>
+
+        <div className="w-full flex flex-row justify-start items-start gap-2">
+          {/* check in */}
+          <p className="text-sm font-medium">{formatDate(checkIn)}</p>
+          <p className="text-base font-medium">-</p>
+          <p className="text-sm font-medium">{formatDate(checkOut)}</p>
+        </div>
+      </div>
+
+      {/* discount */}
+      <div className="w-full flex flex-col justify-start items-start gap-1">
+        {/* header */}
+        <h3 className="text-base text-primary-skyblue font-medium">Discount</h3>
+
+        {/* discount */}
+        <p className="w-full text-sm text-black font-medium">
+          {formatCurrency(discount)}
+        </p>
+      </div>
+
+      {/* total price */}
+      <div className="w-full flex flex-col justify-start items-start gap-1">
+        {/* header */}
+        <h3 className="text-base text-primary-skyblue font-medium">
+          Total Price
+        </h3>
+
+        {/* discount */}
+        <p className="w-full text-base text-black font-semibold">
+          {formatCurrency(totalPrice)}
+        </p>
       </div>
     </div>
   );

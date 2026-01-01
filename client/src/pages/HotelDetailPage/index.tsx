@@ -10,28 +10,29 @@ import { HotelService } from "../../services/hotel.service";
 import type { HotelResponseType } from "../../models/hotel-model";
 import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
 import { formatCurrency } from "../../utils/util";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store/rootReducer";
 import BookingSection from "../../fragments/hotelDetailPage/BookingSection";
 import HeaderComponent from "../../fragments/hotelDetailPage/HeaderComponent";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/rootReducer";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
 
 const HotelDetailPage: FC = () => {
-  // get data user
-  const userData = useSelector((state: RootState) => state.user);
+  // booking data
+  const bookingData = useSelector((state: RootState) => state.booking);
 
-  // debug user data
-  useEffect(() => {
-    console.log("User Data:", userData);
-  }, [userData]);
+  // state modal warning
+  const [isModalWarning, setIsModalWarning] = useState<boolean>(false);
 
   // state modal booking
   const [isModalBookingOpen, setIsModalBookingOpen] = useState<boolean>(false);
 
   // ref modal booking
   const refModalBooking = useRef<HTMLDivElement>(null);
+
+  // ref modal warning
+  const refModalWarning = useRef<HTMLDivElement>(null);
 
   // set active handle outside
   useEffect(() => {
@@ -48,8 +49,22 @@ const HotelDetailPage: FC = () => {
       }
     };
 
+    // set modal warning from out side
+    const handleOutSideModalWarning = (e: MouseEvent) => {
+      // cek target
+      const target = e.target;
+
+      if (
+        refModalWarning.current &&
+        !refModalWarning.current.contains(target as Node)
+      ) {
+        setIsModalWarning(false);
+      }
+    };
+
     // add event listener
     document.addEventListener("mousedown", handleOutSideModalBooking);
+    document.addEventListener("mousedown", handleOutSideModalWarning);
   }, []);
 
   // location
@@ -83,12 +98,27 @@ const HotelDetailPage: FC = () => {
 
   // event scroll
   useEffect(() => {
-    if (isModalBookingOpen) {
+    if (isModalBookingOpen || isModalWarning) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-  }, [isModalBookingOpen]);
+  }, [isModalBookingOpen, isModalWarning]);
+
+  // handle button booking
+  const handleButtonBooking = () => {
+    // set modal warning
+    if (idHotel !== bookingData.idHotel && bookingData.idHotel !== "") {
+      setIsModalWarning(true);
+    } else {
+      setIsModalBookingOpen(true);
+    }
+  };
+
+  // debug
+  useEffect(() => {
+    console.log(isModalWarning);
+  }, [isModalWarning]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
@@ -96,7 +126,9 @@ const HotelDetailPage: FC = () => {
       <div
         className={clsx(
           "inset-0 fixed bg-black/50 z-40 transition-opacity duration-300 ease-in-out",
-          isModalBookingOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          isModalBookingOpen || isModalWarning
+            ? "opacity-100"
+            : "pointer-events-none opacity-0"
         )}
       />
 
@@ -120,16 +152,15 @@ const HotelDetailPage: FC = () => {
       <div
         ref={refModalBooking}
         className={clsx(
-          "w-screen fixed bottom-0 h-[70vh] bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl  py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out",
+          "w-screen fixed bottom-0 h-[70vh] bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out",
           isModalBookingOpen ? "max-h-[70vh]" : "max-h-18"
         )}
       >
         {/* total price */}
-        {!isModalBookingOpen ? (
-          <ButtonBooking
-            handleModalActive={() => setIsModalBookingOpen(true)}
-          />
+        {!isModalBookingOpen && !isModalWarning ? (
+          <ButtonBooking handleModalActive={() => handleButtonBooking()} />
         ) : (
+          isModalBookingOpen &&
           hotel?.data && (
             <BookingSection
               handleModalClose={() => setIsModalBookingOpen(false)}
@@ -139,9 +170,52 @@ const HotelDetailPage: FC = () => {
               country={hotel?.data?.data?.country ?? ""}
               discount={hotel?.data?.data?.discount ?? 0}
               linkMaps={hotel?.data?.data?.linkMaps ?? ""}
+              price={hotel?.data?.data?.price ?? 0}
             />
           )
         )}
+      </div>
+
+      {/* modal warning */}
+      <div
+        ref={refModalWarning}
+        className={clsx(
+          "w-full fixed h-[45vh] bottom-0 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl flex flex-col justify-start items-center pt-8 px-6 transition-all duration-300 ease-in-out gap-8",
+          isModalWarning
+            ? "max-h-[45vh] translate-y-0"
+            : "max-h-0 translate-y-full "
+        )}
+      >
+        <h2 className="text-xl font-semibold text-black text-center">
+          Anda memiliki pemesanan hotel yang sedang aktif
+        </h2>
+        <p className="text-base font-light text-black text-center">
+          Apakah Anda ingin melanjutkan pemesanan di hotel ini dan membatalkan
+          pemesanan sebelumnya?
+        </p>
+
+        {/* button action */}
+        <div className="w-full flex flex-row justify-between items-center">
+          {/* button batal */}
+          <button
+            onClick={() => setIsModalWarning(false)}
+            type="button"
+            className="py-4 px-10 border border-primary-skyblue rounded-full font-medium text-primary-skyblue relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
+          >
+            Batal
+          </button>
+
+          {/* button lanjutkan */}
+          <button
+            onClick={() => {
+              setIsModalBookingOpen(true), setIsModalWarning(false);
+            }}
+            type="button"
+            className="py-4 px-10 border border-primary-skyblue rounded-full bg-primary-skyblue text-white font-medium relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
+          >
+            Lanjutkan
+          </button>
+        </div>
       </div>
     </div>
   );
