@@ -61,7 +61,7 @@ export const getPaginationWindow = (
 
 // generate url img
 export const generateUrlImg = (data: { img: string; path: string }): string => {
-  return `${import.meta.env.VITE_BASE_PRODUCTION_URL_IMG_SERVER}/${data.path}/${
+  return `${import.meta.env.VITE_BASE_LOCAL_URL_IMG_SERVER}/${data.path}/${
     data.img
   }`;
 };

@@ -6,6 +6,9 @@ import {
 } from "../models/booking-model";
 import BookingModel from "../schemas/booking.schema";
 
+// hold duration
+const HOLD_DURATION_MS = 10 * 60 * 1000; // 15 minutes
+
 export class BookingService {
   // create
   static async create(
@@ -14,13 +17,19 @@ export class BookingService {
       token: string;
       user: string;
       totalPrice: number;
+      room: number;
     }
   ): Promise<BookingResponseType | null> {
+    // hold expiry time
+    const holdExpired = new Date(Date.now() + HOLD_DURATION_MS);
+
     // call model
     const booking = await BookingModel.create({
       ...req,
+      holdUntil: holdExpired,
       checkIn: new Date(req.checkIn),
       checkOut: new Date(req.checkOut),
+      room: req.room,
       _id: req.id,
     });
 
@@ -57,5 +66,41 @@ export class BookingService {
     console.log("UPDATE RESULT:", result);
 
     return result.matchedCount === 1;
+  }
+
+  // read by id hotel for get booking
+  static async readForGetBooking(idHotel: string): Promise<number[] | []> {
+    // call model
+    const bookings = await BookingModel.find({
+      hotel: idHotel,
+      $or: [
+        { active: true, holdUntil: null },
+        { active: false, holdUntil: { $gt: new Date() } },
+      ],
+    });
+
+    // return booking
+    return bookings.map((booking) => booking.room);
+  }
+
+  // get boking by id user & id Hotel and status
+  static async getByIdUserAndIdHotelAndStatus(
+    idUser: string,
+    idHotel: string
+  ): Promise<boolean> {
+    // call model
+    const booking = await BookingModel.findOne({
+      user: idUser,
+      hotel: idHotel,
+      status: "pending",
+    });
+
+    // cek
+    if (!booking) {
+      return false;
+    }
+
+    // return response
+    return true;
   }
 }

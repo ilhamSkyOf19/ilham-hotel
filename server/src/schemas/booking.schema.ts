@@ -15,9 +15,11 @@ const BookingSchema = new Schema<IBooking>(
       default: "pending",
       required: true,
     },
-    active: { type: Boolean, required: false },
+    active: { type: Boolean, required: true, default: false },
     token: { type: String, required: true },
     visitor: { type: Number, required: true },
+    room: { type: Number, required: true },
+    holdUntil: { type: Date, required: false },
     totalPrice: { type: Number, required: true },
   },
   {

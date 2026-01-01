@@ -35,6 +35,42 @@ export class BookingController {
         });
       }
 
+      // cek transaction
+      const findTransaction =
+        await BookingService.getByIdUserAndIdHotelAndStatus(
+          idUser ?? "",
+          findHotel._id
+        );
+
+      // cek transaksi yang masih berlangsung
+      if (findTransaction) {
+        return res.status(400).json({
+          status: "failed",
+          message: "transaksi sedang berlangsung",
+          data: null,
+        });
+      }
+
+      // get bookings
+      const roomBooked: number[] = await BookingService.readForGetBooking(
+        findHotel._id
+      );
+
+      // cek room full
+      if (findHotel.totalRoom <= roomBooked?.length) {
+        return res.status(400).json({
+          status: "failed",
+          message: "hotel sudah penuh",
+          data: null,
+        });
+      }
+
+      // get room availabel
+      const availableRoom: number[] = Array.from(
+        { length: findHotel.totalRoom },
+        (_, i) => i + 1
+      ).filter((n) => !roomBooked.includes(n));
+
       // total price
       const grossAmount: number =
         findHotel.price * (1 - findHotel.discount / 100);
@@ -49,6 +85,8 @@ export class BookingController {
         idTransaction,
       });
 
+      //
+
       //   call service booking
       const response = await BookingService.create({
         ...body,
@@ -56,6 +94,7 @@ export class BookingController {
         id: idTransaction,
         token: midtransPayment.token,
         user: idUser ?? "",
+        room: availableRoom[0],
       });
 
       // cek response

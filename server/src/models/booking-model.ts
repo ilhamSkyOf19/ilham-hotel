@@ -11,6 +11,8 @@ export type IBooking = {
   totalPrice: number;
   token: string;
   active: boolean;
+  room: number;
+  holdUntil: Date | null;
   status: "pending" | "success" | "failed";
   createdAt: Date;
   updatedAt: Date;
@@ -29,7 +31,9 @@ export type PayloadBooking = {
   checkIn: Date;
   checkOut: Date;
   visitor: number;
+  holdUntil: Date | null;
   totalPrice: string;
+  room: number;
   token: string;
   active: boolean;
   status: "pending" | "success" | "failed";
@@ -62,8 +66,10 @@ export const toBookingResponseType = (
     },
     token: response.token,
     active: response.active,
+    room: response.room,
     checkIn: response.checkIn,
     checkOut: response.checkOut,
+    holdUntil: response.holdUntil,
     visitor: response.visitor,
     totalPrice: response.totalPrice,
     status: response.status,
