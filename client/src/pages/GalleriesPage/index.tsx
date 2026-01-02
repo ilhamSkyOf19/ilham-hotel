@@ -70,33 +70,32 @@ const GalleriesPage: FC = () => {
 
       {/* display gallery */}
       <div className="w-full grid grid-cols-2 flex-wrap gap-2 mt-12">
-        {isLoading ? (
-          <div className="col-span-2">
-            <div className="w-full flex flex-col justify-center items-center">
-              <img src={loadingBue} alt="loading" className="w-12" />
-            </div>
-          </div>
-        ) : (
-          galleries?.data &&
-          galleries.data.images.length > 0 &&
-          galleries.data.images
-            ?.slice(displayImages.start, displayImages.end)
-            .map((item, index) => (
-              <button
-                type="button"
-                key={index}
-                className="col-span-1 h-[20vh] overflow-hidden rounded-lg relative before:content-[''] before:absolute before:inset-0 before:bg-black/40 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out"
-                onClick={() => setModalActive({ active: true, img: item })}
-              >
-                <img
-                  src={generateUrlImg({ path: "galleries", img: item })}
-                  alt="gallery"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </button>
+        {isLoading
+          ? Array.from({ length: 6 }, (_, i) => (
+              <div
+                key={i}
+                className="col-span-1 h-[20vh] bg-gray-200 animate-pulse rounded-lg"
+              />
             ))
-        )}
+          : galleries?.data &&
+            galleries.data.images.length > 0 &&
+            galleries.data.images
+              ?.slice(displayImages.start, displayImages.end)
+              .map((item, index) => (
+                <button
+                  type="button"
+                  key={index}
+                  className="col-span-1 h-[20vh] overflow-hidden rounded-lg relative before:content-[''] before:absolute before:inset-0 before:bg-black/40 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out"
+                  onClick={() => setModalActive({ active: true, img: item })}
+                >
+                  <img
+                    src={generateUrlImg({ path: "galleries", img: item })}
+                    alt="gallery"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </button>
+              ))}
       </div>
 
       {/* button prev & next */}

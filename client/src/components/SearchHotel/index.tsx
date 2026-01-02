@@ -21,7 +21,7 @@ const SearchHotel: FC<SearchHotelProps> = ({
       {/* search */}
       <div
         className={clsx(
-          "flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 py-2  transition-all duration-200 ease-in-out",
+          "flex-4 flex flex-row justify-start items-center  bg-primary-gray/20 rounded-xl px-5 h-14 transition-all duration-200 ease-in-out",
           errors ? "ring-1 ring-red-500" : "ring-1 ring-transparent"
         )}
       >

@@ -57,8 +57,6 @@ const ComponentPhoto: FC<Props> = ({
         )
       )}
 
-      {/* animation pulse */}
-
       {/* content */}
       <div className="w-full h-full absolute z-10 flex flex-col justify-between items-center px-4 py-6">
         {/* header */}
@@ -96,7 +94,12 @@ const ComponentPhoto: FC<Props> = ({
           <div className="w-full h-[11vh] bg-white rounded-xl px-2 py-1 flex flex-row justify-start items-center gap-1.5">
             {/* card choose img */}
             {arrayChooseThumb.map((item, index) =>
-              // cek index end
+              isLoading ? (
+                <div
+                  key={index}
+                  className="flex-1 h-full bg-gray-300 animate-pulse rounded-xl"
+                />
+              ) : // cek index end
               item === 5 ? (
                 <CardButtonOtherthumb
                   key={item}

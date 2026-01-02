@@ -13,7 +13,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 // route navigation
 const routeNavigation: { link: string; label: string }[] = [
   { link: "/", label: "Home" },
-  { link: "/history", label: "History" },
+  { link: "/bookings", label: "Bookings" },
   { link: "/room", label: "Room" },
   { link: "/favorite", label: "Favorite" },
   { link: "/user", label: "User" },
@@ -96,8 +96,8 @@ const ButtonNavigation: FC<PropsButtonNavigation> = ({
             active ? "text-primary-skyblue" : "text-gray-600/50"
           )}
         />
-      ) : link === "/history" ? (
-        <MdHistory
+      ) : link === "/bookings" ? (
+        <FaBed
           className={clsx(
             "text-2xl transition-colors duration-200 ease-in-out",
             active ? "text-primary-skyblue" : "text-gray-600/50"

@@ -20,7 +20,7 @@ const SectionAbout: FC<Props> = ({ fasilitas, loading, description }) => {
             {Array.from({ length: 8 }, (_, index) => (
               <div
                 key={index}
-                className="col-span-1 h-8 flex flex-row justify-between items-start rouned-lg rounded-md bg-gray-200 px-2 py-1.5 shrink-0"
+                className="col-span-1 h-7 flex flex-row justify-between items-start rouned-lg rounded-md bg-gray-200 px-2 py-1.5 shrink-0"
               ></div>
             ))}
           </div>
@@ -30,7 +30,7 @@ const SectionAbout: FC<Props> = ({ fasilitas, loading, description }) => {
       </div>
 
       {/* description */}
-      <div className="w-full flex flex-col justify-start items-start gap-2 mt-12">
+      <div className="w-full flex flex-col justify-start items-start gap-2 mt-10">
         {/* header */}
         <h2 className="text-base font-medium">Description</h2>
         {/* content */}

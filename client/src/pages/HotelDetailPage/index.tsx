@@ -146,6 +146,8 @@ const HotelDetailPage: FC = () => {
         galleries={galleries?.data?.data?.images ?? []}
         hotel={hotel.data?.data ?? undefined}
         loading={hotel.isLoading}
+        isLoading={hotel.isLoading}
+        isLoadingGalleries={galleries.isLoading}
       />
 
       {/* navbar payment */}
@@ -226,6 +228,8 @@ type ComponentContentProps = {
   galleries: string[];
   hotel?: HotelResponseType;
   loading: boolean;
+  isLoading: boolean;
+  isLoadingGalleries: boolean;
 };
 
 // component content
@@ -234,6 +238,8 @@ const ComponentContent: FC<ComponentContentProps> = ({
   galleries,
   hotel,
   loading,
+  isLoading,
+  isLoadingGalleries,
 }) => {
   // state sction active
   const [sectionActive, setSectionActive] = useState<string>("about");
@@ -242,13 +248,25 @@ const ComponentContent: FC<ComponentContentProps> = ({
     <div className="w-full flex flex-col justify-start items-center mt-4">
       {/* disc & rating & total review */}
 
-      <HeaderComponent
-        nameHotel={hotel?.name ?? ""}
-        linkMaps={hotel?.linkMaps ?? ""}
-        city={hotel?.location.city ?? ""}
-        country={hotel?.location.country ?? ""}
-        discount={hotel?.discount ?? 0}
-      />
+      {isLoading ? (
+        <div className="w-full flex flex-col justify-start items-start px-4 animate-pulse">
+          <div className="w-full flex flex-row justify-between items-center">
+            <div className="w-22 h-7 bg-gray-200 rounded-lg" />
+            <div className="w-28 h-7 bg-gray-200 rounded-lg" />
+          </div>
+
+          <div className="w-[70vw] h-9 bg-gray-200 rounded-lg mt-8" />
+          <div className="w-[35vw] h-5 bg-gray-200 rounded-lg mt-2" />
+        </div>
+      ) : (
+        <HeaderComponent
+          nameHotel={hotel?.name ?? ""}
+          linkMaps={hotel?.linkMaps ?? ""}
+          city={hotel?.location.city ?? ""}
+          country={hotel?.location.country ?? ""}
+          discount={hotel?.discount ?? 0}
+        />
+      )}
 
       {/* navigatin section */}
       <div
@@ -267,17 +285,21 @@ const ComponentContent: FC<ComponentContentProps> = ({
         ))}
       </div>
 
-      {/* content gallery */}
-      {sectionActive === "gallery" && (
-        <SectionGallery idHotel={idHotel} galleries={galleries} />
-      )}
-
       {/* content about */}
       {sectionActive === "about" && (
         <SectionAbout
           fasilitas={hotel?.fasilitas.map((item) => item.fasilitas) ?? []}
           description={hotel?.description ?? ""}
           loading={loading}
+        />
+      )}
+
+      {/* content gallery */}
+      {sectionActive === "gallery" && (
+        <SectionGallery
+          idHotel={idHotel}
+          galleries={galleries}
+          isLoading={isLoadingGalleries}
         />
       )}
 

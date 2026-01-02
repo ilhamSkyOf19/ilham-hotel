@@ -8,9 +8,10 @@ import ModalImage from "../../../components/ModalImage";
 type Props = {
   idHotel: string;
   galleries: string[];
+  isLoading: boolean;
 };
 
-const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
+const SectionGallery: FC<Props> = ({ idHotel, galleries, isLoading }) => {
   // navigate
   const navigate = useNavigate();
 
@@ -44,7 +45,14 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
       {/* images */}
       <div className="w-full grid grid-cols-2 justify-start items-start gap-2 mt-5">
         {/* card image */}
-        {galleries.length > 0 ? (
+        {isLoading ? (
+          Array.from({ length: 6 }, (_, i) => (
+            <div
+              key={i}
+              className="col-span-1 h-48 bg-gray-200 animate-pulse rounded-2xl"
+            />
+          ))
+        ) : galleries.length > 0 ? (
           galleries
             .slice(0, 6)
             .map((image, index) => (
@@ -63,21 +71,23 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries }) => {
         )}
       </div>
       {/* button more */}
-      <div className="w-full flex flex-row justify-end items-start mt-8">
-        <button
-          type="button"
-          onClick={() =>
-            navigate(`/dashboard/hotel/detail/${idHotel}/galleries`, {
-              state: { from: location.pathname },
-            })
-          }
-          className="py-2 px-4 bg-primary-skyblue/85 transition-all duration-200 hover:bg-primary-skyblue rounded-lg flex flex-row justify-start items-center gap-2"
-        >
-          <p className=" text-white font-medium">More</p>
+      <div className="w-full h-12 flex flex-row justify-end items-start mt-8">
+        {!isLoading && galleries.length < 6 && (
+          <button
+            type="button"
+            onClick={() =>
+              navigate(`/dashboard/hotel/detail/${idHotel}/galleries`, {
+                state: { from: location.pathname },
+              })
+            }
+            className="py-2 px-4 bg-primary-skyblue/85 transition-all duration-200 hover:bg-primary-skyblue rounded-lg flex flex-row justify-start items-center gap-2"
+          >
+            <p className=" text-white font-medium">More</p>
 
-          {/* icon */}
-          <FaArrowRightLong className="text-white text-lg" />
-        </button>
+            {/* icon */}
+            <FaArrowRightLong className="text-white text-lg" />
+          </button>
+        )}
       </div>
 
       {/* modal image */}
@@ -100,7 +110,7 @@ const CardImage: FC<CardImageProps> = ({ image, handleModalActive }) => {
     <button
       type="button"
       onClick={() => handleModalActive()}
-      className="col-span-1 h-48 bg-black rounded-2xl overflow-hidden shrink-0 relative before:content-[''] before:absolute before:inset-0 before:bg-black/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out"
+      className="col-span-1 h-48 rounded-2xl overflow-hidden shrink-0 relative before:content-[''] before:absolute before:inset-0 before:bg-black/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-in-out"
     >
       <img
         src={generateUrlImg({ path: "galleries", img: image })}

@@ -11,15 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { HotelService } from "../../services/hotel.service";
 import { generateUrlImg } from "../../utils/util";
 import ModalImage from "../../components/ModalImage";
-
-const location: string[] = [
-  "Jakarta, Indonesia",
-  "London, UK",
-  "Tokyo, Japan",
-  "Paris, France",
-  "Sydney, Australia",
-  "Beijing, China",
-];
+import LoadingPulseCardLarge from "../../components/LoadingPulseCardLarge";
+import LoadingPulseCardMedium from "../../components/LoadingPulseCardMedium";
 
 const HomePage: FC = () => {
   // state show img
@@ -108,7 +101,7 @@ const HomePage: FC = () => {
   };
 
   // query hotel
-  const { data: hotel } = useQuery({
+  const { data: hotel, isLoading } = useQuery({
     queryKey: [
       "dashboardHotel",
       filter.fasilitas,
@@ -128,7 +121,7 @@ const HomePage: FC = () => {
   });
 
   return (
-    <div className="w-screen h-[200vh] flex flex-col justify-start items-center pt-8">
+    <div className="w-screen flex flex-col justify-start items-center pt-8">
       {/* header */}
       <HeaderHomePage
         chooseLocation={chooseLocation}
@@ -148,10 +141,11 @@ const HomePage: FC = () => {
       </div>
 
       {/* container card large hotel */}
-      <div className="w-full flex flex-row justify-start items-start overflow-x-scroll py-6 px-5 gap-4 scrollbar-hidden">
+      <div className="w-full flex flex-row justify-start items-start overflow-x-scroll py-6 px-4 gap-4 scrollbar-hidden">
         {/* card large */}
-        {hotel?.data &&
-          hotel.data.length > 0 &&
+        {isLoading ? (
+          Array.from({ length: 3 }, (_, i) => <LoadingPulseCardLarge key={i} />)
+        ) : hotel?.data && hotel.data.length > 0 ? (
           hotel.data.slice(0, 3).map((item) => (
             <CardLarge
               key={item._id}
@@ -169,7 +163,14 @@ const HomePage: FC = () => {
                 setIsShowImg({ active: true, img: item.thumbnail })
               }
             />
-          ))}
+          ))
+        ) : (
+          <div className="w-full h-[45vh] flex flex-col justify-center items-center">
+            <h2 className="text-sm text-primary-skyblue">
+              hotel tidak tersedia
+            </h2>
+          </div>
+        )}
       </div>
 
       {/* title Nearby Hotel */}
@@ -178,9 +179,12 @@ const HomePage: FC = () => {
       </div>
 
       {/* card hotel small */}
-      <div className="w-[90vw] flex flex-col justify-start items-center mt-4 gap-4">
-        {hotel?.data &&
-          hotel.data.length > 0 &&
+      <div className="w-full px-5 flex flex-col justify-start items-center mt-4 gap-4">
+        {isLoading ? (
+          Array.from({ length: 3 }, (_, i) => (
+            <LoadingPulseCardMedium key={i} />
+          ))
+        ) : hotel?.data && hotel.data.length > 0 ? (
           hotel.data
             .slice(0, 3)
             .map((item) => (
@@ -194,7 +198,14 @@ const HomePage: FC = () => {
                 rating={item.rating}
                 linkDetail={`/hotel/detail/${item._id}`}
               />
-            ))}
+            ))
+        ) : (
+          <div className="w-full h-[10vh] flex flex-col justify-center items-center">
+            <h2 className="text-sm text-primary-skyblue">
+              hotel tidak tersedia
+            </h2>
+          </div>
+        )}
       </div>
 
       {/* modal filter*/}

@@ -11,6 +11,7 @@ import loadingIcon from "../../assets/animation/loading-blue.svg";
 import { Helmet } from "react-helmet-async";
 import { MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import LoadingPulseCardMedium from "../../components/LoadingPulseCardMedium";
 
 const DashboardHotelPage: FC = () => {
   // navigate
@@ -128,11 +129,11 @@ const DashboardHotelPage: FC = () => {
         />
 
         {/* container card small hotel */}
-        <div className="w-full flex flex-col justify-start items-start gap-4 mt-8 px-4 pb-32">
+        <div className="w-full flex flex-col justify-start items-start gap-6 mt-8 px-4 pb-32">
           {isLoading ? (
-            <div className="w-full h-full flex flex-col justify-center items-center">
-              <img src={loadingIcon} alt="laoding" className="w-12" />
-            </div>
+            Array.from({ length: 3 }, (_, i) => (
+              <LoadingPulseCardMedium key={i} />
+            ))
           ) : hotel && hotel.data && hotel.data.length > 0 ? (
             hotel.data.map((item, _) => (
               <CardMedium

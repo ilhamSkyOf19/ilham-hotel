@@ -60,9 +60,7 @@ const SectionReview: FC<Props> = ({ idHotel }) => {
       <div className="w-full flex flex-col justify-start items-start gap-6 px-4 mt-8">
         {/* card review */}
         {isLoading ? (
-          <div className="w-full flex flex-row justify-center items-center">
-            <img src={loadingBlue} alt="loading" className="w-10" />
-          </div>
+          Array.from({ length: 2 }, (_, i) => <LoadingCard key={i} />)
         ) : reviews?.data && reviews.data?.length > 0 ? (
           reviews.data.map((item, index) => (
             <CardReview
@@ -76,7 +74,7 @@ const SectionReview: FC<Props> = ({ idHotel }) => {
           ))
         ) : (
           <div className="w-full flex flex-row justify-center items-center">
-            <p className="text-sm">Tidak ada review</p>
+            <p className="text-sm text-primary-skyblue">Tidak ada review</p>
           </div>
         )}
       </div>
@@ -184,6 +182,26 @@ const CardReview: FC<CardReviewProps> = ({
           <FaRegStar key={i} className="text-base text-yellow-400" />
         ))}
       </div>
+    </div>
+  );
+};
+
+// loading card
+const LoadingCard: FC = () => {
+  return (
+    <div className="w-full h-50 bg-white shadow-[0px_2px_7px_rgba(0,0,0,0.25)] px-5 py-4 gap-2 rounded-xl animate-pulse mt-4 flex flex-col justify-start items-start">
+      <div className="w-full flex flex-row justify-start items-start gap-3">
+        <div className="w-11 h-11 bg-gray-200 rounded-full" />
+        <div className=" flex flex-col justify-start items-start gap-1.5">
+          <div className="w-42 h-4 bg-gray-200 rounded-sm" />
+          <div className="w-18 h-4 bg-gray-200" />
+        </div>
+      </div>
+      <div className="w-full flex flex-col justify-start items-start gap-2 mt-3 ">
+        <div className="w-full h-4 bg-gray-200 rounded-sm" />
+        <div className="w-[70%] h-4 bg-gray-200 rounded-sm" />
+      </div>
+      <div className="w-[40%] h-4 bg-gray-200 rounded-sm mt-4" />
     </div>
   );
 };

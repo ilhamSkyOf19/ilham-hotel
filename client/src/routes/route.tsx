@@ -65,6 +65,11 @@ const route = createBrowserRouter([
         path: "/history",
         element: <HomePage />,
       },
+      // bookings
+      {
+        path: "bookings",
+        element: <BookingsPage />,
+      },
       {
         path: "/room",
         element: <HomePage />,
@@ -110,13 +115,6 @@ const route = createBrowserRouter([
             path: "hotel/detail/:id/add-gallery",
             element: <AddGallery />,
           },
-
-          // bookings
-          {
-            path: "bookings",
-            element: <BookingsPage />,
-          },
-
           // other
           {
             path: "other",

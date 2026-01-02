@@ -27,7 +27,7 @@ const HeaderComponent: FC<Props> = ({
       {/* title & address */}
       <div className="w-full flex flex-col justify-start items-start gap-0.5 mt-4  px-4">
         {/* title */}
-        <h1 className="text-2xl font-semibold">{nameHotel}</h1>
+        <h1 className="text-3xl font-semibold">{nameHotel}</h1>
 
         {/* address */}
         <a

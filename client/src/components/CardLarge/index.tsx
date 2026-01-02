@@ -26,7 +26,7 @@ const CardLarge: FC<Props> = ({
   // navigate
   const navigate = useNavigate();
   return (
-    <div className="w-60 h-80 flex flex-col justify-start items-start bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] shrink-0 rounded-lg py-2.5 px-2.5">
+    <div className="w-60 h-80 flex flex-col justify-start items-start bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.08)] shrink-0 rounded-lg py-2.5 px-2.5">
       {/* thumbnail */}
       <div
         onClick={() => handleShowImg()}
