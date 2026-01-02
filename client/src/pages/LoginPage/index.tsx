@@ -2,7 +2,10 @@ import { type FC } from "react";
 import AuthLayoutPage from "../../fragments/AuthLayoutPage";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type AuthLoginRequestType } from "../../models/auth-model";
+import {
+  type AuthLoginRequestType,
+  type PayloadType,
+} from "../../models/auth-model";
 import { AuthValidation } from "../../validations/auth-validation";
 import InputText from "../../components/InputText";
 import InputPassword from "../../components/InputPassword";
@@ -32,11 +35,15 @@ const LoginPage: FC = () => {
     mutationFn: async (data: AuthLoginRequestType) => {
       return (await AuthService.login(
         data
-      )) as ResponseType<AuthLoginRequestType | null>;
+      )) as ResponseType<PayloadType | null>;
     },
     onSuccess: (data) => {
-      // navigate
-      navigate("/");
+      // cek role
+      if (data.data?.role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
 
       console.log(data);
     },

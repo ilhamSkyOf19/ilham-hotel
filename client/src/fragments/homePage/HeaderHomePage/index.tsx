@@ -62,7 +62,9 @@ const HeaderHomePage: FC<Props> = ({
             className="w-full flex flex-row justify-start items-center gap-1"
             onClick={() => setIsOpenModalLocation(!isOpenModalLocation)}
           >
-            <p className="text-black font-medium text-lg">{chooseLocation}</p>
+            <p className="text-black font-medium text-lg">
+              {chooseLocation === "" ? "Choose Location" : chooseLocation}
+            </p>
             <IoIosArrowDown className="text-black text-2xl" />
           </button>
         </div>

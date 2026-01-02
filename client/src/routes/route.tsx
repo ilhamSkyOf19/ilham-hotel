@@ -3,7 +3,6 @@ import RegisterPage from "../pages/RegisterPage";
 import LoginPage from "../pages/LoginPage";
 import ActivationPage from "../pages/ActivationPage";
 import HomePage from "../pages/HomePage";
-import { AuthService } from "../services/auth.service";
 import LayoutPage from "../fragments/LayoutPage";
 import Grafik from "../pages/Grafik";
 import DashboardAdmin from "../pages/DashboardAdmin";
@@ -17,8 +16,15 @@ import HotelDetailPage from "../pages/HotelDetailPage";
 // import { HotelService } from "../services/hotel.service";
 import AddGallery from "../pages/AddGallery";
 import GalleriesPage from "../pages/GalleriesPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import BookingsPage from "../pages/BookingsPage";
+import { useGetAuthUser } from "../hooks/useAuth";
 
 const route = createBrowserRouter([
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
   {
     path: "/welcome",
     element: <FirstPage />,
@@ -43,13 +49,17 @@ const route = createBrowserRouter([
   {
     path: "/",
     loader: async () => {
-      return await AuthService.getAuthUser();
+      return await useGetAuthUser("all");
     },
     element: <LayoutPage />,
     children: [
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/hotel/detail/:id",
+        element: <HotelDetailPage />,
       },
       {
         path: "/history",
@@ -70,7 +80,10 @@ const route = createBrowserRouter([
 
       // dashboard admin
       {
-        path: "/dashboard",
+        path: "dashboard",
+        loader: async () => {
+          return await useGetAuthUser("admin");
+        },
         children: [
           {
             index: true,
@@ -97,6 +110,14 @@ const route = createBrowserRouter([
             path: "hotel/detail/:id/add-gallery",
             element: <AddGallery />,
           },
+
+          // bookings
+          {
+            path: "bookings",
+            element: <BookingsPage />,
+          },
+
+          // other
           {
             path: "other",
             element: <DashboardOtherPage />,

@@ -23,6 +23,7 @@ const routeNavigation: { link: string; label: string }[] = [
 const routeNavigationDashboard: { link: string; label: string }[] = [
   { link: "/dashboard", label: "Overview" },
   { link: "/dashboard/hotel", label: "Hotel" },
+  { link: "/dashboard/bookings", label: "Bookings" },
   { link: "/dashboard/other", label: "Other" },
 ];
 
@@ -144,7 +145,7 @@ const ButtonNavigation: FC<PropsButtonNavigation> = ({
             active ? "text-primary-skyblue" : "text-gray-600/50"
           )}
         />
-      ) : link === "/dashboard/room" ? (
+      ) : link === "/dashboard/bookings" ? (
         <FaBed
           className={clsx(
             "text-2xl transition-colors duration-200 ease-in-out",

@@ -169,7 +169,7 @@ export class HotelController {
   ) {
     try {
       // get query from params
-      const { fasilitas, maxPrice, minPrice, search } = req.query;
+      const { fasilitas, maxPrice, minPrice, search, location } = req.query;
 
       // conver fasilitas
       const fasilitasArray: string[] = fasilitas ? fasilitas.split(",") : [];
@@ -180,6 +180,7 @@ export class HotelController {
         minPrice: Number(minPrice || ""),
         maxPrice: Number(maxPrice || ""),
         search,
+        location,
       });
 
       // return response

@@ -110,7 +110,10 @@ export class HotelService {
   static async readHotelByFilter(
     filter: FilterType
   ): Promise<HotelResponseForDisplayType[] | []> {
-    const { minPrice, maxPrice, fasilitas, search } = filter;
+    const { minPrice, maxPrice, fasilitas, search, location } = filter;
+
+    // destruct location
+    const cityAndCountry: string[] = location?.split(",") ?? [];
 
     // call response
     const response = await HotelModel.find({
@@ -129,9 +132,19 @@ export class HotelService {
             },
           }
         : {}),
+      ...(cityAndCountry[0] && cityAndCountry[1]
+        ? {
+            city: cityAndCountry[0],
+            country: cityAndCountry[1],
+          }
+        : {}),
       ...(search
         ? {
-            $text: { $search: search },
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { city: { $regex: search, $options: "i" } },
+              { country: { $regex: search, $options: "i" } },
+            ],
           }
         : {}),
     })

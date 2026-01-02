@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ContentCard from "../ContentCard";
 import ButtonFavorite from "../ButtonFavorite";
 
@@ -11,6 +11,7 @@ type Props = {
   discount: number;
   rating: number;
   link: string;
+  handleShowImg: () => void;
 };
 const CardLarge: FC<Props> = ({
   thumbnail,
@@ -20,14 +21,18 @@ const CardLarge: FC<Props> = ({
   discount,
   rating,
   link,
+  handleShowImg,
 }) => {
+  // navigate
+  const navigate = useNavigate();
   return (
-    <Link
-      to={link}
-      className="w-60 h-80 flex flex-col justify-start items-start bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] shrink-0 rounded-lg py-2.5 px-2.5"
-    >
+    <div className="w-60 h-80 flex flex-col justify-start items-start bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] shrink-0 rounded-lg py-2.5 px-2.5">
       {/* thumbnail */}
-      <div className="w-full h-[50%] bg-black rounded-lg overflow-hidden relative">
+      <button
+        type="button"
+        onClick={() => handleShowImg()}
+        className="w-full h-[50%] bg-black rounded-lg overflow-hidden relative before:content-[''] before:absolute before:inset-0 before:bg-black/40 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
+      >
         {/* thumbnail */}
         <img
           src={thumbnail}
@@ -37,10 +42,18 @@ const CardLarge: FC<Props> = ({
 
         {/* button favorite */}
         <ButtonFavorite />
-      </div>
+      </button>
 
       {/* content */}
-      <div className="w-full mt-4">
+      <button
+        type="button"
+        onClick={() =>
+          navigate(link, {
+            state: { from: "/hotel" },
+          })
+        }
+        className="w-full pt-4"
+      >
         <ContentCard
           discount={discount}
           rating={rating}
@@ -48,8 +61,8 @@ const CardLarge: FC<Props> = ({
           location={location}
           price={price}
         />
-      </div>
-    </Link>
+      </button>
+    </div>
   );
 };
 
