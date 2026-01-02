@@ -11,12 +11,6 @@ export class HotelValidation {
       1,
       "Description is required"
     ),
-    city: string("City is required")
-      .min(1, "City is required")
-      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
-    country: string("Country is required")
-      .min(1, "Country is required")
-      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
     price: string("Price is required")
       .min(1, "Price is required")
       .regex(/^[0-9$,]+$/, { message: "Only numbers allowed" }),
@@ -27,6 +21,9 @@ export class HotelValidation {
       .instanceof(File)
       .refine((file) => file.size > 0, "Thumbnail is required"),
     fasilitas: array(z.string()).min(1, "Fasilitas is required"),
+    location: string("Location is required").regex(/^[0-9a-fA-F]{24}$/, {
+      message: "id location tidak valid",
+    }),
     linkMaps: string("Link Maps is required").min(1, "Link Maps is required"),
   }).strict() satisfies ZodType<HotelCreateServiceRequestType>;
 }

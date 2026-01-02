@@ -6,15 +6,16 @@ import { FiSearch } from "react-icons/fi";
 import clsx from "clsx";
 import InputRaw from "../../../components/InputRaw";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import { LocationService } from "../../../services/location.service";
 
 // header component
 type Props = {
-  locationList: string[];
   handleChooseLocation: (location: string) => void;
   chooseLocation: string;
 };
+
 const HeaderHomePage: FC<Props> = ({
-  locationList,
   handleChooseLocation,
   chooseLocation,
 }) => {
@@ -62,7 +63,7 @@ const HeaderHomePage: FC<Props> = ({
             className="w-full flex flex-row justify-start items-center gap-1"
             onClick={() => setIsOpenModalLocation(!isOpenModalLocation)}
           >
-            <p className="text-black font-medium text-lg">
+            <p className="text-black font-medium text-base capitalize">
               {chooseLocation === "" ? "Choose Location" : chooseLocation}
             </p>
             <IoIosArrowDown className="text-black text-2xl" />
@@ -82,7 +83,6 @@ const HeaderHomePage: FC<Props> = ({
         handleChooseLocation={handleChooseLocation}
         isModalActive={isOpenModalLocation}
         modalRef={modalRef as RefObject<HTMLDivElement>}
-        locationList={locationList}
       />
     </div>
   );
@@ -93,16 +93,20 @@ type ModalLocationProps = {
   handleChooseLocation: (location: string) => void;
   isModalActive: boolean;
   modalRef: RefObject<HTMLDivElement>;
-  locationList: string[];
 };
 const ModalLocation: FC<ModalLocationProps> = ({
   isModalActive: isOpenModalLocation,
   modalRef,
   handleChooseLocation,
-  locationList,
 }) => {
   // use form
   const { register } = useForm<{ search: string }>();
+
+  // get location
+  const { data: locationList, isPending } = useQuery({
+    queryKey: ["locationForFilter"],
+    queryFn: LocationService.readAll,
+  });
 
   return (
     <div
@@ -132,13 +136,21 @@ const ModalLocation: FC<ModalLocationProps> = ({
       </div>
       <div className="w-full h-44 overflow-y-auto flex flex-col pb-4">
         {/* button location */}
-        {locationList.map((location, index) => (
-          <ButtonLocation
-            key={index}
-            location={location}
-            handleChooseLocation={handleChooseLocation}
-          />
-        ))}
+        {isPending ? (
+          <div></div>
+        ) : locationList?.data && locationList.data.length > 0 ? (
+          locationList.data.map((item, index) => (
+            <ButtonLocation
+              key={index}
+              location={`${item.city}, ${item.country}`}
+              handleChooseLocation={handleChooseLocation}
+            />
+          ))
+        ) : (
+          <div className="w-full flex flex-row justify-center items-center">
+            <p className="text-base">Location tidak tersedia</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -156,10 +168,12 @@ const ButtonLocation: FC<ButtonLocationProps> = ({
   return (
     <button
       type="button"
-      className="w-full px-4 py-4 "
+      className="w-full px-4 py-4 hover:bg-black/5 transition-all duration-200 ease-in-out"
       onClick={() => handleChooseLocation(location)}
     >
-      <p className="text-black text-lg font-medium text-left">{location}</p>
+      <p className="text-black text-base font-medium text-left capitalize">
+        {location}
+      </p>
     </button>
   );
 };

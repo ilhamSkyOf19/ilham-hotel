@@ -21,7 +21,7 @@ export const useGetAuthUser = async (role: "admin" | "customer" | "all") => {
 
     // cek admin
     if (role === "admin" && response?.data?.role !== "admin") {
-      throw redirect("/");
+      return (window.location.href = "/");
     }
 
     return response;

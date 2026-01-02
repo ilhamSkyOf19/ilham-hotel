@@ -14,6 +14,7 @@ import { HotelValidation } from "../../validations/hotel-validation";
 import { HotelService } from "../../services/hotel.service";
 import BoxInputAbstrakCurrency from "../../components/BoxInputAbstrakCurrency";
 import { useLocation, useNavigate } from "react-router-dom";
+import BoxInputAbstrakChoose from "../../components/BoxInputAbstrakChoose";
 
 const AddHotelPage: FC = () => {
   // location
@@ -80,10 +81,9 @@ const AddHotelPage: FC = () => {
       // append data
       formData.append("name", data.name);
       formData.append("description", data.description);
-      formData.append("city", data.city);
-      formData.append("country", data.country);
       formData.append("price", data.price);
       formData.append("linkMaps", data.linkMaps);
+      formData.append("location", data.location);
       formData.append("totalRoom", data.totalRoom);
       formData.append("fasilitas", JSON.stringify(data.fasilitas));
 
@@ -145,24 +145,6 @@ const AddHotelPage: FC = () => {
           errorMessage={errors.totalRoom?.message}
         />
 
-        {/* city */}
-        <BoxInputAbstrakText
-          name="city"
-          label="city"
-          placeholder="Enter city"
-          register={register("city")}
-          errorMessage={errors.city?.message}
-        />
-
-        {/* country */}
-        <BoxInputAbstrakText
-          name="country"
-          label="country"
-          placeholder="Enter country"
-          register={register("country")}
-          errorMessage={errors.country?.message}
-        />
-
         {/* country */}
         <BoxInputAbstrakText
           name="linkMaps"
@@ -170,6 +152,12 @@ const AddHotelPage: FC = () => {
           placeholder="Enter link maps"
           register={register("linkMaps")}
           errorMessage={errors.linkMaps?.message}
+        />
+
+        {/* choose location */}
+        <BoxInputAbstrakChoose
+          setValue={setValue}
+          errorMessage={errors.location?.message}
         />
 
         {/* input thumbnail */}

@@ -15,12 +15,9 @@ export class HotelValidation {
       "Description is required"
     ),
     linkMaps: string("Link Maps is required").min(1, "Link Maps is required"),
-    city: string("City is required")
-      .min(1, "City is required")
-      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
-    country: string("Country is required")
-      .min(1, "Country is required")
-      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" }),
+    location: string("Location is required").regex(/^[0-9a-fA-F]{24}$/, {
+      message: "id location tidak valid",
+    }),
     price: string("Price is required")
       .min(1, "Price is required")
       .refine((value) => !isNaN(Number(value)), "Price must be a number")

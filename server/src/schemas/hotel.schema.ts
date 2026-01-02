@@ -6,10 +6,9 @@ const HotelSchema = new Schema<IHotel>(
     idFasilitas: [
       { type: Schema.Types.ObjectId, ref: "Fasilitas", required: true },
     ],
+    location: { type: Schema.Types.ObjectId, ref: "Location", required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
-    city: { type: String, required: true, lowercase: true },
-    country: { type: String, required: true, lowercase: true },
     price: { type: Number, required: true },
     thumbnail: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
@@ -26,8 +25,6 @@ const HotelSchema = new Schema<IHotel>(
 
 HotelSchema.index({
   name: "text",
-  city: "text",
-  country: "text",
 });
 
 // create model

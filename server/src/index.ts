@@ -14,6 +14,7 @@ import path from "path";
 import reviewRoute from "./routes/review.route";
 import bookingCallbackRoute from "./routes/booking-callback.route";
 import bookingRoute from "./routes/booking.route";
+import locationRoute from "./routes/location.route";
 const init = async () => {
   try {
     // init express
@@ -63,6 +64,9 @@ const init = async () => {
 
     // api callback booking
     app.use("/api/payment", bookingCallbackRoute);
+
+    // api location
+    app.use("/api/location", locationRoute);
 
     // next middleware
     app.use(errorMiddleware);

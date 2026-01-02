@@ -8,6 +8,10 @@ import { RouterProvider } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
+import Modal from "react-modal";
+
+// modal
+Modal.setAppElement("#root");
 
 // init query client
 const queryClient = new QueryClient();

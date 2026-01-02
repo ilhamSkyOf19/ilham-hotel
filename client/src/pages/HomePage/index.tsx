@@ -127,16 +127,10 @@ const HomePage: FC = () => {
       }),
   });
 
-  // debug
-  useEffect(() => {
-    console.log(hotel);
-  }, [hotel]);
-
   return (
     <div className="w-screen h-[200vh] flex flex-col justify-start items-center pt-8">
       {/* header */}
       <HeaderHomePage
-        locationList={location}
         chooseLocation={chooseLocation}
         handleChooseLocation={handleChooseLocation}
       />
@@ -166,7 +160,7 @@ const HomePage: FC = () => {
                 img: item.thumbnail,
               })}
               title={item.name}
-              location={`${item.city}, ${item.country}`}
+              location={`${item.location.city}, ${item.location.country}`}
               price={item.price}
               discount={10}
               rating={item.rating}
@@ -194,7 +188,7 @@ const HomePage: FC = () => {
                 key={item._id}
                 thumbnail={item.thumbnail}
                 title={item.name}
-                location={`${item.city}, ${item.country}`}
+                location={`${item.location.city}, ${item.location.country}`}
                 price={item.price}
                 discount={10}
                 rating={item.rating}

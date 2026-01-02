@@ -166,8 +166,8 @@ const HotelDetailPage: FC = () => {
               handleModalClose={() => setIsModalBookingOpen(false)}
               idHotel={idHotel ?? ""}
               nameHotel={hotel?.data?.data?.name ?? ""}
-              city={hotel?.data?.data?.city ?? ""}
-              country={hotel?.data?.data?.country ?? ""}
+              city={hotel?.data?.data?.location.city ?? ""}
+              country={hotel?.data?.data?.location.country ?? ""}
               discount={hotel?.data?.data?.discount ?? 0}
               linkMaps={hotel?.data?.data?.linkMaps ?? ""}
               price={hotel?.data?.data?.price ?? 0}
@@ -245,8 +245,8 @@ const ComponentContent: FC<ComponentContentProps> = ({
       <HeaderComponent
         nameHotel={hotel?.name ?? ""}
         linkMaps={hotel?.linkMaps ?? ""}
-        city={hotel?.city ?? ""}
-        country={hotel?.country ?? ""}
+        city={hotel?.location.city ?? ""}
+        country={hotel?.location.country ?? ""}
         discount={hotel?.discount ?? 0}
       />
 

@@ -1,10 +1,9 @@
 // type hotel
 export type IHotel = {
   fasilitas: string[];
+  location: string;
   name: string;
   description: string;
-  city: string;
-  country: string;
   price: string;
   discount: string;
   rating: string;
@@ -26,14 +25,17 @@ export type PayloadHotel = {
   _id: string;
   name: string;
   description: string;
-  city: string;
-  country: string;
   price: number;
   thumbnail: string;
   discount: number;
   rating: number;
   linkMaps: string;
   totalRoom: number;
+  location: {
+    _id: string;
+    city: string;
+    country: string;
+  };
   idFasilitas:
     | {
         _id: string;
@@ -57,8 +59,6 @@ export const toHotelResponseType = (
     _id: response._id,
     name: response.name,
     description: response.description,
-    city: response.city,
-    country: response.country,
     price: response.price,
     rating: response.rating,
     discount: response.discount,
@@ -67,6 +67,7 @@ export const toHotelResponseType = (
     linkMaps: response.linkMaps,
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
+    location: response.location,
     fasilitas: response.idFasilitas
       ? response.idFasilitas.map((item) => ({
           _id: item._id,
@@ -79,7 +80,7 @@ export const toHotelResponseType = (
 // response for display
 export type HotelResponseForDisplayType = Pick<
   PayloadHotel,
-  "_id" | "name" | "rating" | "city" | "country" | "thumbnail" | "price"
+  "_id" | "name" | "rating" | "thumbnail" | "price" | "location"
 >;
 
 // response for display
@@ -89,9 +90,8 @@ export const toHotelResponseForDisplayType = (
   return {
     _id: response._id,
     name: response.name,
+    location: response.location,
     rating: response.rating,
-    city: response.city,
-    country: response.country,
     thumbnail: response.thumbnail,
     price: response.price,
   };

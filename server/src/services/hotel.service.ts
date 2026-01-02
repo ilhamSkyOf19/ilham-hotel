@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
 import {
   FilterType,
-  HotelCreateRequestType,
   HotelCreateServiceRequestType,
   HotelResponseForDisplayType,
   HotelResponseType,
@@ -10,6 +9,7 @@ import {
   toHotelResponseType,
 } from "../models/hotel-model";
 import HotelModel from "../schemas/hotel.schema";
+import LocationModel from "../schemas/location.schema";
 
 export class HotelService {
   // create
@@ -23,11 +23,13 @@ export class HotelService {
     const created = await HotelModel.create({
       ...data,
       idFasilitas: fasilitasIds,
+      location: data.location,
     });
 
     // findy by id to populate fasilitas
     const response = await HotelModel.findById(created._id)
       .populate("idFasilitas", "fasilitas")
+      .populate("location", "_id city country")
       .lean<PayloadHotel>();
 
     //   check response
@@ -42,7 +44,9 @@ export class HotelService {
   // read for display
   static async readForDisplay(): Promise<HotelResponseForDisplayType[] | []> {
     // call response
-    const response = await HotelModel.find().lean<PayloadHotel[]>();
+    const response = await HotelModel.find()
+      .populate("location", "_id city country")
+      .lean<PayloadHotel[]>();
 
     // return
     return response.map((item) => toHotelResponseForDisplayType(item));
@@ -53,6 +57,7 @@ export class HotelService {
     // call response with aggregate
     const response = await HotelModel.find()
       .populate("idFasilitas", "fasilitas")
+      .populate("location", "_id city country")
       .lean<PayloadHotel[]>();
 
     // return
@@ -64,6 +69,7 @@ export class HotelService {
     // call response
     const response = await HotelModel.findById(id)
       .populate("idFasilitas", "_id fasilitas")
+      .populate("location", "_id city country")
       .lean<PayloadHotel>();
 
     // check response
@@ -82,6 +88,7 @@ export class HotelService {
     // call response
     const response = await HotelModel.findById(id)
       .populate("idFasilitas", "_id fasilitas")
+      .populate("location", "_id city country")
       .lean<PayloadHotel>();
 
     // check response
@@ -115,6 +122,15 @@ export class HotelService {
     // destruct location
     const cityAndCountry: string[] = location?.split(",") ?? [];
 
+    // find location
+    const locationDoc =
+      cityAndCountry.length === 2
+        ? await LocationModel.findOne({
+            city: cityAndCountry[0].trim(),
+            country: cityAndCountry[1].trim(),
+          }).select("_id")
+        : null;
+
     // call response
     const response = await HotelModel.find({
       ...(minPrice || maxPrice
@@ -132,12 +148,7 @@ export class HotelService {
             },
           }
         : {}),
-      ...(cityAndCountry[0] && cityAndCountry[1]
-        ? {
-            city: cityAndCountry[0],
-            country: cityAndCountry[1],
-          }
-        : {}),
+      ...(locationDoc ? { location: locationDoc._id } : {}),
       ...(search
         ? {
             $or: [
@@ -150,7 +161,8 @@ export class HotelService {
     })
       .sort({ createAt: -1 })
       .limit(10)
-      .populate("idFasilitas")
+      .populate("idFasilitas", "_id fasilitas")
+      .populate("location", "_id city country")
       .lean<PayloadHotel[]>();
 
     // return

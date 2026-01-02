@@ -20,7 +20,6 @@ const ModalComponent: FC<Props> = ({
       isOpen={active}
       onRequestClose={handleClose}
       bodyOpenClassName="modal-open"
-      appElement={document.getElementById("root")!}
       style={{
         overlay: {
           backgroundColor: "rgba(0,0,0,0.7)",

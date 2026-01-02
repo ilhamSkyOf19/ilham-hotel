@@ -55,7 +55,7 @@ export const errorMiddleware = (
     if (err.code === 11000) {
       return res.status(409).json({
         status: "failed",
-        message: "User already exists",
+        message: "field already exists",
         data: null,
       });
     }

@@ -2,25 +2,25 @@ import { useEffect, useRef, useState, type FC, type RefObject } from "react";
 import LabelInput from "../LabelInput";
 import clsx from "clsx";
 import { IoIosArrowDown } from "react-icons/io";
-import { IoClose } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
-import { RoomTypeService } from "../../services/roomType.service";
 import loadingSkyBlue from "../../assets/animation/loading-blue.svg";
+import { LocationService } from "../../services/location.service";
+import type { UseFormSetValue } from "react-hook-form";
+import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
 
 type Props = {
   errorMessage?: string;
-  handleChooseRoomType: ({ label, id }: { label: string; id: string }) => void;
-  handleRemoveChooseRoomType: (id: string) => void;
-  chooseRoomType: { label: string; id: string }[];
+  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
+  // handleChooseLocation: ({ label, id }: { label: string; id: string }) => void;
+  // handleRemoveChooseRoomType: (id: string) => void;
+  // chooseLocation: { label: string; id: string }[];
 };
-const BoxInputAbstrakChoose: FC<Props> = ({
-  errorMessage,
-  handleChooseRoomType,
-  chooseRoomType,
-  handleRemoveChooseRoomType,
-}) => {
+const BoxInputAbstrakChoose: FC<Props> = ({ errorMessage, setValue }) => {
   // state active modal choose
   const [activeModal, setActiveModal] = useState<boolean>(false);
+
+  // state choose
+  const [isChooseLocation, setIsChooseLocation] = useState<string>("");
 
   // handle active modal choose
   const handleActiveModal = () => {
@@ -50,6 +50,13 @@ const BoxInputAbstrakChoose: FC<Props> = ({
     };
   }, []);
 
+  // handle choose
+  const handleChooseLocation = (id: string, location: string) => {
+    setValue("location", id);
+
+    setIsChooseLocation(location);
+  };
+
   return (
     <div className="w-full flex flex-col justify-start items-start gap-3">
       <div className="w-full flex flex-col justify-start items-start gap-3 relative">
@@ -74,14 +81,13 @@ const BoxInputAbstrakChoose: FC<Props> = ({
         >
           {/* input */}
           <input
-            // {...register}
-            // name={name}
             readOnly
             type="text"
             disabled
             onClick={() => console.log("ok")}
+            defaultValue={isChooseLocation}
             placeholder={"Choose Room Type"}
-            className="py-3 px-10 w-full bg-transparent border-none outline-none text-black text-base font-medium placeholder:text-gray-400 placeholder:text-base placeholder:font-normal"
+            className="py-3 px-10 w-full bg-transparent border-none outline-none text-black text-base font-medium placeholder:text-gray-400 placeholder:text-base placeholder:font-normal capitalize"
           />
 
           {/* icon */}
@@ -99,12 +105,12 @@ const BoxInputAbstrakChoose: FC<Props> = ({
             modalRef={modalRef as RefObject<HTMLDivElement>}
             handleActiveModal={handleActiveModal}
             activeModal={activeModal}
-            handleChooseRoomType={handleChooseRoomType}
+            handleChooseLocation={handleChooseLocation}
           />
         </div>
       </div>
       {/* choose preview */}
-      <div className="w-full flex flex-row justify-start items-start gap-3 mt-2 flex-wrap">
+      {/* <div className="w-full flex flex-row justify-start items-start gap-3 mt-2 flex-wrap">
         {chooseRoomType.map((item, _index) => (
           <PreviewChoose
             key={_index}
@@ -113,7 +119,7 @@ const BoxInputAbstrakChoose: FC<Props> = ({
             handleRemoveChooseRoomType={handleRemoveChooseRoomType}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -122,19 +128,19 @@ const BoxInputAbstrakChoose: FC<Props> = ({
 type PropsModalchoose = {
   handleActiveModal: () => void;
   activeModal: boolean;
-  handleChooseRoomType: ({ label, id }: { label: string; id: string }) => void;
+  handleChooseLocation: (id: string, location: string) => void;
   modalRef: RefObject<HTMLDivElement>;
 };
 const ModalChoose: FC<PropsModalchoose> = ({
   handleActiveModal,
   activeModal,
-  handleChooseRoomType,
+  handleChooseLocation,
   modalRef,
 }) => {
   // query room type
   const { data, isLoading } = useQuery({
     queryKey: ["roomType"],
-    queryFn: RoomTypeService.readAll,
+    queryFn: LocationService.readAll,
   });
 
   return (
@@ -152,12 +158,12 @@ const ModalChoose: FC<PropsModalchoose> = ({
         </div>
       ) : data?.data && data?.data.length > 0 ? (
         data?.data.map((item, _index) => (
-          <ButtonChooseRoomType
+          <ButtonChooseLocation
             key={item._id}
             id={item._id}
-            label={item.roomType}
+            label={`${item.city}, ${item.country}`}
             handleActiveModal={handleActiveModal}
-            handleChooseRoomType={handleChooseRoomType}
+            handleChooseLocation={handleChooseLocation}
           />
         ))
       ) : (
@@ -171,13 +177,13 @@ const ModalChoose: FC<PropsModalchoose> = ({
 type ButtonChooseRoomTypeProps = {
   label: string;
   id: string;
-  handleChooseRoomType: ({ label, id }: { label: string; id: string }) => void;
+  handleChooseLocation: (label: string, id: string) => void;
   handleActiveModal: () => void;
 };
-const ButtonChooseRoomType: FC<ButtonChooseRoomTypeProps> = ({
+const ButtonChooseLocation: FC<ButtonChooseRoomTypeProps> = ({
   label,
   id,
-  handleChooseRoomType,
+  handleChooseLocation,
   handleActiveModal,
 }) => {
   return (
@@ -185,40 +191,13 @@ const ButtonChooseRoomType: FC<ButtonChooseRoomTypeProps> = ({
       type="button"
       className="w-full py-4 px-4 hover:bg-gray-200"
       onClick={() => {
-        handleChooseRoomType({ label: label, id: id }), handleActiveModal();
+        handleChooseLocation(id, label), handleActiveModal();
       }}
     >
       <p className="text-black text-base font-medium text-left capitalize">
         {label}
       </p>
     </button>
-  );
-};
-
-// button preview choose
-type PreviewChooseProps = {
-  label: string;
-  id: string;
-  handleRemoveChooseRoomType: (id: string) => void;
-};
-const PreviewChoose: FC<PreviewChooseProps> = ({
-  handleRemoveChooseRoomType,
-  label,
-  id,
-}) => {
-  return (
-    <div className="py-2 px-8 bg-primary-skyblue rounded-full relative">
-      <p className="text-white text-base font-medium capitalize">{label}</p>
-
-      {/* button close */}
-      <button
-        className="w-6 h-6 bg-primary-skyblue flex flex-row justify-center items-center absolute z-10 -top-1 -right-1 rounded-full"
-        type="button"
-        onClick={() => handleRemoveChooseRoomType(id)}
-      >
-        <IoClose className="text-md text-white " />
-      </button>
-    </div>
   );
 };
 

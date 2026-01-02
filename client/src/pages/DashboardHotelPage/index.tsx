@@ -138,7 +138,7 @@ const DashboardHotelPage: FC = () => {
               <CardMedium
                 key={item._id}
                 discount={0}
-                location={`${item.city}, ${item.country}`}
+                location={`${item.location.city}, ${item.location.country}`}
                 price={item.price}
                 rating={item.rating}
                 thumbnail={item.thumbnail}
