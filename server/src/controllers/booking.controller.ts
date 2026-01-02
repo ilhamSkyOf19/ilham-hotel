@@ -1,6 +1,7 @@
 import { NextFunction, Response } from "express";
 import {
   BookingCreateRequestType,
+  BookingForDisplayResponseType,
   BookingResponseType,
 } from "../models/booking-model";
 import { AuthRequest, ResponseType } from "../types/request-response";
@@ -8,6 +9,7 @@ import { HotelService } from "../services/hotel.service";
 import { randomUUID } from "crypto";
 import { MidtransService } from "../services/midtrans.service";
 import { BookingService } from "../services/booking.service";
+import { HotelResponseForDisplayType } from "../models/hotel-model";
 
 export class BookingController {
   // booking
@@ -110,6 +112,43 @@ export class BookingController {
       }
     } catch (error) {
       // cek console
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // read booking
+  static async readBookings(
+    req: AuthRequest<{}, {}, {}, { type: "upcoming" | "completed" }>,
+    res: Response<ResponseType<BookingForDisplayResponseType[] | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get query
+      const { type } = req.query;
+
+      // get data user
+      const { _id } = req.data ?? { _id: "" };
+
+      // call service
+      const response = await BookingService.getBooking(type, _id);
+
+      // cek response
+      if (!response) {
+        return res.status(400).json({
+          status: "failed",
+          message: "read booking terjadi kesalahan",
+          data: null,
+        });
+      }
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "read booking berhasil",
+        data: response,
+      });
+    } catch (error) {
       console.log(error);
       next(error);
     }

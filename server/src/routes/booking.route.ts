@@ -11,6 +11,9 @@ const bookingRoute: Router = Router();
 // auth middelware
 bookingRoute.use(authMiddleware("admin"));
 
+// get booking
+bookingRoute.get("/read", BookingController.readBookings);
+
 // payment
 bookingRoute.post(
   "/",

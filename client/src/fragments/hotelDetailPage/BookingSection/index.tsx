@@ -60,7 +60,7 @@ const BookingSection: FC<Props> = ({
     checkOut: Date;
   }>({
     checkIn: new Date(),
-    checkOut: addDays(new Date(), 1),
+    checkOut: addDays(new Date(), 30),
   });
 
   // set check date

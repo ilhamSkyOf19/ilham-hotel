@@ -1,3 +1,5 @@
+import type { HotelResponseForDisplayType } from "./hotel-model";
+
 // IBooking
 export type IBooking = {
   _id: string;
@@ -68,4 +70,20 @@ export const toBookingResponseType = (
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
   };
+};
+
+// data booking with data hotel
+export type BookingWithHotelPopulated = {
+  _id: string;
+  hotel: HotelResponseForDisplayType;
+};
+
+// booking for display
+export type BookingForDisplayResponseType = BookingWithHotelPopulated;
+
+// to response
+export const toBookingForDisplayResponseType = (
+  response: BookingForDisplayResponseType
+): BookingForDisplayResponseType => {
+  return response;
 };

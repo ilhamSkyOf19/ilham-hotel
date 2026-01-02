@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { HotelResponseForDisplayType } from "./hotel-model";
 
 // IBooking
 export type IBooking = {
@@ -20,6 +21,7 @@ export type IBooking = {
 
 // payload
 export type PayloadBooking = {
+  _id: string;
   user: {
     _id: string;
     email: string;
@@ -56,6 +58,7 @@ export const toBookingResponseType = (
   response: PayloadBooking
 ): BookingResponseType => {
   return {
+    _id: response._id,
     user: {
       _id: response.user._id,
       email: response.user.email,
@@ -76,4 +79,20 @@ export const toBookingResponseType = (
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
   };
+};
+
+// data booking with data hotel
+export type BookingWithHotelPopulated = {
+  _id: string;
+  hotel: HotelResponseForDisplayType;
+};
+
+// booking for display
+export type BookingForDisplayResponseType = BookingWithHotelPopulated;
+
+// to response
+export const toBookingForDisplayResponseType = (
+  response: BookingForDisplayResponseType
+): BookingForDisplayResponseType => {
+  return response;
 };

@@ -17,7 +17,7 @@ const SearchHotel: FC<SearchHotelProps> = ({
   errors,
 }) => {
   return (
-    <div className="w-[90vw] flex flex-row justify-between items-start gap-3 mt-6">
+    <div className="w-[90vw] h-14 flex flex-row justify-between items-start gap-3 mt-6">
       {/* search */}
       <div
         className={clsx(

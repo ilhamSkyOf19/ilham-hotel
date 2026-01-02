@@ -1,9 +1,16 @@
 import {
   BookingCreateRequestType,
+  BookingForDisplayResponseType,
   BookingResponseType,
+  BookingWithHotelPopulated,
   PayloadBooking,
+  toBookingForDisplayResponseType,
   toBookingResponseType,
 } from "../models/booking-model";
+import {
+  HotelResponseForDisplayType,
+  toHotelResponseForDisplayType,
+} from "../models/hotel-model";
 import BookingModel from "../schemas/booking.schema";
 
 // hold duration
@@ -59,6 +66,7 @@ export class BookingService {
         $set: {
           status,
           active: status === "success",
+          holdUntil: null,
         },
       }
     );
@@ -102,5 +110,38 @@ export class BookingService {
 
     // return response
     return true;
+  }
+
+  // read booking upcomming
+  static async getBooking(
+    type: "upcoming" | "completed",
+    idUser: string
+  ): Promise<BookingForDisplayResponseType[] | null> {
+    const filter =
+      type === "upcoming"
+        ? { checkIn: { $gt: new Date() } }
+        : { checkOut: { $lt: new Date() } };
+
+    // call model
+    const response = await BookingModel.find({
+      ...filter,
+      user: idUser,
+    })
+      .populate({
+        path: "hotel",
+        select: "_id name rating thumbnail price location",
+        populate: {
+          path: "location",
+          select: "_id city country",
+        },
+      })
+      .lean<BookingWithHotelPopulated[]>();
+
+    return response.map((data) =>
+      toBookingForDisplayResponseType({
+        _id: data._id,
+        hotel: data.hotel,
+      })
+    );
   }
 }

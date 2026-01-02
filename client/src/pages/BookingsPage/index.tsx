@@ -1,12 +1,28 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { BookingService } from "../../services/booking.service";
 
 // type section
-const section: string[] = ["completed", "upcomming"];
+const section: ("upcoming" | "completed")[] = ["upcoming", "completed"]; // ✅
 
 const BookingsPage: FC = () => {
   // state section
-  const [isSectionActive, setIsSectionActive] = useState<string>("completed");
+  const [isSectionActive, setIsSectionActive] = useState<
+    "upcoming" | "completed"
+  >("upcoming");
+
+  // query bookings
+  const { data: bookings } = useQuery({
+    queryKey: ["booking", "bookingPage", isSectionActive],
+    queryFn: () => BookingService.readBookingsWithDataHotels(isSectionActive),
+  });
+
+  // debug
+  useEffect(() => {
+    console.log(bookings);
+  }, [isSectionActive]);
+
   return (
     <div className="w-full h-full flex flex-col justify-start items-start pt-8">
       {/* header */}

@@ -108,7 +108,10 @@ export type HotelResponseForDisplayType = Pick<
 
 // response for display
 export const toHotelResponseForDisplayType = (
-  response: PayloadHotel
+  response: Pick<
+    PayloadHotel,
+    "_id" | "name" | "rating" | "location" | "thumbnail" | "price"
+  >
 ): HotelResponseForDisplayType => {
   return {
     _id: response._id,
