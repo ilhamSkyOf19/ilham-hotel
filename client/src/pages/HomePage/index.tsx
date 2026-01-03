@@ -90,7 +90,7 @@ const HomePage: FC = () => {
   }, [searchValue]);
 
   // handle submit
-  const handleSubmit = () => {
+  const handleFilterSubmit = () => {
     setFilter({
       fasilitas: facility.join(","),
       minPrice: String(rangePrice[0]),
@@ -119,6 +119,15 @@ const HomePage: FC = () => {
         location: chooseLocation,
       }),
   });
+
+  // handle reset
+  const handleReset = () => {
+    setFilter({});
+    setFacility([]);
+    setAccommodation([]);
+    setRangePrice([0, 0]);
+    setActive(false);
+  };
 
   return (
     <div className="w-screen flex flex-col justify-start items-center pt-8">
@@ -156,7 +165,7 @@ const HomePage: FC = () => {
               title={item.name}
               location={`${item.location.city}, ${item.location.country}`}
               price={item.price}
-              discount={10}
+              discount={item.discount}
               rating={item.rating}
               link={`/hotel/detail/${item._id}`}
               handleShowImg={() =>
@@ -194,7 +203,7 @@ const HomePage: FC = () => {
                 title={item.name}
                 location={`${item.location.city}, ${item.location.country}`}
                 price={item.price}
-                discount={10}
+                discount={item.discount}
                 rating={item.rating}
                 linkDetail={`/hotel/detail/${item._id}`}
               />
@@ -213,10 +222,11 @@ const HomePage: FC = () => {
         <ModalFilter
           handleClose={handleClose}
           handleSetRangePrice={handleSetRangePrice}
-          handleSubmit={handleSubmit}
+          handleSubmit={handleFilterSubmit}
           setFacility={setFacility}
           setAccommodation={setAccommodation}
           filter={filter}
+          handleReset={handleReset}
         />
       </ModalComponent>
 

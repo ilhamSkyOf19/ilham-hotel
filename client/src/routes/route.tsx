@@ -19,6 +19,7 @@ import GalleriesPage from "../pages/GalleriesPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import BookingsPage from "../pages/BookingsPage";
 import { useGetAuthUser } from "../hooks/useAuth";
+import EreceiptPage from "../pages/EreceiptPage";
 
 const route = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const route = createBrowserRouter([
       {
         path: "bookings",
         element: <BookingsPage />,
+      },
+      {
+        path: "bookings/ereceipt/:id",
+        element: <EreceiptPage />,
       },
       {
         path: "/room",

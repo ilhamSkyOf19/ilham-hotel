@@ -14,6 +14,17 @@ export const formatDate = (date: Date): string => {
   }).format(date);
 };
 
+// format full
+export const formatDateFull = (date: Date): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
 // get local today date
 export const getTodayLocal = (date: Date = new Date()): string => {
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
@@ -30,11 +41,14 @@ export const addMonths = (date: Date, months: number): Date => {
 };
 
 // format currency
-export const formatCurrency = (value: number): string => {
+export const formatCurrency = (
+  value: number,
+  full: boolean = false
+): string => {
   return value.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 0,
+    minimumFractionDigits: full ? 2 : 0,
   });
 };
 

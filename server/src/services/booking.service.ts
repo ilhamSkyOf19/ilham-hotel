@@ -129,7 +129,7 @@ export class BookingService {
     })
       .populate({
         path: "hotel",
-        select: "_id name rating thumbnail price location",
+        select: "_id name rating thumbnail price discount location",
         populate: {
           path: "location",
           select: "_id city country",

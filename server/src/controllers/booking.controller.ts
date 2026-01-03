@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   BookingCreateRequestType,
   BookingForDisplayResponseType,
@@ -10,6 +10,8 @@ import { randomUUID } from "crypto";
 import { MidtransService } from "../services/midtrans.service";
 import { BookingService } from "../services/booking.service";
 import { HotelResponseForDisplayType } from "../models/hotel-model";
+import PDFDocument from "pdfkit";
+import { row } from "../utils/PDFformatUtils";
 
 export class BookingController {
   // booking
@@ -151,6 +153,143 @@ export class BookingController {
     } catch (error) {
       console.log(error);
       next(error);
+    }
+  }
+
+  // ereceipt
+  static async ereceipt(
+    _req: Request,
+    res: Response<Promise<void>>,
+    _next: NextFunction
+  ) {
+    try {
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=transaksi-98bb1952-4fbb-447b-9ac2-dfcf191a8ffc.pdf`
+      );
+
+      const doc = new PDFDocument({ margin: 50 });
+      doc.pipe(res);
+
+      // fonts
+      doc.registerFont("CraftyGirls-Regular", "fonts/CraftyGirls-Regular.ttf");
+
+      // page width
+      const pageWidth = doc.page.width;
+      const margin = doc.page.margins.left;
+
+      doc
+        .font("Helvetica-Bold")
+        .fontSize(30)
+        .text("Ilham Hotel", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+
+      doc.moveDown(0.1);
+
+      // adress
+      doc
+        .font("Courier")
+        .fontSize(14)
+        .text("Jakarta, Indonesia", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+
+      doc.moveDown(0.1);
+
+      // phone number
+      doc
+        .font("Courier")
+        .fontSize(14)
+        .text("Phone : 0858-9689-0881", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+
+      doc.moveDown(0.1);
+
+      // web address
+      doc
+        .font("Courier")
+        .fontSize(14)
+        .text("www.ilhamhotel.com", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+
+      doc.moveDown(2);
+
+      // line
+      doc
+        .moveTo(margin, doc.y) // start point (x, y)
+        .lineTo(pageWidth - margin, doc.y) // end point (x, y)
+        .stroke();
+
+      doc.moveDown(1);
+
+      doc
+        .font("Courier")
+        .fontSize(16)
+        .text("28/07/2026 11:00", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+
+      doc.moveDown(2);
+
+      // text row
+      row(doc, "Name Hotel", "Sapadia Tulang Bawang");
+      row(doc, "Check In", "January 24, 2004");
+      row(doc, "Check Out", "January 28, 2004");
+      row(doc, "Guest", "02 Person");
+
+      // line
+      doc
+        .moveTo(margin, doc.y) // start point (x, y)
+        .lineTo(pageWidth - margin, doc.y) // end point (x, y)
+        .stroke();
+
+      doc.moveDown(0.5);
+
+      row(doc, "Amount", "$650.00");
+      row(doc, "Tax & Fees", "$5.00");
+      row(doc, "Total", "$700.00");
+
+      // line
+      doc
+        .moveTo(margin, doc.y) // start point (x, y)
+        .lineTo(pageWidth - margin, doc.y) // end point (x, y)
+        .stroke();
+
+      doc.moveDown(0.5);
+
+      row(doc, "Name", "Ilham Rohmatulloh");
+      row(doc, "Phone Number", "+62 858-9689-0881");
+      row(
+        doc,
+        "Transaction ID",
+        "#BOOKING-98bb1952-4fbb-447b-9ac2-dfcf191a8ffc"
+      );
+      row(doc, "Status", "Success");
+
+      doc.moveDown(1.5);
+
+      // thank you
+      doc
+        .font("Courier")
+        .fontSize(14)
+        .text("Thank you for booking a room at our hotel.", margin, doc.y, {
+          width: pageWidth - margin * 2,
+          align: "center",
+        });
+      // ======= SELESAI =======
+      doc.end();
+    } catch (error) {
+      console.log(error);
+      return;
     }
   }
 }

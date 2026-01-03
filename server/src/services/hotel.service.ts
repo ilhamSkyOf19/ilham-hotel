@@ -45,6 +45,7 @@ export class HotelService {
   static async readForDisplay(): Promise<HotelResponseForDisplayType[] | []> {
     // call response
     const response = await HotelModel.find()
+      .select("_id name thumbnail price discount rating locatiin")
       .populate("location", "_id city country")
       .lean<PayloadHotel[]>();
 
@@ -161,7 +162,7 @@ export class HotelService {
     })
       .sort({ createAt: -1 })
       .limit(10)
-      .populate("idFasilitas", "_id fasilitas")
+      .select("_id name thumbnail price discount rating locatiin")
       .populate("location", "_id city country")
       .lean<PayloadHotel[]>();
 

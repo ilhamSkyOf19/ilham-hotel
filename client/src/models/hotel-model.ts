@@ -80,20 +80,24 @@ export const toHotelResponseType = (
 // response for display
 export type HotelResponseForDisplayType = Pick<
   PayloadHotel,
-  "_id" | "name" | "rating" | "thumbnail" | "price" | "location"
+  "_id" | "name" | "rating" | "location" | "thumbnail" | "price" | "discount"
 >;
 
 // response for display
 export const toHotelResponseForDisplayType = (
-  response: PayloadHotel
+  response: Pick<
+    PayloadHotel,
+    "_id" | "name" | "rating" | "location" | "thumbnail" | "price" | "discount"
+  >
 ): HotelResponseForDisplayType => {
   return {
     _id: response._id,
     name: response.name,
-    location: response.location,
     rating: response.rating,
+    location: response.location,
     thumbnail: response.thumbnail,
     price: response.price,
+    discount: response.discount,
   };
 };
 

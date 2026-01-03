@@ -103,14 +103,14 @@ export const toHotelResponseType = (
 // response for display
 export type HotelResponseForDisplayType = Pick<
   PayloadHotel,
-  "_id" | "name" | "rating" | "location" | "thumbnail" | "price"
+  "_id" | "name" | "rating" | "location" | "thumbnail" | "price" | "discount"
 >;
 
 // response for display
 export const toHotelResponseForDisplayType = (
   response: Pick<
     PayloadHotel,
-    "_id" | "name" | "rating" | "location" | "thumbnail" | "price"
+    "_id" | "name" | "rating" | "location" | "thumbnail" | "price" | "discount"
   >
 ): HotelResponseForDisplayType => {
   return {
@@ -120,6 +120,7 @@ export const toHotelResponseForDisplayType = (
     location: response.location,
     thumbnail: response.thumbnail,
     price: response.price,
+    discount: response.discount,
   };
 };
 

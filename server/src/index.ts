@@ -15,6 +15,7 @@ import reviewRoute from "./routes/review.route";
 import bookingCallbackRoute from "./routes/booking-callback.route";
 import bookingRoute from "./routes/booking.route";
 import locationRoute from "./routes/location.route";
+import pdfRoute from "./routes/pdf.route";
 const init = async () => {
   try {
     // init express
@@ -67,6 +68,9 @@ const init = async () => {
 
     // api location
     app.use("/api/location", locationRoute);
+
+    // api pdf
+    app.use("/api/pdf", pdfRoute);
 
     // next middleware
     app.use(errorMiddleware);

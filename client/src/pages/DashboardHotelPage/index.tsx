@@ -7,7 +7,6 @@ import SearchHotel from "../../components/SearchHotel";
 import { useQuery } from "@tanstack/react-query";
 import { HotelService } from "../../services/hotel.service";
 import CardMedium from "../../components/CardMedium";
-import loadingIcon from "../../assets/animation/loading-blue.svg";
 import { Helmet } from "react-helmet-async";
 import { MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -110,6 +109,15 @@ const DashboardHotelPage: FC = () => {
       }),
   });
 
+  // handle reset
+  const handleReset = () => {
+    setFilter({});
+    setFacility([]);
+    setAccommodation([]);
+    setRangePrice([0, 0]);
+    setActive(false);
+  };
+
   return (
     <>
       {/* helmet */}
@@ -169,6 +177,7 @@ const DashboardHotelPage: FC = () => {
             handleSubmit={handleSubmit}
             setFacility={setFacility}
             setAccommodation={setAccommodation}
+            handleReset={handleReset}
           />
         </ModalComponent>
 

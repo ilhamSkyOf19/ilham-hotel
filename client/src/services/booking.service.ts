@@ -35,4 +35,16 @@ export class BookingService {
     // return
     return response;
   }
+
+  // download ereciept
+  static async downloadEreceipt(): Promise<string> {
+    const response = await api.get("/pdf/ereceipt", {
+      responseType: "blob",
+    });
+
+    // create url
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    return url;
+  }
 }

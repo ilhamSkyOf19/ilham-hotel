@@ -36,12 +36,16 @@ const LayoutPage: FC = () => {
   // location path
   const location = useLocation();
   // use match
-  const hotelDetail =
+  const hiddenNavigatinBottom =
     !!matchPath(
       { path: "/dashboard/hotel/detail/:id", end: false },
       location.pathname
     ) ||
-    !!matchPath({ path: "/hotel/detail/:id", end: false }, location.pathname);
+    !!matchPath({ path: "/hotel/detail/:id", end: false }, location.pathname) ||
+    !!matchPath(
+      { path: "/bookings/ereceipt/:id", end: false },
+      location.pathname
+    );
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-start items-start relative pb-32">
@@ -51,7 +55,7 @@ const LayoutPage: FC = () => {
       </Suspense>
 
       {/* bottom navigation */}
-      {!hotelDetail && <BottomNavigation />}
+      {!hiddenNavigatinBottom && <BottomNavigation />}
     </div>
   );
 };

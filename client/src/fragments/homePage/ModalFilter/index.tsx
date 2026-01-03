@@ -15,6 +15,7 @@ type Props = {
   setFacility: (value: string[]) => void;
   setAccommodation: (value: string[]) => void;
   filter: { fasilitas?: string; minPrice?: string; maxPrice?: string };
+  handleReset: () => void;
 };
 const ModalFilter: FC<Props> = ({
   handleClose,
@@ -23,6 +24,7 @@ const ModalFilter: FC<Props> = ({
   setFacility,
   setAccommodation,
   filter,
+  handleReset,
 }) => {
   // fasilitas active
   const fasilitasActive = useMemo(() => {
@@ -63,11 +65,23 @@ const ModalFilter: FC<Props> = ({
       {/* type of accommodation */}
       <TypeOfAccommodation handleSetAccommodation={setAccommodation} />
 
-      {/* button apply */}
-      <div className="w-full pb-8 mt-4">
+      {/* button actioin */}
+      <div className="w-full pb-8 mt-4 flex flex-row justify-between items-center gap-4">
+        {/* reset */}
         <button
           type="button"
-          className="w-full flex flex-1 justify-center items-center bg-primary-skyblue font-bold  rounded-full text-white py-3"
+          className="text-base w-full flex flex-1 justify-center items-center bg-gray-100  rounded-full text-primary-skyblue py-3"
+          onClick={() => {
+            handleReset();
+          }}
+        >
+          Reset
+        </button>
+
+        {/* aplly */}
+        <button
+          type="button"
+          className="text-base w-full flex flex-1 justify-center items-center bg-primary-skyblue  rounded-full text-white py-3"
           onClick={() => {
             handleSubmit();
           }}
