@@ -18,6 +18,7 @@ export type IBooking = {
 
 // payload
 export type PayloadBooking = {
+  _id: string;
   user: {
     _id: string;
     email: string;
@@ -52,6 +53,7 @@ export const toBookingResponseType = (
   response: PayloadBooking
 ): BookingResponseType => {
   return {
+    _id: response._id,
     user: {
       _id: response.user._id,
       email: response.user.email,

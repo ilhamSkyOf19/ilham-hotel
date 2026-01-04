@@ -117,7 +117,7 @@ const BookingSection: FC<Props> = ({
 
       // snap midtrans
       window.snap.pay(data?.data?.token!, {
-        onSuccess: () => navigate("/"),
+        onSuccess: () => navigate(`/success-booking/${data?.data?._id}`),
         onPending: () => navigate("/"),
         onError: () => navigate("/"),
         onClose: () => navigate("/"),
