@@ -58,7 +58,7 @@ export class BookingCallBackController {
         case "deny":
         case "cancel":
         case "expire":
-          await BookingService.deleteById(idBooking);
+          await BookingService.updateStateById(idBooking, "failed");
           break;
 
         default:
