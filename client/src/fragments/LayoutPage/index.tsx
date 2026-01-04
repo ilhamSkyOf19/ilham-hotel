@@ -46,7 +46,15 @@ const LayoutPage: FC = () => {
       { path: "/bookings/ereceipt/:id", end: false },
       location.pathname
     ) ||
-    !!matchPath({ path: "/success-booking", end: false }, location.pathname);
+    !!matchPath(
+      { path: "/success-booking/:id", end: false },
+      location.pathname
+    ) ||
+    !!matchPath({ path: "/error-booking", end: false }, location.pathname) ||
+    !!matchPath(
+      { path: "/bookings/detail/:idHotel", end: false },
+      location.pathname
+    );
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-start items-start relative pb-32">

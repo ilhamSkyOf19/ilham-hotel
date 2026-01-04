@@ -19,8 +19,9 @@ import GalleriesPage from "../pages/GalleriesPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import BookingsPage from "../pages/BookingsPage";
 import { useGetAuthUser } from "../hooks/useAuth";
+import NotificationPage from "../pages/NotificationPage";
 import EreceiptPage from "../pages/EreceiptPage";
-import SuccessPage from "../pages/SuccessPage";
+import BookingDetailPage from "../pages/BookingDetailPage";
 
 const route = createBrowserRouter([
   {
@@ -63,13 +64,23 @@ const route = createBrowserRouter([
       // success page
       {
         path: "/success-booking/:id",
-        element: <SuccessPage />,
+        element: <NotificationPage typePage="success" />,
+      },
+
+      // error page
+      {
+        path: "/error-booking",
+        element: <NotificationPage typePage="error" />,
       },
 
       // hotel
       {
         path: "/hotel/detail/:id",
         element: <HotelDetailPage />,
+      },
+      {
+        path: "hotel/detail/:id/galleries",
+        element: <GalleriesPage />,
       },
       {
         path: "/history",
@@ -83,6 +94,10 @@ const route = createBrowserRouter([
       {
         path: "bookings/ereceipt/:id",
         element: <EreceiptPage />,
+      },
+      {
+        path: "bookings/detail/:id",
+        element: <BookingDetailPage />,
       },
       {
         path: "/room",

@@ -14,6 +14,8 @@ import BookingSection from "../../fragments/hotelDetailPage/BookingSection";
 import HeaderComponent from "../../fragments/hotelDetailPage/HeaderComponent";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/rootReducer";
+import { BookingService } from "../../services/booking.service";
+import ButtonAction from "../../components/ButtonAction";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
@@ -90,11 +92,17 @@ const HotelDetailPage: FC = () => {
         queryKey: ["hotelDetailForDasboard", idHotel],
         queryFn: () => HotelService.readDetail(idHotel!),
       },
+
+      // find booking is pending
+      {
+        queryKey: ["bookingIsPending", idHotel],
+        queryFn: () => BookingService.getIdBookingIsPending(idHotel!),
+      },
     ],
   });
 
   // desctruct
-  const [galleries, hotel] = datas;
+  const [galleries, hotel, bookingPending] = datas;
 
   // event scroll
   useEffect(() => {
@@ -117,8 +125,8 @@ const HotelDetailPage: FC = () => {
 
   // debug
   useEffect(() => {
-    console.log(isModalWarning);
-  }, [isModalWarning]);
+    console.log(bookingPending.data);
+  }, [bookingPending]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
@@ -159,7 +167,19 @@ const HotelDetailPage: FC = () => {
         )}
       >
         {/* total price */}
-        {!isModalBookingOpen && !isModalWarning ? (
+        {bookingPending.data?.data ? (
+          <div className="w-full flex flex-row justify-start items-center px-4">
+            <ButtonAction
+              label="Lanjutkan Pembayaran"
+              blue={true}
+              link={`/bookings/detail/${bookingPending.data?.data}`}
+              linkFrom={"hotel-detail"}
+              button={true}
+            />
+          </div>
+        ) : !bookingPending.isPending &&
+          !isModalBookingOpen &&
+          !isModalWarning ? (
           <ButtonBooking handleModalActive={() => handleButtonBooking()} />
         ) : (
           isModalBookingOpen &&

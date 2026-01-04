@@ -4,11 +4,15 @@ import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { GalleryService } from "../../services/gallery.service";
 import { generateUrlImg } from "../../utils/util";
-import loadingBue from "../../assets/animation/loading-blue.svg";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import ModalImage from "../../components/ModalImage";
+import type { RootState } from "../../store/rootReducer";
+import { useSelector } from "react-redux";
 
 const GalleriesPage: FC = () => {
+  // get state user from redux
+  const user = useSelector((state: RootState) => state.user);
+
   // state modal
   const [modalActive, setModalActive] = useState<{
     active: boolean;
@@ -63,7 +67,11 @@ const GalleriesPage: FC = () => {
         <HeaderInputPage
           label="Galleries"
           textFullColor={true}
-          linkBack={`/dashboard/hotel/detail/${idHotel}`}
+          linkBack={
+            user.role === "customer"
+              ? `/hotel/detail/${idHotel}`
+              : `/dashboard/hotel/detail/${idHotel}`
+          }
           locationState={previousPath}
         />
       </div>

@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import {
   BookingCreateRequestType,
   BookingForDisplayResponseType,
@@ -67,6 +68,7 @@ export class BookingService {
           status,
           active: status === "success",
           holdUntil: null,
+          token: "",
         },
       }
     );
@@ -74,6 +76,26 @@ export class BookingService {
     console.log("UPDATE RESULT:", result);
 
     return result.matchedCount === 1;
+  }
+
+  // get booking detail
+  static async readDetail(
+    idUser: string,
+    idBooking: string
+  ): Promise<BookingResponseType | null> {
+    // call response
+    const response = await BookingModel.findOne({
+      _id: idBooking,
+      user: new Types.ObjectId(idUser),
+    })
+      .populate("user", "_id email")
+      .populate("hotel", "_id name")
+      .lean<PayloadBooking>();
+
+    // cek response
+    if (!response) return null;
+
+    return toBookingResponseType(response);
   }
 
   // read by id hotel for get booking
@@ -112,6 +134,35 @@ export class BookingService {
     return true;
   }
 
+  // get token bookings pending
+  static async getIdBooking(
+    idUser: string,
+    idHotel: string
+  ): Promise<string | null> {
+    // now
+    const now = new Date();
+
+    // delete if expired
+    await BookingModel.findOneAndDelete({
+      user: new Types.ObjectId(idUser),
+      hotel: new Types.ObjectId(idHotel),
+      status: "pending",
+      holdUntil: { $lte: now },
+    });
+
+    // get id
+    const booking = await BookingModel.findOne({
+      user: new Types.ObjectId(idUser),
+      hotel: new Types.ObjectId(idHotel),
+      status: "pending",
+      holdUntil: { $gt: now },
+    })
+      .select("_id")
+      .lean();
+
+    return booking ? booking._id : null;
+  }
+
   // read booking upcomming
   static async getBooking(
     type: "upcoming" | "completed",
@@ -126,6 +177,7 @@ export class BookingService {
     const response = await BookingModel.find({
       ...filter,
       user: idUser,
+      active: true,
     })
       .populate({
         path: "hotel",
@@ -143,5 +195,16 @@ export class BookingService {
         hotel: data.hotel,
       })
     );
+  }
+
+  // delete booking by id
+  static async deleteById(idBooking: string): Promise<boolean> {
+    // call model
+    const response = await BookingModel.deleteOne({ _id: idBooking });
+
+    // cek response
+    if (!response) return false;
+
+    return true;
   }
 }

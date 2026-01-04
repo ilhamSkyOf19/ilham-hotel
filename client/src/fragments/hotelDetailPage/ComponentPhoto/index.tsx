@@ -1,4 +1,4 @@
-import { useState, type FC, type ReactNode } from "react";
+import { useEffect, useState, type FC, type ReactNode } from "react";
 import hotelDummy from "../../../assets/thumb/kamar-2.jpg";
 import { BsArrowLeft } from "react-icons/bs";
 import { IoShareSocialSharp } from "react-icons/io5";
@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { generateUrlImg } from "../../../utils/util";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import clsx from "clsx";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/rootReducer";
 
 // array choose thumbnail
 const arrayChooseThumb: number[] = [1, 2, 3, 4, 5];
@@ -25,6 +27,9 @@ const ComponentPhoto: FC<Props> = ({
   isLoading,
   locationState,
 }) => {
+  // get role from redux
+  const user = useSelector((state: RootState) => state.user);
+
   // navigate
   const navigate = useNavigate();
 
@@ -68,7 +73,7 @@ const ComponentPhoto: FC<Props> = ({
                 if (locationState) {
                   navigate(-1);
                 } else {
-                  navigate("/dashboard/hotel");
+                  navigate(user.role === "customer" ? "/" : "/dashboard/hotel");
                 }
               }}
             >

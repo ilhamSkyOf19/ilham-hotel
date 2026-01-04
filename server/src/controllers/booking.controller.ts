@@ -9,7 +9,6 @@ import { HotelService } from "../services/hotel.service";
 import { randomUUID } from "crypto";
 import { MidtransService } from "../services/midtrans.service";
 import { BookingService } from "../services/booking.service";
-import { HotelResponseForDisplayType } from "../models/hotel-model";
 import PDFDocument from "pdfkit";
 import { row } from "../utils/PDFformatUtils";
 
@@ -89,8 +88,6 @@ export class BookingController {
         idTransaction,
       });
 
-      //
-
       //   call service booking
       const response = await BookingService.create({
         ...body,
@@ -114,6 +111,42 @@ export class BookingController {
       }
     } catch (error) {
       // cek console
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // read detail
+  static async readDetail(
+    req: AuthRequest<{ id: string }>,
+    res: Response<ResponseType<BookingResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id hotel from params
+      const idBooking = req.params.id;
+
+      // get id user from params
+      const idUser = req.data?._id ?? "";
+
+      // call response
+      const response = await BookingService.readDetail(idUser, idBooking);
+
+      // cek response
+      if (!response) {
+        return res.status(400).json({
+          status: "failed",
+          message: "booking tidak ditemukan",
+          data: null,
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: "booking berhasil ditemukan",
+        data: response,
+      });
+    } catch (error) {
       console.log(error);
       next(error);
     }
@@ -148,6 +181,42 @@ export class BookingController {
       return res.status(200).json({
         status: "success",
         message: "read booking berhasil",
+        data: response,
+      });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // get token booking is pending
+  static async getIdBookingIsPending(
+    req: AuthRequest<{ idHotel: string }>,
+    res: Response<ResponseType<string | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id hotel from params
+      const { idHotel } = req.params;
+
+      // get id user from req data
+      const idUser = req.data?._id ?? "";
+
+      // call service
+      const response = await BookingService.getIdBooking(idUser, idHotel);
+
+      // cek response
+      if (!response) {
+        return res.status(200).json({
+          status: "success",
+          message: "data booking tidak ditemukan",
+          data: null,
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: "data booking berhasil ditemukan",
         data: response,
       });
     } catch (error) {

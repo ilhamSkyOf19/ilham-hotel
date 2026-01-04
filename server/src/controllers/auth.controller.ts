@@ -259,21 +259,35 @@ export class AuthController {
         expiresIn: "1h",
       });
 
-      //   set cookie
-      // res.cookie("token", token, {
+      // clear cookie for local
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      //   set cookie for local
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000,
+      });
+
+      // clear cookie for production
+      // res.clearCookie("token", {
       //   httpOnly: true,
-      //   secure: false, // ⬅️ development
-      //   sameSite: "lax", // NONE tidak boleh jika secure:false
-      //   maxAge: 60 * 60 * 1000,
+      //   secure: true,
+      //   sameSite: "none",
       // });
 
       // set cookie if production
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 60 * 60 * 1000, // 1 jam
-      });
+      // res.cookie("token", token, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "none",
+      //   maxAge: 60 * 60 * 1000, // 1 jam
+      // });
 
       // response
       res.status(200).json({

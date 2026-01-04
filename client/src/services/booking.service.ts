@@ -21,6 +21,19 @@ export class BookingService {
     return response;
   }
 
+  // read detail
+  static async readDetail(
+    idBooking: string
+  ): Promise<ResponseType<BookingResponseType | null>> {
+    // call api
+    const response = await api
+      .get(`/booking/read-detail/${idBooking}`)
+      .then((res) => res.data);
+
+    // return
+    return response;
+  }
+
   // get bookings with data hotel
   static async readBookingsWithDataHotels(
     type: "upcoming" | "completed"
@@ -33,6 +46,18 @@ export class BookingService {
       .then((res) => res.data);
 
     // return
+    return response;
+  }
+
+  // get token is pending
+  static async getIdBookingIsPending(
+    idHotel: string
+  ): Promise<ResponseType<null>> {
+    // call api
+    const response = await api
+      .get(`/booking/get-id-booking/${idHotel}`)
+      .then((res) => res.data);
+
     return response;
   }
 

@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { generateUrlImg } from "../../../utils/util";
 import { FaArrowRightLong } from "react-icons/fa6";
 import ModalImage from "../../../components/ModalImage";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/rootReducer";
 // Props
 type Props = {
   idHotel: string;
@@ -12,6 +14,9 @@ type Props = {
 };
 
 const SectionGallery: FC<Props> = ({ idHotel, galleries, isLoading }) => {
+  // get state user from redux
+  const user = useSelector((state: RootState) => state.user);
+
   // navigate
   const navigate = useNavigate();
 
@@ -30,15 +35,17 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries, isLoading }) => {
 
         {/* button add photo */}
         <div className="flex flex-row justify-end items-center">
-          <Link
-            to={`/dashboard/hotel/detail/${idHotel}/add-gallery`}
-            className="flex flex-row justify-start items-center gap-1 group"
-          >
-            <MdAddPhotoAlternate className="text-3xl text-gray-400 group-hover:text-gray-600 transition-all duration-200 ease-in-out" />
-            <p className="text-sm text-gray-400 group-hover:text-gray-600 transition-all duration-200 ease-in-out">
-              add photo
-            </p>
-          </Link>
+          {user.role === "admin" && (
+            <Link
+              to={`/dashboard/hotel/detail/${idHotel}/add-gallery`}
+              className="flex flex-row justify-start items-center gap-1 group"
+            >
+              <MdAddPhotoAlternate className="text-3xl text-gray-400 group-hover:text-gray-600 transition-all duration-200 ease-in-out" />
+              <p className="text-sm text-gray-400 group-hover:text-gray-600 transition-all duration-200 ease-in-out">
+                add photo
+              </p>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -76,9 +83,14 @@ const SectionGallery: FC<Props> = ({ idHotel, galleries, isLoading }) => {
           <button
             type="button"
             onClick={() =>
-              navigate(`/dashboard/hotel/detail/${idHotel}/galleries`, {
-                state: { from: location.pathname },
-              })
+              navigate(
+                user.role === "customer"
+                  ? `/hotel/detail/${idHotel}/galleries`
+                  : `/dashboard/hotel/detail/${idHotel}/galleries`,
+                {
+                  state: { from: location.pathname },
+                }
+              )
             }
             className="py-2 px-4 bg-primary-skyblue/85 transition-all duration-200 hover:bg-primary-skyblue rounded-lg flex flex-row justify-start items-center gap-2"
           >
