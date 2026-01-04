@@ -1,10 +1,10 @@
 import { type FC, type ReactNode } from "react";
-import { GoArrowLeft } from "react-icons/go";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { formatCurrency, formatDateFull } from "../../utils/util";
 import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
 import { BookingService } from "../../services/booking.service";
+import ButtonBackCircle from "../../components/ButtonBackCircle";
 
 const EreceiptPage: FC = () => {
   // get state from location
@@ -14,9 +14,6 @@ const EreceiptPage: FC = () => {
 
   // id booking from params
   const { id: idBooking } = useParams() as { id: string };
-
-  // navigate
-  const navigate = useNavigate();
 
   // format date
   const bookingDate: string[] = formatDateFull(new Date()).split("at");
@@ -52,19 +49,7 @@ const EreceiptPage: FC = () => {
       {/* header */}
       <div className="w-full flex flex-row justify-start items-center relative">
         {/* button back */}
-        <button
-          onClick={() => {
-            if (locationState) {
-              navigate(-1);
-            } else {
-              navigate("/bookings");
-            }
-          }}
-          type="button"
-          className="w-12 h-12 border border-black/20 flex flex-row justify-center items-center rounded-full absolute left-0"
-        >
-          <GoArrowLeft className="text-2xl text-black" />
-        </button>
+        <ButtonBackCircle linkBack="/bookins" from={locationState} />
         <h1 className="w-full text-center">E-Receipt</h1>
       </div>
 

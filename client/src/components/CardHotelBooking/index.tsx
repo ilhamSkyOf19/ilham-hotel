@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import ContentForCardMedium from "../ContentForCardMedium";
-import { useNavigate } from "react-router-dom";
+import ButtonAction from "../ButtonAction";
 
 type Props = {
   idBooking: string;
@@ -23,8 +23,6 @@ const CardHotelBooking: FC<Props> = ({
   //   linkDetail,
   idBooking,
 }) => {
-  // navigate
-  const navigate = useNavigate();
   return (
     <div className="w-full h-58 flex flex-col justify-start items-start bg-white shadow-[0_0_10px_0px_rgba(0,0,0,0.08)] rounded-xl px-4 py-2 gap-3">
       {/* content card */}
@@ -44,25 +42,16 @@ const CardHotelBooking: FC<Props> = ({
       {/* button action */}
       <div className="flex-1 w-full flex flex-row justify-between items-center gap-4">
         {/* view hotel */}
-        <button
-          type="button"
-          className="py-2.5 w-full bg-gray-100 rounded-full relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-200 before:ease-in-out hover:before:opacity-100"
-        >
-          View
-        </button>
+        <ButtonAction button={true} handleClick={() => {}} label="View" />
 
         {/* e-receipt */}
-        <button
-          onClick={() =>
-            navigate(`/bookings/ereceipt/${idBooking}`, {
-              state: { from: "bookings" },
-            })
-          }
-          type="button"
-          className="py-2.5 w-full  rounded-full bg-primary-skyblue text-white relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-200 before:ease-in-out hover:before:opacity-100"
-        >
-          E-Receipt
-        </button>
+        <ButtonAction
+          link={`/bookings/ereceipt/${idBooking}`}
+          linkFrom="bookings"
+          handleClick={() => {}}
+          label="E-Receipt"
+          blue={true}
+        />
       </div>
     </div>
   );

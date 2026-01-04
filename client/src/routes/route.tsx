@@ -20,6 +20,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import BookingsPage from "../pages/BookingsPage";
 import { useGetAuthUser } from "../hooks/useAuth";
 import EreceiptPage from "../pages/EreceiptPage";
+import SuccessPage from "../pages/SuccessPage";
 
 const route = createBrowserRouter([
   {
@@ -58,6 +59,14 @@ const route = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
+
+      // success page
+      {
+        path: "/success-booking/:id",
+        element: <SuccessPage />,
+      },
+
+      // hotel
       {
         path: "/hotel/detail/:id",
         element: <HotelDetailPage />,
