@@ -45,6 +45,8 @@ export class BookingService {
       })
       .then((res) => res.data);
 
+    console.log(response);
+
     // return
     return response;
   }

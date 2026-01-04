@@ -105,7 +105,7 @@ const ComponentPhoto: FC<Props> = ({
                   className="flex-1 h-full bg-gray-300 animate-pulse rounded-xl"
                 />
               ) : // cek index end
-              item === 5 ? (
+              item === 5 && user.role === "admin" ? (
                 <CardButtonOtherthumb
                   key={item}
                   idHotel={idHotel ?? ""}

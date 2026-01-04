@@ -57,9 +57,9 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
       // snap midtrans
       window.snap.pay(dataBooking?.data?.token!, {
         onSuccess: () => navigate(`/success-booking/${idBooking}`),
-        onPending: () => navigate("/"),
-        onError: () => navigate("/"),
-        onClose: () => navigate("/"),
+        onPending: () => navigate("/error-booking"),
+        onError: () => navigate("/error-booking"),
+        onClose: () => navigate("/error-booking"),
       });
     } catch (error) {}
   };

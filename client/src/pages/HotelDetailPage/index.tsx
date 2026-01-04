@@ -124,9 +124,9 @@ const HotelDetailPage: FC = () => {
   };
 
   // debug
-  useEffect(() => {
-    console.log(bookingPending.data);
-  }, [bookingPending]);
+  // useEffect(() => {
+  //   console.log(bookingPending.data);
+  // }, [bookingPending]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
@@ -167,7 +167,12 @@ const HotelDetailPage: FC = () => {
         )}
       >
         {/* total price */}
-        {bookingPending.data?.data ? (
+        {bookingPending.isPending ? (
+          <div className="w-full flex flex-row justify-between items-center animate-pulse px-4 gap-4">
+            <div className="w-full h-12 bg-gray-200 rounded-full" />
+            <div className="w-full h-12 bg-gray-200 rounded-full" />
+          </div>
+        ) : bookingPending.data?.data ? (
           <div className="w-full flex flex-row justify-start items-center px-4">
             <ButtonAction
               label="Lanjutkan Pembayaran"

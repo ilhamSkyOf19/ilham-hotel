@@ -16,7 +16,9 @@ const NotificationPage: FC<Props> = ({ typePage }) => {
     <div className="w-full h-screen flex flex-col justify-center items-center relative">
       {/* button back */}
       <div className="w-full absolute top-8 left-4">
-        <ButtonBackCircle linkBack="/" />
+        <ButtonBackCircle
+          linkBack={typePage === "success" ? "/bookings" : "/"}
+        />
       </div>
       {/* icon check */}
       {typePage === "success" ? (
