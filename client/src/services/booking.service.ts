@@ -64,8 +64,8 @@ export class BookingService {
   }
 
   // download ereciept
-  static async downloadEreceipt(): Promise<string> {
-    const response = await api.get("/pdf/ereceipt", {
+  static async downloadEreceipt(idBooking: string): Promise<string> {
+    const response = await api.get(`/pdf/ereceipt/${idBooking}`, {
       responseType: "blob",
     });
 

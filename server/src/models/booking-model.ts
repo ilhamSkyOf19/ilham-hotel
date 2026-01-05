@@ -25,6 +25,8 @@ export type PayloadBooking = {
   user: {
     _id: string;
     email: string;
+    fullName: string;
+    phone: string;
   };
   hotel: {
     _id: string;
@@ -70,6 +72,8 @@ export const toBookingResponseType = (
     user: {
       _id: response.user._id,
       email: response.user.email,
+      fullName: response.user.fullName,
+      phone: response.user.phone,
     },
     hotel: {
       _id: response.hotel._id,

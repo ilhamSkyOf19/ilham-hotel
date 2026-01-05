@@ -7,6 +7,7 @@ import { BookingService } from "../../services/booking.service";
 import ButtonBackCircle from "../../components/ButtonBackCircle";
 import { loadMidtransSnap } from "../../utils/midtrans";
 
+// props
 type Props = {
   typePage: "ereceipt" | "detailPage";
 };
@@ -23,9 +24,6 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
   // id booking from params
   const { id: idBooking } = useParams() as { id: string };
 
-  // format date
-  const bookingDate: string[] = formatDateFull(new Date()).split("at");
-
   // use query download
   const { data: dataBooking, isLoading } = useQuery({
     queryKey: ["booking", "detail", idBooking],
@@ -34,7 +32,7 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
 
   // use mutation
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: () => BookingService.downloadEreceipt(),
+    mutationFn: () => BookingService.downloadEreceipt(idBooking),
     onSuccess: (data) => {
       const a = document.createElement("a");
       a.href = data;
@@ -89,6 +87,11 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
     }
   };
 
+  // format date
+  const bookingDate: string[] = formatDateFull(
+    new Date(dataBooking?.data?.createdAt ?? new Date())
+  ).split("at");
+
   // debug
   useEffect(() => {
     console.log(dataBooking);
@@ -112,7 +115,10 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
       <div className="w-full flex flex-col justify-start items-center mt-12">
         {/* card info */}
         <ComponentContainerInfo>
-          <ComponentInfo label="Name Hotel" value="Sapadia Tulang Bawang" />
+          <ComponentInfo
+            label="Name Hotel"
+            value={dataBooking?.data?.hotel.name ?? ""}
+          />
         </ComponentContainerInfo>
 
         <ComponentContainerInfo>
@@ -125,41 +131,28 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
           {/* check in  */}
           <ComponentInfo
             label="Check In"
-            value={formatDateFull(new Date()).split("at")[0]}
+            value={
+              formatDateFull(
+                new Date(dataBooking?.data?.checkIn ?? new Date())
+              ).split("at")[0]
+            }
           />
 
           {/* check in  */}
           <ComponentInfo
             label="Check Out"
-            value={formatDateFull(new Date()).split("at")[0]}
+            value={
+              formatDateFull(
+                new Date(dataBooking?.data?.checkOut ?? new Date())
+              ).split("at")[0]
+            }
           />
 
-          {/* gust  */}
-          <ComponentInfo label="Gust" value={`0${5} Person`} />
-        </ComponentContainerInfo>
-
-        {/*  */}
-        <ComponentContainerInfo>
-          {/* booking date */}
+          {/* guest  */}
           <ComponentInfo
-            label="Booking Date"
-            value={`${bookingDate[0]} | ${bookingDate[1]}`}
+            label="Guest"
+            value={`0${dataBooking?.data?.visitor} Person`}
           />
-
-          {/* check in  */}
-          <ComponentInfo
-            label="Check In"
-            value={formatDateFull(new Date()).split("at")[0]}
-          />
-
-          {/* check in  */}
-          <ComponentInfo
-            label="Check Out"
-            value={formatDateFull(new Date()).split("at")[0]}
-          />
-
-          {/* gust  */}
-          <ComponentInfo label="Gust" value={`0${5} Person`} />
         </ComponentContainerInfo>
 
         {/*  */}
@@ -167,7 +160,10 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
           {/* booking date */}
           <ComponentInfo
             label="Amount"
-            value={`${formatCurrency(430, true)}`}
+            value={`${formatCurrency(
+              (dataBooking?.data?.totalPrice ?? 0) - 5,
+              true
+            )}`}
           />
 
           {/* check in  */}
@@ -180,17 +176,26 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
         {/* total */}
         <ComponentContainerInfo>
           {/* booking date */}
-          <ComponentInfo label="Total" value={`${formatCurrency(700, true)}`} />
+          <ComponentInfo
+            label="Total"
+            value={`${formatCurrency(
+              dataBooking?.data?.totalPrice ?? 0,
+              true
+            )}`}
+          />
         </ComponentContainerInfo>
 
         {/* contact */}
         <ComponentContainerInfo>
           {/* name */}
-          <ComponentInfo label="Name" value={`Ilham Rohmatulloh`} />
+          <ComponentInfo
+            label="Name"
+            value={dataBooking?.data?.user.fullName ?? ""}
+          />
           {/* phone number */}
           <ComponentInfo
             label="Phone Number"
-            value={Array.from("085896890881")
+            value={Array.from(dataBooking?.data?.user.phone ?? "")
               .map((char, i) =>
                 i === 0 ? `+62 ` : i !== 0 && i % 4 === 0 ? `-` + char : char
               )
@@ -201,7 +206,13 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
           {/* id transaction */}
           <ComponentInfo
             label="Transaction ID"
-            value={`#BOOKING-${"98bb1952-4fbb-447b-9ac2-dfcf191a8ffc"}`}
+            value={`#BOOKING-${dataBooking?.data?._id}`}
+          />
+
+          {/* id transaction */}
+          <ComponentInfo
+            label="Status"
+            value={dataBooking?.data?.status ?? ""}
           />
         </ComponentContainerInfo>
       </div>

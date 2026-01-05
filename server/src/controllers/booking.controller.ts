@@ -11,6 +11,7 @@ import { MidtransService } from "../services/midtrans.service";
 import { BookingService } from "../services/booking.service";
 import PDFDocument from "pdfkit";
 import { row } from "../utils/PDFformatUtils";
+import { formatDate, formatDateShort } from "../utils/util";
 
 export class BookingController {
   // booking
@@ -227,11 +228,23 @@ export class BookingController {
 
   // ereceipt
   static async ereceipt(
-    _req: Request,
+    req: AuthRequest<{ idBooking: string }>,
     res: Response<Promise<void>>,
     _next: NextFunction
   ) {
     try {
+      // get id data from req data
+      const idUser = req.data?._id ?? "";
+
+      // get id booking from params
+      const idBooking = req.params.idBooking;
+
+      // get booking
+      const bookings = await BookingService.readDetail(idUser, idBooking);
+
+      // cek bookings
+      if (!bookings) return;
+
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
@@ -302,7 +315,7 @@ export class BookingController {
       doc
         .font("Courier")
         .fontSize(16)
-        .text("28/07/2026 11:00", margin, doc.y, {
+        .text(formatDate(bookings.createdAt), margin, doc.y, {
           width: pageWidth - margin * 2,
           align: "center",
         });
@@ -310,10 +323,10 @@ export class BookingController {
       doc.moveDown(2);
 
       // text row
-      row(doc, "Name Hotel", "Sapadia Tulang Bawang");
-      row(doc, "Check In", "January 24, 2004");
-      row(doc, "Check Out", "January 28, 2004");
-      row(doc, "Guest", "02 Person");
+      row(doc, "Name Hotel", bookings.hotel.name);
+      row(doc, "Check In", formatDateShort(bookings.checkIn));
+      row(doc, "Check Out", formatDateShort(bookings.checkOut));
+      row(doc, "Guest", `0${bookings.visitor} Person`);
 
       // line
       doc
