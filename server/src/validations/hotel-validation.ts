@@ -22,6 +22,10 @@ export class HotelValidation {
       .min(1, "Price is required")
       .refine((value) => !isNaN(Number(value)), "Price must be a number")
       .transform((value) => Number(value)),
+    taxAndFees: string("tax & fees is required")
+      .min(1, "tax & fees is required")
+      .refine((value) => !isNaN(Number(value)), "tax & fees must be a number")
+      .transform((value) => Number(value)),
     totalRoom: string("Price is required")
       .min(1, "Price is required")
       .refine((value) => !isNaN(Number(value)), "Price must be a number")

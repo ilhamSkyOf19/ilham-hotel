@@ -13,6 +13,7 @@ const HotelSchema = new Schema<IHotel>(
     thumbnail: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
     totalRoom: { type: Number, required: true },
+    taxAndFees: { type: Number, required: true },
     discount: { type: Number, required: true, default: 0 },
     linkMaps: { type: String, required: true },
   },

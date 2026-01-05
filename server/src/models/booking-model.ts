@@ -31,12 +31,14 @@ export type PayloadBooking = {
   hotel: {
     _id: string;
     name: string;
+    taxAndFees: number;
+    discount: number;
   };
   checkIn: Date;
   checkOut: Date;
   visitor: number;
   holdUntil: Date | null;
-  totalPrice: string;
+  totalPrice: number;
   room: number;
   token: string;
   active: boolean;
@@ -78,6 +80,8 @@ export const toBookingResponseType = (
     hotel: {
       _id: response.hotel._id,
       name: response.hotel.name,
+      taxAndFees: response.hotel.taxAndFees,
+      discount: response.hotel.discount,
     },
     token: response.token,
     active: response.active,

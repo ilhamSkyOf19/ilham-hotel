@@ -24,3 +24,26 @@ export const formatDateShort = (date: Date): string => {
     year: "numeric",
   });
 };
+
+// format currency
+export const formatCurrency = (
+  value: number,
+  full: boolean = false
+): string => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: full ? 2 : 0,
+  });
+};
+
+// format date
+export const formatDateFull = (date: Date): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};

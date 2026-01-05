@@ -14,6 +14,9 @@ export class HotelValidation {
     price: string("Price is required")
       .min(1, "Price is required")
       .regex(/^[0-9$,]+$/, { message: "Only numbers allowed" }),
+    taxAndFees: string("Tax & Fees is required")
+      .min(1, "Tax & Fees is required")
+      .regex(/^[0-9$,]+$/, { message: "Only numbers allowed" }),
     totalRoom: string("Total room is required")
       .min(1, "Total room is required")
       .refine((value) => !isNaN(Number(value)), "Total room must be a number"),

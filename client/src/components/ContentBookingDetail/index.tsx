@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BookingService } from "../../services/booking.service";
 import ButtonBackCircle from "../../components/ButtonBackCircle";
 import { loadMidtransSnap } from "../../utils/midtrans";
+import loadingWhite from "../../assets/animation/loading-white.svg";
 
 // props
 type Props = {
@@ -161,15 +162,28 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
           <ComponentInfo
             label="Amount"
             value={`${formatCurrency(
-              (dataBooking?.data?.totalPrice ?? 0) - 5,
+              (dataBooking?.data?.totalPrice ?? 0) -
+                (dataBooking?.data?.hotel.taxAndFees ?? 0),
               true
             )}`}
           />
 
-          {/* check in  */}
+          {/* Tax  & Fees  */}
           <ComponentInfo
             label="Tax & Fees"
-            value={`${formatCurrency(5, true)}`}
+            value={`${formatCurrency(
+              dataBooking?.data?.hotel.taxAndFees ?? 0,
+              true
+            )}`}
+          />
+
+          {/* discount  */}
+          <ComponentInfo
+            label="Discount"
+            value={`${formatCurrency(
+              dataBooking?.data?.hotel.discount ?? 0,
+              true
+            )}`}
           />
         </ComponentContainerInfo>
 
@@ -218,16 +232,22 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
       </div>
 
       {/* bottom navigation download */}
-      <div className="w-screen fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl px-4 flex flex-row justify-center items-center gap-2">
+      <div className="w-screen fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl px-4 flex flex-row justify-center items-center gap-2 py-2.5">
         <button
           disabled={typePage === "ereceipt" ? isPending : isLoading}
           onClick={() =>
             typePage === "ereceipt" ? mutateAsync() : handlePayment()
           }
           type="button"
-          className="w-full py-3.5 bg-primary-skyblue rounded-full text-white relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-200 before:ease-in-out hover:before:opacity-100"
+          className="w-full h-full bg-primary-skyblue rounded-full text-white relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-200 before:ease-in-out hover:before:opacity-100 flex flex-row justify-center items-center"
         >
-          {typePage === "ereceipt" ? "Download E-Receipt" : "Payment"}
+          {isPending || isLoading ? (
+            <img src={loadingWhite} className="w-10"></img>
+          ) : typePage === "ereceipt" ? (
+            "Download E-Receipt"
+          ) : (
+            "Payment"
+          )}
         </button>
       </div>
     </div>

@@ -97,7 +97,7 @@ export class BookingService {
       user: new Types.ObjectId(idUser),
     })
       .populate("user", "_id email fullName phone")
-      .populate("hotel", "_id name")
+      .populate("hotel", "_id name taxAndFees discount")
       .lean<PayloadBooking>();
 
     // cek response

@@ -11,7 +11,12 @@ import { MidtransService } from "../services/midtrans.service";
 import { BookingService } from "../services/booking.service";
 import PDFDocument from "pdfkit";
 import { row } from "../utils/PDFformatUtils";
-import { formatDate, formatDateShort } from "../utils/util";
+import {
+  formatCurrency,
+  formatDate,
+  formatDateFull,
+  formatDateShort,
+} from "../utils/util";
 
 export class BookingController {
   // booking
@@ -92,7 +97,7 @@ export class BookingController {
       //   call service booking
       const response = await BookingService.create({
         ...body,
-        totalPrice: grossAmount,
+        totalPrice: grossAmount + findHotel.taxAndFees,
         id: idTransaction,
         token: midtransPayment.token,
         user: idUser ?? "",
@@ -245,6 +250,8 @@ export class BookingController {
       // cek bookings
       if (!bookings) return;
 
+      // format date
+
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
@@ -336,9 +343,10 @@ export class BookingController {
 
       doc.moveDown(0.5);
 
-      row(doc, "Amount", "$650.00");
-      row(doc, "Tax & Fees", "$5.00");
-      row(doc, "Total", "$700.00");
+      row(doc, "Amount", formatCurrency(bookings.totalPrice - 5, true));
+      row(doc, "Tax & Fees", formatCurrency(bookings.hotel.taxAndFees, true));
+      row(doc, "Discount", formatCurrency(bookings.hotel.discount, true));
+      row(doc, "Total", formatCurrency(bookings.totalPrice, true));
 
       // line
       doc
@@ -348,14 +356,19 @@ export class BookingController {
 
       doc.moveDown(0.5);
 
-      row(doc, "Name", "Ilham Rohmatulloh");
-      row(doc, "Phone Number", "+62 858-9689-0881");
+      row(doc, "Name", bookings.user.fullName);
       row(
         doc,
-        "Transaction ID",
-        "#BOOKING-98bb1952-4fbb-447b-9ac2-dfcf191a8ffc"
+        "Phone Number",
+        Array.from(bookings?.user.phone ?? "")
+          .map((char, i) =>
+            i === 0 ? `+62 ` : i !== 0 && i % 4 === 0 ? `-` + char : char
+          )
+          .join("")
+          .toString()
       );
-      row(doc, "Status", "Success");
+      row(doc, "Transaction ID", `#BOOKING-${bookings.user.phone}`);
+      row(doc, "Status", bookings.status);
 
       doc.moveDown(1.5);
 

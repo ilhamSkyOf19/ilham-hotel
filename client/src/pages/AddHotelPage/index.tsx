@@ -85,6 +85,7 @@ const AddHotelPage: FC = () => {
       formData.append("linkMaps", data.linkMaps);
       formData.append("location", data.location);
       formData.append("totalRoom", data.totalRoom);
+      formData.append("taxAndFees", data.taxAndFees);
       formData.append("fasilitas", JSON.stringify(data.fasilitas));
 
       // call mutation
@@ -158,6 +159,16 @@ const AddHotelPage: FC = () => {
         <BoxInputAbstrakChoose
           setValue={setValue}
           errorMessage={errors.location?.message}
+        />
+
+        {/* tax and fees */}
+        <BoxInputAbstrakCurrency
+          name="taxAndFees"
+          label="Tax & Fees"
+          placeholder="Enter tax & fees"
+          register={register("taxAndFees")}
+          errorMessage={errors.taxAndFees?.message}
+          setValue={setValue}
         />
 
         {/* input thumbnail */}
