@@ -3,15 +3,12 @@ import {
   BookingCreateRequestType,
   BookingForDisplayResponseType,
   BookingResponseType,
+  BookingUpdateCallbackRequestType,
   BookingWithHotelPopulated,
   PayloadBooking,
   toBookingForDisplayResponseType,
   toBookingResponseType,
 } from "../models/booking-model";
-import {
-  HotelResponseForDisplayType,
-  toHotelResponseForDisplayType,
-} from "../models/hotel-model";
 import BookingModel from "../schemas/booking.schema";
 
 // hold duration
@@ -61,15 +58,26 @@ export class BookingService {
     idBooking: string,
     status: "pending" | "success" | "failed"
   ): Promise<boolean> {
+    // payload
+    const updateData: BookingUpdateCallbackRequestType = {
+      status,
+      active: status === "success",
+    };
+
+    // cek status
+    if (status === "failed") {
+      updateData.holdUntil = null;
+      updateData.token = "";
+    }
+
+    console.log("UPDATE STATUS:", status);
+    console.log("UPDATE PAYLOAD:", updateData);
+    console.log("TIME:", new Date().toISOString());
+
     const result = await BookingModel.updateOne(
       { _id: idBooking },
       {
-        $set: {
-          status,
-          active: status === "success",
-          holdUntil: null,
-          token: "",
-        },
+        $set: updateData,
       }
     );
 

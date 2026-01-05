@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { IoIosAlert } from "react-icons/io";
 
 type Props = {
-  typePage: "success" | "error";
+  typePage: "success" | "error" | "pending";
 };
 const NotificationPage: FC<Props> = ({ typePage }) => {
   // get id from params
@@ -28,18 +28,26 @@ const NotificationPage: FC<Props> = ({ typePage }) => {
       )}
 
       <h2 className="text-2xl text-black font-semibold capitalize animate-slide-up">
-        {typePage === "success" ? "Congratulations!" : "Sorry!"}
+        {typePage === "success"
+          ? "Congratulations!"
+          : typePage === "pending"
+          ? "Pending!"
+          : "Sorry!"}
       </h2>
       {/* desc */}
       <div className="w-full flex flex-col justify-start items-center mt-4">
         <p className="text-sm text-black/50 text-center animate-slide-up">
           {typePage === "success"
             ? "You Hotel Successfully Booked."
+            : typePage === "pending"
+            ? "Your booking is pending"
             : "Your hotel failed to book."}
         </p>
         <p className="text-sm text-black/50 text-center animate-slide-up">
           {typePage === "success"
             ? "You can check your booking on the menu Profile."
+            : typePage === "pending"
+            ? "Please complete the payment"
             : "Your payment was unsuccessful."}
         </p>
       </div>
@@ -65,9 +73,9 @@ const NotificationPage: FC<Props> = ({ typePage }) => {
           </>
         ) : (
           <ButtonAction
-            link={`/`}
-            linkFrom="Error"
-            label="Back to Home"
+            link={typePage === "error" ? `/` : `/bookings/detail/${idBooking}`}
+            linkFrom={typePage === "error" ? "Error-Page" : "Pending-Page"}
+            label={typePage === "error" ? "Back to Home" : "View E-Receipt"}
             blue={true}
           />
         )}

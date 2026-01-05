@@ -7,7 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
+  Cell,
 } from "recharts";
 
 // data kebutuhan
@@ -26,6 +26,14 @@ const terkumpul = [
   { name: "E", value: 3 },
   { name: "P", value: 3 },
   { name: "P", value: 2 },
+];
+
+const COLORS = [
+  "#3b82f6", // biru
+  "#22c55e", // hijau
+  "#f59e0b", // kuning
+  "#ef4444", // merah
+  "#8b5cf6", // ungu
 ];
 
 const SimpleBarChart = () => {
@@ -109,16 +117,18 @@ const SimpleBarChart = () => {
         margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        <XAxis dataKey="index" tickFormatter={(i) => data[i]?.name} />
         <YAxis width="auto" domain={[0, 100]} />
         <Tooltip content={<CustomTooltip />} />
 
-        <Legend />
         <Bar
           dataKey="value"
-          fill="#8884d8"
           activeBar={<Rectangle fill="pink" stroke="blue" />}
-        />
+        >
+          {data.map((_, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Bar>
       </BarChart>
     </div>
   );

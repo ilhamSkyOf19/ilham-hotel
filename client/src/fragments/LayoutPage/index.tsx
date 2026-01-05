@@ -52,6 +52,10 @@ const LayoutPage: FC = () => {
     ) ||
     !!matchPath({ path: "/error-booking", end: false }, location.pathname) ||
     !!matchPath(
+      { path: "/pending-booking/:id", end: false },
+      location.pathname
+    ) ||
+    !!matchPath(
       { path: "/bookings/detail/:idHotel", end: false },
       location.pathname
     );

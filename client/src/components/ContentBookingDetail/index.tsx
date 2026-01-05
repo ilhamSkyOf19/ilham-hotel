@@ -52,16 +52,41 @@ const ContentBookingDetail: FC<Props> = ({ typePage }) => {
   // snap midtrans
   const handlePayment = async () => {
     try {
+      // loading open midtrans
+      navigate("/open-midtrans");
+
+      // load midtrans snap
       await loadMidtransSnap();
 
-      // snap midtrans
+      const timeout = setTimeout(() => {
+        navigate("/error-booking");
+      }, 5000);
+
+      // buka snap
       window.snap.pay(dataBooking?.data?.token!, {
-        onSuccess: () => navigate(`/success-booking/${idBooking}`),
-        onPending: () => navigate("/error-booking"),
-        onError: () => navigate("/error-booking"),
-        onClose: () => navigate("/error-booking"),
+        onSuccess: () => {
+          clearTimeout(timeout);
+          navigate(`/success-booking/${idBooking}`);
+        },
+
+        onPending: () => {
+          clearTimeout(timeout);
+          navigate(`/pending-booking/${idBooking}`);
+        },
+
+        onError: () => {
+          clearTimeout(timeout);
+          navigate("/error-booking");
+        },
+
+        onClose: () => {
+          clearTimeout(timeout);
+          navigate("/error-booking");
+        },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // debug

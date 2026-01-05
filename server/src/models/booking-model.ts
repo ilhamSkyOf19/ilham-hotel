@@ -50,6 +50,14 @@ export type BookingCreateRequestType = Pick<IBooking, "visitor"> & {
   checkOut: string;
 };
 
+// booking update callback
+export type BookingUpdateCallbackRequestType = {
+  status: "pending" | "success" | "failed";
+  active: boolean;
+  holdUntil?: Date | null;
+  token?: string;
+};
+
 // response
 export type BookingResponseType = PayloadBooking;
 

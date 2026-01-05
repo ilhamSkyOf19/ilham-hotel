@@ -112,15 +112,37 @@ const BookingSection: FC<Props> = ({
       return BookingService.booking(data);
     },
     onSuccess: async (data) => {
+      // loading open midtrans
+      navigate("/open-midtrans");
+
       // load midtrans snap
       await loadMidtransSnap();
 
-      // snap midtrans
-      window.snap.pay(data?.data?.token!, {
-        onSuccess: () => navigate(`/success-booking/${data?.data?._id}`),
-        onPending: () => navigate("/error-booking"),
-        onError: () => navigate("/error-booking"),
-        onClose: () => navigate("/error-booking"),
+      const timeout = setTimeout(() => {
+        navigate("/error-booking");
+      }, 5000);
+
+      // buka snap
+      window.snap.pay(data.data?.token!, {
+        onSuccess: () => {
+          clearTimeout(timeout);
+          navigate(`/success-booking/${data.data?._id}`);
+        },
+
+        onPending: () => {
+          clearTimeout(timeout);
+          navigate(`/pending-booking/${data.data?._id}`);
+        },
+
+        onError: () => {
+          clearTimeout(timeout);
+          navigate("/error-booking");
+        },
+
+        onClose: () => {
+          clearTimeout(timeout);
+          navigate("/error-booking");
+        },
       });
 
       console.log("Booking successful:", data);

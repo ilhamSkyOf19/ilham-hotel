@@ -22,6 +22,7 @@ import { useGetAuthUser } from "../hooks/useAuth";
 import NotificationPage from "../pages/NotificationPage";
 import EreceiptPage from "../pages/EreceiptPage";
 import BookingDetailPage from "../pages/BookingDetailPage";
+import OpenMidtransPage from "../pages/OpenMidtransPage";
 
 const route = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const route = createBrowserRouter([
     path: "/coba",
     element: <Grafik />,
   },
+  {
+    path: "/open-midtrans",
+    element: <OpenMidtransPage />,
+  },
 
   {
     path: "/",
@@ -71,6 +76,12 @@ const route = createBrowserRouter([
       {
         path: "/error-booking",
         element: <NotificationPage typePage="error" />,
+      },
+
+      // pending page
+      {
+        path: "/pending-booking/:id",
+        element: <NotificationPage typePage="pending" />,
       },
 
       // hotel
