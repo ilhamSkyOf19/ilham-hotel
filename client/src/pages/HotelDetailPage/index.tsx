@@ -10,12 +10,10 @@ import { HotelService } from "../../services/hotel.service";
 import type { HotelResponseType } from "../../models/hotel-model";
 import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
 import { formatCurrency } from "../../utils/util";
-import BookingSection from "../../fragments/hotelDetailPage/BookingSection";
 import HeaderComponent from "../../fragments/hotelDetailPage/HeaderComponent";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/rootReducer";
-import { BookingService } from "../../services/booking.service";
-import ButtonAction from "../../components/ButtonAction";
+import NavbarPayment from "../../fragments/hotelDetailPage/NavbarPayment";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
@@ -92,17 +90,11 @@ const HotelDetailPage: FC = () => {
         queryKey: ["hotelDetailForDasboard", idHotel],
         queryFn: () => HotelService.readDetail(idHotel!),
       },
-
-      // find booking is pending
-      {
-        queryKey: ["bookingIsPending", idHotel],
-        queryFn: () => BookingService.getIdBookingIsPending(idHotel!),
-      },
     ],
   });
 
   // desctruct
-  const [galleries, hotel, bookingPending] = datas;
+  const [galleries, hotel] = datas;
 
   // event scroll
   useEffect(() => {
@@ -159,49 +151,20 @@ const HotelDetailPage: FC = () => {
       />
 
       {/* navbar payment */}
-      <div
-        ref={refModalBooking}
-        className={clsx(
-          "w-screen fixed bottom-0 h-[70vh] bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out",
-          isModalBookingOpen ? "max-h-[70vh]" : "max-h-18"
-        )}
-      >
-        {/* total price */}
-        {bookingPending.isPending ? (
-          <div className="w-full flex flex-row justify-between items-center animate-pulse px-4 gap-4">
-            <div className="w-full h-12 bg-gray-200 rounded-full" />
-            <div className="w-full h-12 bg-gray-200 rounded-full" />
-          </div>
-        ) : bookingPending.data?.data ? (
-          <div className="w-full flex flex-row justify-start items-center px-4">
-            <ButtonAction
-              label="Lanjutkan Pembayaran"
-              blue={true}
-              link={`/bookings/detail/${bookingPending.data?.data}`}
-              linkFrom={"hotel-detail"}
-              button={true}
-            />
-          </div>
-        ) : !bookingPending.isPending &&
-          !isModalBookingOpen &&
-          !isModalWarning ? (
-          <ButtonBooking handleModalActive={() => handleButtonBooking()} />
-        ) : (
-          isModalBookingOpen &&
-          hotel?.data && (
-            <BookingSection
-              handleModalClose={() => setIsModalBookingOpen(false)}
-              idHotel={idHotel ?? ""}
-              nameHotel={hotel?.data?.data?.name ?? ""}
-              city={hotel?.data?.data?.location.city ?? ""}
-              country={hotel?.data?.data?.location.country ?? ""}
-              discount={hotel?.data?.data?.discount ?? 0}
-              linkMaps={hotel?.data?.data?.linkMaps ?? ""}
-              price={hotel?.data?.data?.price ?? 0}
-            />
-          )
-        )}
-      </div>
+      <NavbarPayment
+        refModalBooking={refModalBooking}
+        isModalBookingOpen={isModalBookingOpen}
+        handleButtonBooking={handleButtonBooking}
+        handleModalBookingClose={() => setIsModalBookingOpen(false)}
+        isModalWarning={isModalWarning}
+        nameHotel={hotel?.data?.data?.name ?? ""}
+        cityHotel={hotel?.data?.data?.location.city ?? ""}
+        countryHotel={hotel?.data?.data?.location.country ?? ""}
+        idHotel={idHotel ?? ""}
+        discountHotel={hotel?.data?.data?.discount ?? 0}
+        linkMapsHotel={hotel?.data?.data?.linkMaps ?? ""}
+        priceHotel={hotel?.data?.data?.price ?? 0}
+      />
 
       {/* modal warning */}
       <div
@@ -248,6 +211,7 @@ const HotelDetailPage: FC = () => {
   );
 };
 
+// Content
 type ComponentContentProps = {
   idHotel: string;
   galleries: string[];
@@ -290,6 +254,8 @@ const ComponentContent: FC<ComponentContentProps> = ({
           city={hotel?.location.city ?? ""}
           country={hotel?.location.country ?? ""}
           discount={hotel?.discount ?? 0}
+          rating={hotel?.rating ?? 0}
+          totalReviews={hotel?.totalReviews ?? 0}
         />
       )}
 

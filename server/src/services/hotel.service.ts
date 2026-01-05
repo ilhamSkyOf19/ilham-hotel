@@ -10,6 +10,7 @@ import {
 } from "../models/hotel-model";
 import HotelModel from "../schemas/hotel.schema";
 import LocationModel from "../schemas/location.schema";
+import ReviewModel from "../schemas/review.schema";
 
 export class HotelService {
   // create
@@ -78,8 +79,16 @@ export class HotelService {
       return null;
     }
 
+    // get count review
+    const totalReviews = await ReviewModel.countDocuments({
+      hotel: response._id,
+    });
+
     // return response
-    return toHotelResponseType(response);
+    return toHotelResponseType({
+      ...response,
+      totalReviews,
+    });
   }
 
   // read by id, data : total room & id

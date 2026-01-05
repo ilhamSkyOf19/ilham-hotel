@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa6";
 type Props = {
   discount: number;
   rating: number;
-  reviews?: number;
+  reviews: number;
 };
 const DiscRating: FC<Props> = ({ discount, rating, reviews }) => {
   return (
@@ -27,7 +27,9 @@ const DiscRating: FC<Props> = ({ discount, rating, reviews }) => {
         <h2 className="text-sm   text-black">{rating}</h2>
 
         {/* reviews */}
-        {reviews && <p className="text-sm font-light">({reviews} reviewers)</p>}
+        <p className="text-sm font-light">
+          ({reviews > 0 ? reviews + "reviewers" : "Tidak ada reviews"})
+        </p>
       </div>
     </div>
   );

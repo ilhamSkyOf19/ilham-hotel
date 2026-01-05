@@ -60,7 +60,7 @@ const BookingSection: FC<Props> = ({
     checkOut: Date;
   }>({
     checkIn: new Date(),
-    checkOut: addDays(new Date(), 30),
+    checkOut: addDays(new Date(), 3),
   });
 
   // set check date
@@ -177,7 +177,7 @@ const BookingSection: FC<Props> = ({
       <button
         type="button"
         onClick={() => handleModalClose()}
-        className="w-full flex flex-row justify-center items-center py-1.5 mb-4 group"
+        className="w-full flex flex-row justify-center items-center py-2 mb-4 group"
       >
         <div className="w-32 h-1.5 bg-gray-300 rounded-full group-hover:bg-gray-300 transition-all duration-200 ease-in-out" />
       </button>

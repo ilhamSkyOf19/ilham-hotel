@@ -188,7 +188,7 @@ const HomePage: FC = () => {
       </div>
 
       {/* card hotel small */}
-      <div className="w-full px-5 flex flex-col justify-start items-center mt-4 gap-4">
+      <div className="w-full px-4 flex flex-col justify-start items-center mt-4 gap-4">
         {isLoading ? (
           Array.from({ length: 3 }, (_, i) => (
             <LoadingPulseCardMedium key={i} />

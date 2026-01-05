@@ -52,6 +52,7 @@ export type PayloadHotel = {
   rating: number;
   totalRoom: number;
   linkMaps: string;
+  totalReviews: number;
   idFasilitas:
     | {
         _id: string;
@@ -91,6 +92,7 @@ export const toHotelResponseType = (
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
     location: response.location,
+    totalReviews: response.totalReviews,
     fasilitas: response.idFasilitas
       ? response.idFasilitas.map((item) => ({
           _id: item._id,

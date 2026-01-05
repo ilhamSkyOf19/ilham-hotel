@@ -1,11 +1,5 @@
 import { useRef, type ChangeEvent, type FC } from "react";
-import {
-  addDays,
-  addMonths,
-  formatDate,
-  getTodayLocal,
-  minDays,
-} from "../../utils/util";
+import { addDays, formatDate, getTodayLocal, minDays } from "../../utils/util";
 import { MdDateRange } from "react-icons/md";
 import clsx from "clsx";
 
@@ -73,7 +67,7 @@ const InputDateforBook: FC<Props> = ({
         max={
           checkOut
             ? getTodayLocal(minDays(checkOut, 1))
-            : getTodayLocal(addMonths(new Date(), 3))
+            : getTodayLocal(addDays(new Date(), 3))
         }
         hidden={true}
       />

@@ -13,7 +13,6 @@ import { HiDotsHorizontal } from "react-icons/hi";
 const routeNavigation: { link: string; label: string }[] = [
   { link: "/", label: "Home" },
   { link: "/bookings", label: "Bookings" },
-  { link: "/room", label: "Room" },
   { link: "/favorite", label: "Favorite" },
   { link: "/user", label: "User" },
 ];

@@ -9,6 +9,8 @@ type Props = {
   city: string;
   country: string;
   discount: number;
+  rating: number;
+  totalReviews: number;
 };
 const HeaderComponent: FC<Props> = ({
   nameHotel,
@@ -16,12 +18,18 @@ const HeaderComponent: FC<Props> = ({
   city,
   country,
   discount,
+  rating,
+  totalReviews,
 }) => {
   return (
     <div className="w-full flex flex-col justify-start items-start">
       <div className="w-full flex flex-row justify-between items-center  px-4">
         {/* disc */}
-        <DiscRating discount={discount} rating={4.5} reviews={320} />
+        <DiscRating
+          discount={discount}
+          rating={rating}
+          reviews={totalReviews}
+        />
       </div>
 
       {/* title & address */}

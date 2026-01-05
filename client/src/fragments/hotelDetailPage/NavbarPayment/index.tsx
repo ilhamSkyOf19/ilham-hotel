@@ -1,95 +1,120 @@
-// import React, { type FC, type RefObject } from 'react'
-// import ButtonAction from '../../../components/ButtonAction';
+import { type FC, type RefObject } from "react";
+import ButtonAction from "../../../components/ButtonAction";
+import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { BookingService } from "../../../services/booking.service";
+import { formatCurrency } from "../../../utils/util";
+import BookingSection from "../BookingSection";
 
-// type Props = {
-//     refModalBooking: RefObject<>
-// }
+type Props = {
+  refModalBooking: RefObject<HTMLDivElement | null>;
+  isModalBookingOpen: boolean;
+  idHotel: string;
+  isModalWarning: boolean;
+  handleButtonBooking: () => void;
+  nameHotel: string;
+  cityHotel: string;
+  countryHotel: string;
+  discountHotel: number;
+  linkMapsHotel: string;
+  priceHotel: number;
+  handleModalBookingClose: () => void;
+};
 
-// const NavbarPayment: FC = () => {
-//   return (
-//      <>
-//       <div
-//         ref={refModalBooking}
-//         className={clsx(
-//           "w-screen fixed bottom-0 h-[70vh] bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out",
-//           isModalBookingOpen ? "max-h-[70vh]" : "max-h-18"
-//         )}
-//       >
-//         {/* total price */}
-//         {bookingPending.data?.data ? (
-//           <div className="w-full flex flex-row justify-start items-center px-4">
-//             <ButtonAction
-//               label="Lanjutkan Pembayaran"
-//               blue={true}
-//               link={`/bookings/detail/${bookingPending.data?.data}`}
-//               linkFrom={"hotel-detail"}
-//               button={true}
-//             />
-//           </div>
-//         ) : !bookingPending.isPending &&
-//           !isModalBookingOpen &&
-//           !isModalWarning ? (
-//           <ButtonBooking handleModalActive={() => handleButtonBooking()} />
-//         ) : (
-//           isModalBookingOpen &&
-//           hotel?.data && (
-//             <BookingSection
-//               handleModalClose={() => setIsModalBookingOpen(false)}
-//               idHotel={idHotel ?? ""}
-//               nameHotel={hotel?.data?.data?.name ?? ""}
-//               city={hotel?.data?.data?.location.city ?? ""}
-//               country={hotel?.data?.data?.location.country ?? ""}
-//               discount={hotel?.data?.data?.discount ?? 0}
-//               linkMaps={hotel?.data?.data?.linkMaps ?? ""}
-//               price={hotel?.data?.data?.price ?? 0}
-//             />
-//           )
-//         )}
-//       </div>
+const NavbarPayment: FC<Props> = ({
+  idHotel,
+  refModalBooking,
+  isModalBookingOpen,
+  isModalWarning,
+  cityHotel,
+  countryHotel,
+  discountHotel,
+  handleButtonBooking,
+  linkMapsHotel,
+  nameHotel,
+  priceHotel,
+  handleModalBookingClose,
+}) => {
+  // use query get id booking is pending
+  const { data: bookingPending, isPending } = useQuery({
+    queryKey: ["bookingIsPending", idHotel],
+    queryFn: () => BookingService.getIdBookingIsPending(idHotel!),
+  });
 
-//       {/* modal warning */}
-//       <div
-//         ref={refModalWarning}
-//         className={clsx(
-//           "w-full fixed h-[45vh] bottom-0 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl flex flex-col justify-start items-center pt-8 px-6 transition-all duration-300 ease-in-out gap-8",
-//           isModalWarning
-//             ? "max-h-[45vh] translate-y-0"
-//             : "max-h-0 translate-y-full "
-//         )}
-//       >
-//         <h2 className="text-xl font-semibold text-black text-center">
-//           Anda memiliki pemesanan hotel yang sedang aktif
-//         </h2>
-//         <p className="text-base font-light text-black text-center">
-//           Apakah Anda ingin melanjutkan pemesanan di hotel ini dan membatalkan
-//           pemesanan sebelumnya?
-//         </p>
+  return (
+    <div
+      ref={refModalBooking}
+      className={clsx(
+        "w-screen fixed bottom-0 h-[70vh] bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out",
+        isModalBookingOpen ? "max-h-[70vh]" : "max-h-18"
+      )}
+    >
+      {/* total price */}
+      {bookingPending?.data ? (
+        <div className="w-full flex flex-row justify-start items-center px-4">
+          <ButtonAction
+            label="Lanjutkan Pembayaran"
+            blue={true}
+            link={`/bookings/detail/${bookingPending.data}`}
+            linkFrom={"hotel-detail"}
+            button={true}
+          />
+        </div>
+      ) : !isPending && !isModalBookingOpen && !isModalWarning ? (
+        <ButtonBooking
+          handleModalActive={() => handleButtonBooking()}
+          price={priceHotel}
+        />
+      ) : (
+        isModalBookingOpen && (
+          <BookingSection
+            handleModalClose={() => handleModalBookingClose()}
+            idHotel={idHotel}
+            nameHotel={nameHotel}
+            city={cityHotel}
+            country={countryHotel}
+            discount={discountHotel}
+            linkMaps={linkMapsHotel}
+            price={priceHotel}
+          />
+        )
+      )}
+    </div>
+  );
+};
 
-//         {/* button action */}
-//         <div className="w-full flex flex-row justify-between items-center">
-//           {/* button batal */}
-//           <button
-//             onClick={() => setIsModalWarning(false)}
-//             type="button"
-//             className="py-4 px-10 border border-primary-skyblue rounded-full font-medium text-primary-skyblue relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
-//           >
-//             Batal
-//           </button>
+// button booking
+type ButtonBookinProps = {
+  handleModalActive: () => void;
+  price: number;
+};
+const ButtonBooking: FC<ButtonBookinProps> = ({ handleModalActive, price }) => {
+  return (
+    <div className="w-full h-full flex flex-row justify-start items-start gap-2 px-2">
+      <div className="flex-1 h-full flex flex-col justify-start items-center">
+        <h4 className="text-base text-black capitalize">total price</h4>
 
-//           {/* button lanjutkan */}
-//           <button
-//             onClick={() => {
-//               setIsModalBookingOpen(true), setIsModalWarning(false);
-//             }}
-//             type="button"
-//             className="py-4 px-10 border border-primary-skyblue rounded-full bg-primary-skyblue text-white font-medium relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/10 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
-//           >
-//             Lanjutkan
-//           </button>
-//         </div>
-//       </div>
-//      </>
-//   )
-// }
+        {/* price */}
+        <h4 className="text-lg text-black font-medium">
+          {formatCurrency(price)}{" "}
+          <span className="text-xs ml-0.5 text-gray-600 font-medium">
+            /night
+          </span>
+        </h4>
+      </div>
 
-// export default NavbarPayment
+      {/* button */}
+      <div className="flex-2 h-14 flex flex-row justify-end items-center ">
+        <button
+          type="button"
+          onClick={() => handleModalActive()}
+          className="h-full px-10 text-lg capitalize font-medium text-white bg-primary-skyblue rounded-full relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/20 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
+        >
+          book now
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default NavbarPayment;
