@@ -9,16 +9,18 @@ import SectionAbout from "../../fragments/hotelDetailPage/SectionAbout";
 import { HotelService } from "../../services/hotel.service";
 import type { HotelResponseType } from "../../models/hotel-model";
 import SectionReview from "../../fragments/hotelDetailPage/SectionReview";
-import { formatCurrency } from "../../utils/util";
 import HeaderComponent from "../../fragments/hotelDetailPage/HeaderComponent";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/rootReducer";
 import NavbarPayment from "../../fragments/hotelDetailPage/NavbarPayment";
+import ButtonAction from "../../components/ButtonAction";
 
 // section
 const sectionChoose: string[] = ["about", "gallery", "review"];
 
 const HotelDetailPage: FC = () => {
+  // get user from redux
+  const dataUser = useSelector((state: RootState) => state.user);
   // booking data
   const bookingData = useSelector((state: RootState) => state.booking);
 
@@ -151,20 +153,31 @@ const HotelDetailPage: FC = () => {
       />
 
       {/* navbar payment */}
-      <NavbarPayment
-        refModalBooking={refModalBooking}
-        isModalBookingOpen={isModalBookingOpen}
-        handleButtonBooking={handleButtonBooking}
-        handleModalBookingClose={() => setIsModalBookingOpen(false)}
-        isModalWarning={isModalWarning}
-        nameHotel={hotel?.data?.data?.name ?? ""}
-        cityHotel={hotel?.data?.data?.location.city ?? ""}
-        countryHotel={hotel?.data?.data?.location.country ?? ""}
-        idHotel={idHotel ?? ""}
-        discountHotel={hotel?.data?.data?.discount ?? 0}
-        linkMapsHotel={hotel?.data?.data?.linkMaps ?? ""}
-        priceHotel={hotel?.data?.data?.price ?? 0}
-      />
+      {dataUser.role !== "admin" ? (
+        <NavbarPayment
+          refModalBooking={refModalBooking}
+          isModalBookingOpen={isModalBookingOpen}
+          handleButtonBooking={handleButtonBooking}
+          handleModalBookingClose={() => setIsModalBookingOpen(false)}
+          isModalWarning={isModalWarning}
+          nameHotel={hotel?.data?.data?.name ?? ""}
+          cityHotel={hotel?.data?.data?.location.city ?? ""}
+          countryHotel={hotel?.data?.data?.location.country ?? ""}
+          idHotel={idHotel ?? ""}
+          discountHotel={hotel?.data?.data?.discount ?? 0}
+          linkMapsHotel={hotel?.data?.data?.linkMaps ?? ""}
+          priceHotel={hotel?.data?.data?.price ?? 0}
+        />
+      ) : (
+        <div className="w-screen fixed bottom-0 h-18 bg-white shadow-[0_0_10px_3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl py-2 flex flex-row justify-start items-center gap-2 transition-all duration-300 ease-in-out px-4">
+          <ButtonAction
+            label="Update Hotel"
+            blue={true}
+            link={`/dashboard/hotel/detail/${idHotel}/update`}
+            linkFrom={`/dashboard/hotel/detail/${idHotel}`}
+          />
+        </div>
+      )}
 
       {/* modal warning */}
       <div
@@ -324,39 +337,6 @@ const ButtonChooseSection: FC<ButtonChooseSectionProps> = ({
     >
       {label}
     </button>
-  );
-};
-
-// button booking
-type ButtonBookinProps = {
-  handleModalActive: () => void;
-};
-const ButtonBooking: FC<ButtonBookinProps> = ({ handleModalActive }) => {
-  return (
-    <div className="w-full h-full flex flex-row justify-start items-start gap-2 px-2">
-      <div className="flex-1 h-full flex flex-col justify-start items-center">
-        <h4 className="text-base text-black capitalize">total price</h4>
-
-        {/* price */}
-        <h4 className="text-lg text-black font-medium">
-          {formatCurrency(323)}{" "}
-          <span className="text-xs ml-0.5 text-gray-600 font-medium">
-            /night
-          </span>
-        </h4>
-      </div>
-
-      {/* button */}
-      <div className="flex-2 h-14 flex flex-row justify-end items-center ">
-        <button
-          type="button"
-          onClick={() => handleModalActive()}
-          className="h-full px-10 text-lg capitalize font-medium text-white bg-primary-skyblue rounded-full relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-black/20 before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out hover:before:opacity-100"
-        >
-          book now
-        </button>
-      </div>
-    </div>
   );
 };
 

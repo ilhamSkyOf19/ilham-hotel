@@ -4,6 +4,8 @@ import {
   HotelCreateRequestType,
   HotelResponseForDisplayType,
   HotelResponseType,
+  HotelUpdateRequestType,
+  HotelUpdateServiceRequestType,
 } from "../models/hotel-model";
 import { ResponseType } from "../types/request-response";
 import { validation } from "../validations/validation";
@@ -225,6 +227,104 @@ export class HotelController {
         data: response,
       });
     } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // update hotel by id hotel
+  static async updateHotel(
+    req: Request<{ idHotel: string }, {}, HotelUpdateRequestType>,
+    res: Response<ResponseType<HotelResponseType | null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get body from req body
+      const { data: body } = validation<HotelUpdateRequestType>(
+        HotelValidation.UPDATE,
+        req.body
+      );
+
+      // cek fasilitas existence
+      if (body.fasilitas) {
+        const fasilitas = await FasilitasService.readByIdMany(
+          body?.fasilitas || []
+        );
+
+        // cek if all fasilitas exist
+        if (fasilitas.length !== body?.fasilitas.length) {
+          // cek file
+          if (req.file) {
+            await FileService.deleteFileFromRequest(req.file.path);
+          }
+          return res.status(400).json({
+            status: "failed",
+            message: "fasilitas not found",
+            data: null,
+          });
+        }
+      }
+
+      // get id hotel from params
+      const idHotel = req.params.idHotel;
+
+      // // get hotet by id
+      // const findHotel = await HotelService.readById(idHotel);
+
+      // // cek response
+      // if (!findHotel) {
+      //   // cek request
+      //   if (req.file) await FileService.deleteFileFromRequest(req.file.path);
+
+      //   return res.status(400).json({
+      //     status: "failed",
+      //     message: "hotel tidak tersedia",
+      //     data: null,
+      //   });
+      // }
+
+      // cek find hotel
+
+      // call service
+      const response = await HotelService.updateByIdHotel(idHotel, {
+        ...body,
+        thumbnail: req.file?.filename,
+        idFasilitas: body.fasilitas,
+      });
+
+      // cek response
+      if (!response) {
+        // cek request
+        if (req.file) await FileService.deleteFileFromRequest(req.file.path);
+
+        return res.status(400).json({
+          status: "failed",
+          message: "gagal update data , cek id atau request harus valid",
+          data: null,
+        });
+      }
+
+      // delete file
+      if (req.file?.filename) {
+        // delete file after success update
+        await FileService.deleteFileFromPath("galleries", response.thumbnail);
+        // delete images after success update
+        await GalleryService.deleteByIdHotelAndImg(idHotel, response.thumbnail);
+        // call service gallery add
+        await GalleryService.create({
+          idHotel: response._id,
+          images: [req.file.filename],
+        });
+      }
+
+      // return response
+      return res.status(200).json({
+        status: "success",
+        message: "hotel berhasil di update",
+        data: response,
+      });
+    } catch (error) {
+      if (req.file) await FileService.deleteFileFromRequest(req.file.path);
       console.log(error);
       next(error);
     }

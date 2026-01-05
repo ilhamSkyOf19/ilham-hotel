@@ -4,6 +4,7 @@ import {
   HotelCreateServiceRequestType,
   HotelResponseForDisplayType,
   HotelResponseType,
+  HotelUpdateServiceRequestType,
   PayloadHotel,
   toHotelResponseForDisplayType,
   toHotelResponseType,
@@ -177,5 +178,29 @@ export class HotelService {
 
     // return
     return response.map((item) => toHotelResponseForDisplayType(item));
+  }
+
+  // update by id hotel
+  static async updateByIdHotel(
+    idHotel: string,
+    data: HotelUpdateServiceRequestType
+  ): Promise<HotelResponseType | null> {
+    // call model
+    const response = await HotelModel.findByIdAndUpdate(
+      idHotel,
+      {
+        $set: data,
+      },
+      {
+        new: false,
+      }
+    )
+      .populate("idFasilitas", "fasilitas")
+      .populate("location", "_id city country")
+      .lean<PayloadHotel>();
+
+    if (!response) return null;
+
+    return toHotelResponseType(response);
   }
 }

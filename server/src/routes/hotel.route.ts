@@ -37,5 +37,12 @@ hotelRoute.use(authMiddleware("admin"));
 // create
 hotelRoute.post("/create", upload.single("thumbnail"), HotelController.create);
 
+// update
+hotelRoute.patch(
+  "/update/:idHotel",
+  upload.single("thumbnail"),
+  HotelController.updateHotel
+);
+
 // export
 export default hotelRoute;

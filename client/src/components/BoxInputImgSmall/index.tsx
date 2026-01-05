@@ -1,25 +1,49 @@
-import { useRef, useState, type ChangeEvent, type FC } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FC } from "react";
 import type { UseFormClearErrors, UseFormSetValue } from "react-hook-form";
 import { BiSolidImageAdd } from "react-icons/bi";
 import { HiMiniTrash } from "react-icons/hi2";
-import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import type {
+  HotelCreateServiceRequestType,
+  HotelUpdateServiceRequestType,
+} from "../../models/hotel-model";
 import LabelInput from "../LabelInput";
 import clsx from "clsx";
+import { generateUrlImg } from "../../utils/util";
 
 // Props
 type Props = {
-  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
+  setValue: UseFormSetValue<
+    HotelCreateServiceRequestType | HotelUpdateServiceRequestType
+  >;
   errorMessage?: string;
-  clearError?: UseFormClearErrors<HotelCreateServiceRequestType>;
+  clearError?: UseFormClearErrors<
+    HotelCreateServiceRequestType | HotelUpdateServiceRequestType
+  >;
+  defaultValue?: string;
 };
 
 const BoxInputImgSmall: FC<Props> = ({
   setValue,
   errorMessage,
   clearError,
+  defaultValue,
 }) => {
   // state preview
   const [preview, setPreview] = useState<string | null>(null);
+
+  // update preview
+  useEffect(() => {
+    if (defaultValue) {
+      setPreview(
+        generateUrlImg({
+          img: defaultValue ?? "",
+          path: "galleries",
+        })
+      );
+    }
+
+    return;
+  }, [defaultValue]);
 
   // use ref for input
   const refInput = useRef<HTMLInputElement>(null);
@@ -67,7 +91,13 @@ const BoxInputImgSmall: FC<Props> = ({
       />
 
       {/* input file hidden */}
-      <input ref={refInput} type="file" onChange={handleChange} hidden />
+      <input
+        ref={refInput}
+        type="file"
+        onChange={handleChange}
+        hidden
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+      />
 
       {/* content preview */}
       <div className="w-full h-auto flex flex-row justify-start items-center gap-6">

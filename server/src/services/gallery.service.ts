@@ -44,4 +44,18 @@ export class GalleryService {
     // response
     return toGalleryResponseType(response);
   }
+
+  // delete by idHotel & img
+  // delete single image by idHotel & img
+  static async deleteByIdHotelAndImg(
+    idHotel: string,
+    img: string
+  ): Promise<boolean> {
+    const result = await GalleryModel.updateOne(
+      { idHotel },
+      { $pull: { images: img } }
+    );
+
+    return result.modifiedCount > 0;
+  }
 }

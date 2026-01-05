@@ -117,4 +117,47 @@ export class FileService {
       })
     );
   }
+
+  // delete file from path
+  static async deleteFileFromPath(
+    folder: string,
+    files: string | string[]
+  ): Promise<void> {
+    // cek path
+    if (!folder || !files) return;
+
+    const arrayfiles = Array.isArray(files) ? files : [files];
+
+    try {
+      await Promise.all(
+        arrayfiles.map(async (file) => {
+          // ⬇️ ABSOLUTE PATH ke server/public/uploads/...
+          const fullPath = path.join(
+            __dirname,
+            "../../public",
+            "uploads",
+            folder,
+            file
+          );
+
+          try {
+            // cek file exist
+            await access(fullPath);
+
+            // delete file
+            await unlink(fullPath);
+
+            // cek console
+            console.log("file deleted");
+          } catch (error) {
+            // cek console
+            console.log(error);
+          }
+        })
+      );
+    } catch (error) {
+      // cek console
+      console.log(error);
+    }
+  }
 }

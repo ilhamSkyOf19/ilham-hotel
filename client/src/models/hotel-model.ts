@@ -21,6 +21,10 @@ export type HotelCreateServiceRequestType = Omit<
   "createdAt" | "updatedAt" | "discount" | "rating"
 >;
 
+// update request for service
+export type HotelUpdateServiceRequestType =
+  Partial<HotelCreateServiceRequestType>;
+
 // payload schema
 export type PayloadHotel = {
   _id: string;

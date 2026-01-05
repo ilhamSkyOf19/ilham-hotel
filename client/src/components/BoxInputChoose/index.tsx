@@ -2,37 +2,55 @@ import { useEffect, useState, type FC } from "react";
 import LabelInput from "../LabelInput";
 import clsx from "clsx";
 import type { UseFormSetValue } from "react-hook-form";
-import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import type {
+  HotelCreateServiceRequestType,
+  HotelUpdateServiceRequestType,
+} from "../../models/hotel-model";
+import { useQuery } from "@tanstack/react-query";
+import { FasilitasService } from "../../services/fasilitas.service";
 
 // Props
 type Props = {
-  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
-  chooseList: { _id: string; fasilitas: string }[];
+  setValue: UseFormSetValue<
+    HotelCreateServiceRequestType | HotelUpdateServiceRequestType
+  >;
   label: string;
   name: string;
   errorMessage?: string;
+  defaultValue?: { _id: string; fasilitas: string }[];
 };
 
 const BoxInputChoose: FC<Props> = ({
   label,
   errorMessage,
-  chooseList,
   setValue,
   name,
+  defaultValue,
 }) => {
+  // query fasilitas
+  const { data: dataFasiltias, isLoading } = useQuery({
+    queryKey: ["fasilitas"],
+    queryFn: () => FasilitasService.readAll(),
+  });
+
   // state choose fasilitas
-  const [active, setActive] = useState<{ _id: string; fasilitas: string }[]>(
-    []
-  );
+  const [active, setActive] = useState<string[]>([]);
+
+  // set active if default value existing
+  useEffect(() => {
+    if (defaultValue) {
+      setActive(defaultValue.map((item) => item._id));
+    }
+  }, [defaultValue]);
 
   // handle choose fasilitas
   const handleChoose = (choose: { _id: string; fasilitas: string }) => {
     // cek existence
-    if (active.includes(choose)) {
-      setActive((prev) => prev.filter((item) => item !== choose));
-    } else {
-      setActive((prev) => [...prev, choose]);
-    }
+    setActive((prev) =>
+      prev.includes(choose._id)
+        ? prev.filter((id) => id !== choose._id)
+        : [...prev, choose._id]
+    );
   };
 
   // set value for fasilitas
@@ -40,7 +58,7 @@ const BoxInputChoose: FC<Props> = ({
     const time = setTimeout(() => {
       setValue(
         "fasilitas",
-        active.map((item) => item._id)
+        active.map((item) => item)
       );
     }, 500);
 
@@ -60,21 +78,30 @@ const BoxInputChoose: FC<Props> = ({
       {/* container choose */}
       <div className="w-full flex flex-row justify-start items-start gap-3 flex-wrap">
         {/* choose */}
-        {chooseList && chooseList.length > 0 ? (
-          chooseList.map((item, index) => (
+        {isLoading ? (
+          Array.from({ length: 14 }, (_, i) => (
+            <div
+              key={i}
+              className="w-20 h-8 rounded-bl-full rounded-tr-full transition-all duration-300 ease-in-out bg-gray-200 animate-pulse"
+            />
+          ))
+        ) : dataFasiltias?.data && dataFasiltias.data.length > 0 ? (
+          dataFasiltias.data.map((item, index) => (
             <button
               key={index}
               type="button"
               onClick={() => handleChoose(item)}
               className={clsx(
                 "px-8 py-2  rounded-bl-full rounded-tr-full transition-all duration-300 ease-in-out",
-                active.includes(item) ? "bg-primary-skyblue" : "bg-gray-300/50"
+                active.includes(item._id)
+                  ? "bg-primary-skyblue"
+                  : "bg-gray-300/50"
               )}
             >
               <p
                 className={clsx(
                   "text-base font-medium capitalize transition-colors duration-300 ease-in-out",
-                  active.includes(item) ? "text-white" : "text-black"
+                  active.includes(item._id) ? "text-white" : "text-black"
                 )}
               >
                 {item.fasilitas}

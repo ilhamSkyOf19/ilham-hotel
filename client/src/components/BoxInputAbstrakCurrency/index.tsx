@@ -2,13 +2,18 @@ import { type FC } from "react";
 import LabelInput from "../LabelInput";
 import type { UseFormRegisterReturn, UseFormSetValue } from "react-hook-form";
 import clsx from "clsx";
-import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import type {
+  HotelCreateServiceRequestType,
+  HotelUpdateServiceRequestType,
+} from "../../models/hotel-model";
 import { formatCurrency } from "../../utils/util";
 
 // Props
 type Props = {
   register: UseFormRegisterReturn;
-  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
+  setValue: UseFormSetValue<
+    HotelCreateServiceRequestType | HotelUpdateServiceRequestType
+  >;
   errorMessage?: string;
   label: string;
   placeholder: string;

@@ -84,11 +84,13 @@ const route = createBrowserRouter([
         element: <NotificationPage typePage="pending" />,
       },
 
-      // hotel
+      // update hotel
       {
-        path: "/hotel/detail/:id",
+        path: "/hotel/detail/:id/update",
         element: <HotelDetailPage />,
       },
+
+      // hotel galleries
       {
         path: "hotel/detail/:id/galleries",
         element: <GalleriesPage />,
@@ -141,6 +143,11 @@ const route = createBrowserRouter([
 
           {
             path: "hotel/add",
+            element: <AddHotelPage />,
+          },
+          // update hotel
+          {
+            path: "hotel/detail/:id/update",
             element: <AddHotelPage />,
           },
           {

@@ -2,6 +2,8 @@ import { object, string, ZodType } from "zod";
 import {
   FilterTypeForQuery,
   HotelCreateRequestType,
+  HotelUpdateRequestType,
+  HotelUpdateServiceRequestType,
 } from "../models/hotel-model";
 
 export class HotelValidation {
@@ -47,6 +49,57 @@ export class HotelValidation {
         );
       }),
   }).strict() satisfies ZodType<HotelCreateRequestType>;
+
+  // update
+  static readonly UPDATE = object({
+    name: string("Name is required")
+      .min(1, "Name is required")
+      .regex(/^[A-Za-z\s]+$/, { message: "Only letters allowed" })
+      .optional(),
+    description: string("Description is required")
+      .min(1, "Description is required")
+      .optional(),
+    linkMaps: string("Link Maps is required")
+      .min(1, "Link Maps is required")
+      .optional(),
+    location: string("Location is required")
+      .regex(/^[0-9a-fA-F]{24}$/, {
+        message: "id location tidak valid",
+      })
+      .optional(),
+    price: string("Price is required")
+      .min(1, "Price is required")
+      .refine((value) => !isNaN(Number(value)), "Price must be a number")
+      .transform((value) => Number(value))
+      .optional(),
+    taxAndFees: string("tax & fees is required")
+      .min(1, "tax & fees is required")
+      .refine((value) => !isNaN(Number(value)), "tax & fees must be a number")
+      .transform((value) => Number(value))
+      .optional(),
+    totalRoom: string("Price is required")
+      .min(1, "Price is required")
+      .refine((value) => !isNaN(Number(value)), "Price must be a number")
+      .transform((value) => Number(value))
+      .optional(),
+    fasilitas: string("Fasilitas is required")
+      .transform((val) => {
+        try {
+          return JSON.parse(val);
+        } catch (error) {
+          throw new Error("Fasilitas harus berupa array of string");
+        }
+      })
+      .refine((arr) => {
+        return (
+          Array.isArray(arr) &&
+          arr.every(
+            (item) => typeof item === "string" && /^[0-9a-fA-F]{24}$/.test(item)
+          )
+        );
+      })
+      .optional(),
+  }).strict() satisfies ZodType<HotelUpdateRequestType>;
 
   // vaidasi params query
   static readonly FILTER = object({

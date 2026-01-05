@@ -6,21 +6,33 @@ import { useQuery } from "@tanstack/react-query";
 import loadingSkyBlue from "../../assets/animation/loading-blue.svg";
 import { LocationService } from "../../services/location.service";
 import type { UseFormSetValue } from "react-hook-form";
-import type { HotelCreateServiceRequestType } from "../../models/hotel-model";
+import type {
+  HotelCreateServiceRequestType,
+  HotelUpdateServiceRequestType,
+} from "../../models/hotel-model";
 
 type Props = {
   errorMessage?: string;
-  setValue: UseFormSetValue<HotelCreateServiceRequestType>;
-  // handleChooseLocation: ({ label, id }: { label: string; id: string }) => void;
-  // handleRemoveChooseRoomType: (id: string) => void;
-  // chooseLocation: { label: string; id: string }[];
+  setValue: UseFormSetValue<
+    HotelCreateServiceRequestType | HotelUpdateServiceRequestType
+  >;
+  defaultValue: string;
 };
-const BoxInputAbstrakChoose: FC<Props> = ({ errorMessage, setValue }) => {
+const BoxInputAbstrakChoose: FC<Props> = ({
+  errorMessage,
+  setValue,
+  defaultValue,
+}) => {
   // state active modal choose
   const [activeModal, setActiveModal] = useState<boolean>(false);
 
   // state choose
   const [isChooseLocation, setIsChooseLocation] = useState<string>("");
+
+  // set default value
+  useEffect(() => {
+    setIsChooseLocation(defaultValue);
+  }, [defaultValue]);
 
   // handle active modal choose
   const handleActiveModal = () => {
@@ -62,7 +74,7 @@ const BoxInputAbstrakChoose: FC<Props> = ({ errorMessage, setValue }) => {
       <div className="w-full flex flex-col justify-start items-start gap-3 relative">
         <div className="w-full flex flex-row justify-start items-center gap-2">
           {/* label */}
-          <LabelInput label="Pilih Tipe Kamar" htmlFor="choose" required />
+          <LabelInput label="Choose Location" htmlFor="choose" required />
 
           {/* error */}
           <p className="w-full text-left text-xs h-full text-red-500">

@@ -24,6 +24,24 @@ export class HotelService {
     return response;
   }
 
+  // upadate
+  static async update(
+    idHotel: string,
+    data: FormData
+  ): Promise<ResponseType<HotelResponseType | null>> {
+    // call api
+    const response = api
+      .patch(`/hotel/update/${idHotel}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => res.data);
+
+    // return response
+    return response;
+  }
+
   // read total room
   static async readTotalRoom(
     id: string

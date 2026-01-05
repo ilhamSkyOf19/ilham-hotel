@@ -42,6 +42,13 @@ export type HotelCreateServiceRequestType = Omit<
   location: string;
 };
 
+// update request for request
+export type HotelUpdateRequestType = Partial<HotelCreateRequestType>;
+
+// update request for service
+export type HotelUpdateServiceRequestType =
+  Partial<HotelCreateServiceRequestType>;
+
 // payload schema
 export type PayloadHotel = {
   _id: string;

@@ -20,10 +20,12 @@ const ContentCard: FC<Props> = ({
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start">
       {/* discount & rating */}
-      <DiscRating discount={discount} rating={rating} />
+      <DiscRating discount={discount} rating={rating} reviews={0} />
 
       {/* title */}
-      <h2 className="text-lg font-semibold text-black mt-2">{title}</h2>
+      <h2 className="text-lg font-semibold text-black mt-2 text-left">
+        {title}
+      </h2>
 
       {/* location */}
       <LocationGray address={location} />
