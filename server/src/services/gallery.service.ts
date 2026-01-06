@@ -28,6 +28,23 @@ export class GalleryService {
     return toGalleryResponseType(response);
   }
 
+  // read by id gallery
+  static async readByIdGallery(req: {
+    idGallery: string;
+  }): Promise<GalleryResponseType | null> {
+    // call model
+    const response = await GalleryModel.findById(
+      req.idGallery
+    ).lean<PayloadGallery>();
+
+    // cek payload
+    if (!response) {
+      return null;
+    }
+    // response
+    return toGalleryResponseType(response);
+  }
+
   // read by id hotel
   static async readByIdHotel(req: {
     idHotel: string;
@@ -45,7 +62,6 @@ export class GalleryService {
     return toGalleryResponseType(response);
   }
 
-  // delete by idHotel & img
   // delete single image by idHotel & img
   static async deleteByIdHotelAndImg(
     idHotel: string,
@@ -53,6 +69,16 @@ export class GalleryService {
   ): Promise<boolean> {
     const result = await GalleryModel.updateOne(
       { idHotel },
+      { $pull: { images: img } }
+    );
+
+    return result.modifiedCount > 0;
+  }
+
+  // delete by id gallery
+  static async deleteById(idGallery: string, img: string): Promise<boolean> {
+    const result = await GalleryModel.updateOne(
+      { _id: idGallery },
       { $pull: { images: img } }
     );
 

@@ -107,4 +107,53 @@ export class GalleryController {
       next(error);
     }
   }
+
+  // delete by id hotel & img
+  static async deleteImgById(
+    req: Request<{ idGallery: string; idHotel: string; img: string }>,
+    res: Response<ResponseType<null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id gallery & img from params
+      const { idGallery, idHotel, img } = req.params;
+
+      // find gallery & cek
+      const dataGallery = await GalleryService.readByIdGallery({ idGallery });
+
+      // cek
+      if (!dataGallery)
+        return res.status(400).json({
+          status: "failed",
+          message: "data gagal di hapus",
+          data: null,
+        });
+
+      // call service
+      const response = await GalleryService.deleteById(idGallery!, img);
+
+      // cek response
+      if (!response)
+        return res.status(400).json({
+          status: "failed",
+          message: "data gagal di hapus",
+          data: null,
+        });
+
+      // update thumbnail hotel
+      await HotelService.updateByIdHotel(idHotel, {
+        thumbnail:
+          dataGallery.images.length > 0 ? dataGallery.images[1] : "default.jpg",
+      });
+
+      return res.status(200).json({
+        status: "failed",
+        message: "data berhasil di hapus",
+        data: null,
+      });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
 }

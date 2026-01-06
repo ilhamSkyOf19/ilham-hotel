@@ -32,4 +32,18 @@ export class GalleryService {
     // return response
     return response;
   }
+
+  // delete
+  static async deleteById(req: {
+    idGallery: string;
+    idHotel: string;
+    img: string;
+  }): Promise<ResponseType<null>> {
+    // call api
+    const response = await api
+      .delete(`/gallery/delete/${req.idGallery}/${req.idHotel}/${req.img}`)
+      .then((res) => res.data);
+
+    return response;
+  }
 }

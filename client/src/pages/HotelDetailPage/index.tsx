@@ -146,6 +146,7 @@ const HotelDetailPage: FC = () => {
       <ComponentContent
         idHotel={idHotel ?? ""}
         galleries={galleries?.data?.data?.images ?? []}
+        idGallery={galleries.data?.data?._id ?? ""}
         hotel={hotel.data?.data ?? undefined}
         loading={hotel.isLoading}
         isLoading={hotel.isLoading}
@@ -228,6 +229,7 @@ const HotelDetailPage: FC = () => {
 type ComponentContentProps = {
   idHotel: string;
   galleries: string[];
+  idGallery: string;
   hotel?: HotelResponseType;
   loading: boolean;
   isLoading: boolean;
@@ -238,6 +240,7 @@ type ComponentContentProps = {
 const ComponentContent: FC<ComponentContentProps> = ({
   idHotel,
   galleries,
+  idGallery,
   hotel,
   loading,
   isLoading,
@@ -301,6 +304,7 @@ const ComponentContent: FC<ComponentContentProps> = ({
       {/* content gallery */}
       {sectionActive === "gallery" && (
         <SectionGallery
+          idGallery={idGallery}
           idHotel={idHotel}
           galleries={galleries}
           isLoading={isLoadingGalleries}

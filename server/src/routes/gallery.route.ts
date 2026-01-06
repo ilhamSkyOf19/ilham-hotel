@@ -22,5 +22,11 @@ galleryRoute.post(
   GalleryController.create
 );
 
+// delte by id gallery & by id hotel
+galleryRoute.delete(
+  "/delete/:idGallery/:idHotel/:img",
+  GalleryController.deleteImgById
+);
+
 // export
 export default galleryRoute;
