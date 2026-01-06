@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose";
 import { IHotel } from "../models/hotel-model";
+import { GalleryService } from "../services/gallery.service";
+import { FileService } from "../services/file.service";
 
 const HotelSchema = new Schema<IHotel>(
   {
@@ -22,7 +24,20 @@ const HotelSchema = new Schema<IHotel>(
   }
 );
 
-// index
+// delete gallery
+HotelSchema.post("findOneAndDelete", async function (doc) {
+  // cek doc
+  if (!doc) return;
+
+  // delete gallery by id hotel
+  const deleteGallery = await GalleryService.deleteByIdHotel(doc._id);
+
+  // delete file img
+  await FileService.deleteFileFromPath(
+    "galleries",
+    deleteGallery?.images ?? []
+  );
+});
 
 HotelSchema.index({
   name: "text",

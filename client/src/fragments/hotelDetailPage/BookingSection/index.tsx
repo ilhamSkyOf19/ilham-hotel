@@ -185,6 +185,8 @@ const BookingSection: FC<Props> = ({
       {/* header */}
       <div className="w-full relative pb-8 before:content-[''] before:absolute before:inset-x-4 before:bottom-0 before:h-px before:bg-black/20">
         <HeaderComponent
+          rating={0}
+          totalReviews={0}
           nameHotel={nameHotel}
           linkMaps={linkMaps}
           city={city}

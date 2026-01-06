@@ -38,10 +38,19 @@ const ContentForCardMedium: FC<Props> = ({
       </div>
 
       {/* content */}
-      <button
-        disabled={disableDetail}
-        type="button"
+      <div
+        role="link"
+        tabIndex={0}
         onClick={() =>
+          disableDetail
+            ? {}
+            : navigate(linkDetail ?? "", {
+                state: { from: "/dashboard/hotel" },
+              })
+        }
+        onKeyDown={(e) =>
+          e.key === "Enter" &&
+          disableDetail &&
           navigate(linkDetail ?? "", {
             state: { from: "/dashboard/hotel" },
           })
@@ -55,7 +64,7 @@ const ContentForCardMedium: FC<Props> = ({
           location={location}
           price={price}
         />
-      </button>
+      </div>
     </>
   );
 };

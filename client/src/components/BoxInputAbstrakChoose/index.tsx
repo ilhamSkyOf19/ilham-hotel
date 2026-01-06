@@ -31,7 +31,9 @@ const BoxInputAbstrakChoose: FC<Props> = ({
 
   // set default value
   useEffect(() => {
-    setIsChooseLocation(defaultValue);
+    if (defaultValue) {
+      setIsChooseLocation(defaultValue);
+    }
   }, [defaultValue]);
 
   // handle active modal choose

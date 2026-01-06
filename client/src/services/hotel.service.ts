@@ -99,4 +99,15 @@ export class HotelService {
     // return response
     return response;
   }
+
+  // delete hotel
+  static async deleteByIdHotel(idHotel: string): Promise<ResponseType<null>> {
+    // call api
+    const response = api
+      .delete(`/hotel/delete/${idHotel}`)
+      .then((res) => res.data);
+
+    // return response
+    return response;
+  }
 }

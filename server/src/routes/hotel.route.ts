@@ -44,5 +44,8 @@ hotelRoute.patch(
   HotelController.updateHotel
 );
 
+// delete by id hotel
+hotelRoute.delete("/delete/:idHotel", HotelController.deleteByIdHote);
+
 // export
 export default hotelRoute;

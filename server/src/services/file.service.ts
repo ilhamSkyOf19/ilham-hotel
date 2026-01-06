@@ -131,7 +131,6 @@ export class FileService {
     try {
       await Promise.all(
         arrayfiles.map(async (file) => {
-          // ⬇️ ABSOLUTE PATH ke server/public/uploads/...
           const fullPath = path.join(
             __dirname,
             "../../public",

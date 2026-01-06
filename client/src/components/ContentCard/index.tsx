@@ -18,14 +18,14 @@ const ContentCard: FC<Props> = ({
   price,
 }) => {
   return (
-    <div className="w-full h-auto flex flex-col justify-start items-start">
+    <div className="w-full h-full flex flex-col justify-start items-start relative">
       {/* discount & rating */}
       <DiscRating discount={discount} rating={rating} reviews={0} />
 
       {/* title */}
-      <h2 className="text-lg font-semibold text-black mt-2 text-left">
-        {title}
-      </h2>
+      <h3 className="text-lg font-semibold text-black mt-2 text-left">
+        {title.length >= 12 ? title.slice(0, 12).concat("...") : title}
+      </h3>
 
       {/* location */}
       <LocationGray address={location} />
@@ -33,12 +33,12 @@ const ContentCard: FC<Props> = ({
       {/* price */}
       <div className="w-full flex flex-row justify-start items-center gap-1 mt-1">
         {/* price */}
-        <h2 className="text-sm font-medium text-primary-skyblue mt-2">
+        <span className="text-sm font-medium text-primary-skyblue mt-2">
           {formatCurrency(price)}
-        </h2>
+        </span>
 
         {/* /* per night */}
-        <h2 className="text-xs text-gray-400 mt-2">/night</h2>
+        <span className="text-xs text-gray-400 mt-2">/night</span>
       </div>
     </div>
   );

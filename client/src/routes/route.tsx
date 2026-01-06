@@ -86,7 +86,7 @@ const route = createBrowserRouter([
 
       // update hotel
       {
-        path: "/hotel/detail/:id/update",
+        path: "/hotel/detail/:id",
         element: <HotelDetailPage />,
       },
 

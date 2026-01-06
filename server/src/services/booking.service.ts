@@ -185,7 +185,6 @@ export class BookingService {
     const response = await BookingModel.find({
       ...filter,
       user: idUser,
-      active: true,
     })
       .populate({
         path: "hotel",
@@ -203,6 +202,28 @@ export class BookingService {
         hotel: data.hotel,
       })
     );
+  }
+
+  // get booking by id hotel
+  static async getBookingByIdHotel(idHotel: string): Promise<boolean> {
+    const now = new Date();
+
+    // call model
+    const response = await BookingModel.findOne({
+      hotel: idHotel,
+      $or: [
+        { checkIn: { $gt: now } }, // upcoming
+        {
+          checkIn: { $lte: now },
+          checkOut: { $gt: now }, // sedang menginap
+        },
+      ],
+    });
+
+    // cek
+    if (!response) return false;
+
+    return true;
   }
 
   // delete booking by id

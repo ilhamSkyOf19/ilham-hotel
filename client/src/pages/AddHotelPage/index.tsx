@@ -5,8 +5,7 @@ import BoxInputAbstrakTextArea from "../../components/BoxInputAbstrakTextArea";
 import BoxInputImgSmall from "../../components/BoxInputImgSmall";
 import BoxInputChoose from "../../components/BoxInputChoose";
 import ButtonSubmitBox from "../../components/ButtonSubmitBox";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
-import { FasilitasService } from "../../services/fasilitas.service";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import {
   type HotelCreateServiceRequestType,
@@ -212,7 +211,11 @@ const AddHotelPage: FC = () => {
 
             {/* choose location */}
             <BoxInputAbstrakChoose
-              defaultValue={`${dataHotel.data?.data?.location.city}, ${dataHotel.data?.data?.location.country}`}
+              defaultValue={
+                dataHotel.data
+                  ? `${dataHotel.data?.data?.location.city}, ${dataHotel.data?.data?.location.country}`
+                  : ""
+              }
               setValue={setValue}
               errorMessage={errors.location?.message}
             />

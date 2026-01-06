@@ -11,7 +11,9 @@ const LocationGray: FC<Props> = ({ address }) => {
       <FaLocationDot className="text-lg text-gray-400" />
 
       {/* address */}
-      <h2 className="text-sm font-medium text-gray-400 text-left">{address}</h2>
+      <span className="text-sm font-medium text-gray-400 text-left">
+        {address}
+      </span>
     </div>
   );
 };

@@ -84,4 +84,18 @@ export class GalleryService {
 
     return result.modifiedCount > 0;
   }
+
+  // delete by id hotel
+  static async deleteByIdHotel(
+    idHotel: string
+  ): Promise<GalleryResponseType | null> {
+    const response = await GalleryModel.findOneAndDelete({
+      idHotel,
+    }).lean<PayloadGallery>();
+
+    // cek response
+    if (!response) return null;
+
+    return toGalleryResponseType(response);
+  }
 }

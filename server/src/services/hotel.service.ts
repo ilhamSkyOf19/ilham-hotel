@@ -203,4 +203,15 @@ export class HotelService {
 
     return toHotelResponseType(response);
   }
+
+  // delete by id
+  static async deleteById(idHotel: string): Promise<boolean> {
+    // call model
+    const response = await HotelModel.findOneAndDelete({ _id: idHotel });
+
+    // cek response
+    if (!response) return false;
+    // cek
+    return true;
+  }
 }

@@ -4,17 +4,52 @@ import { useForm } from "react-hook-form";
 import ModalComponent from "../../components/ModalComponent";
 import ModalFilter from "../../fragments/homePage/ModalFilter";
 import SearchHotel from "../../components/SearchHotel";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HotelService } from "../../services/hotel.service";
 import CardMedium from "../../components/CardMedium";
 import { Helmet } from "react-helmet-async";
 import { MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import LoadingPulseCardMedium from "../../components/LoadingPulseCardMedium";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/rootReducer";
+import ContentModalDelete from "../../components/ContentModalDelete";
+import { IoIosAlert } from "react-icons/io";
+import { AxiosError } from "axios";
 
 const DashboardHotelPage: FC = () => {
+  // query client
+  const queryClient = useQueryClient();
+
+  // get data user from state redux
+  const dataUser = useSelector((state: RootState) => state.user);
   // navigate
   const navigate = useNavigate();
+
+  // state modal delete
+  const [isModalDelete, setIsModalDelete] = useState<{
+    idHotel: string;
+    active: boolean;
+  }>({
+    idHotel: "",
+    active: false,
+  });
+
+  // handle close modal delete
+  const handleCloseModalDelete = () => {
+    setIsModalDelete({
+      idHotel: "",
+      active: false,
+    });
+  };
+
+  // handle active modal delete
+  const handleActiveModalDelete = (idHotel: string) => {
+    setIsModalDelete({
+      idHotel,
+      active: true,
+    });
+  };
 
   // state filter
   const [filter, setFilter] = useState<{
@@ -22,6 +57,15 @@ const DashboardHotelPage: FC = () => {
     minPrice?: string;
     maxPrice?: string;
   }>({});
+
+  // state modal failedDelete
+  const [isModalFailedDelete, setIsModalFailedDelete] =
+    useState<boolean>(false);
+
+  // handle close modal failed
+  const handleCloseModalFailedDelete = () => {
+    setIsModalFailedDelete(false);
+  };
 
   // search
   const [search, setSearch] = useState<string>("");
@@ -118,6 +162,44 @@ const DashboardHotelPage: FC = () => {
     setActive(false);
   };
 
+  // use mutation delete hotel
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (idHotel: string) => HotelService.deleteByIdHotel(idHotel),
+    onSuccess: (data) => {
+      console.log(data);
+      // revalidate
+      queryClient.invalidateQueries({ queryKey: ["dashboardHotel"] });
+
+      // modal close
+      handleCloseModalDelete();
+    },
+    onError: (error) => {
+      console.log(error);
+
+      // cek error axios
+      if (error instanceof AxiosError) {
+        if (error.status === 403) {
+          // set modal delete
+          handleCloseModalDelete();
+
+          // set modal failed
+          setIsModalFailedDelete(true);
+        }
+      }
+    },
+  });
+
+  // handle delete hotel
+  const handleDeleteHotel = async (idHotel: string) => {
+    try {
+      // mutation
+      return mutateAsync(idHotel);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       {/* helmet */}
@@ -145,6 +227,8 @@ const DashboardHotelPage: FC = () => {
           ) : hotel && hotel.data && hotel.data.length > 0 ? (
             hotel.data.map((item, _) => (
               <CardMedium
+                handleDelete={() => handleActiveModalDelete(item._id)}
+                admin={dataUser.role === "admin"}
                 key={item._id}
                 discount={0}
                 location={`${item.location.city}, ${item.location.country}`}
@@ -165,20 +249,58 @@ const DashboardHotelPage: FC = () => {
           )}
         </div>
 
-        {/* pagination number */}
-        {/* <PaginationNumber /> */}
-
         {/* modal filter*/}
-        <ModalComponent active={active} handleClose={handleClose}>
-          <ModalFilter
-            filter={filter}
-            handleClose={handleClose}
-            handleSetRangePrice={handleSetRangePrice}
-            handleSubmit={handleSubmit}
-            setFacility={setFacility}
-            setAccommodation={setAccommodation}
-            handleReset={handleReset}
-          />
+        <ModalComponent
+          active={active || isModalDelete.active || isModalFailedDelete}
+          handleClose={
+            active
+              ? handleClose
+              : isModalDelete.active
+              ? handleCloseModalDelete
+              : handleCloseModalFailedDelete
+          }
+        >
+          {/* modal filter */}
+          {active && (
+            <ModalFilter
+              filter={filter}
+              handleClose={handleClose}
+              handleSetRangePrice={handleSetRangePrice}
+              handleSubmit={handleSubmit}
+              setFacility={setFacility}
+              setAccommodation={setAccommodation}
+              handleReset={handleReset}
+            />
+          )}
+
+          {/* modal delete */}
+          {isModalDelete.active && (
+            <ContentModalDelete
+              handleClose={handleCloseModalDelete}
+              handleDelete={() => handleDeleteHotel(isModalDelete.idHotel)}
+              loading={isPending}
+            />
+          )}
+
+          {/* modal failed delete */}
+          {isModalFailedDelete && (
+            <div className="w-full flex flex-col justify-start items-center">
+              {/* icon */}
+              <IoIosAlert className="text-8xl mb-4 text-primary-skyblue" />
+              <span className="text-center text-sm">
+                Hotel tidak dapat dihapus karena masih memiliki booking aktif.
+              </span>
+
+              {/* button active */}
+              <button
+                type="button"
+                onClick={() => handleCloseModalFailedDelete()}
+                className="py-2.5 px-8 bg-gray-400 rounded-full mt-3"
+              >
+                <span className="text-white">Mengerti</span>
+              </button>
+            </div>
+          )}
         </ModalComponent>
 
         {/* button add */}

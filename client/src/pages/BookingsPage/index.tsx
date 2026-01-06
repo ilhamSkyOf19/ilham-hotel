@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { useState, type FC } from "react";
 import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
 import { BookingService } from "../../services/booking.service";

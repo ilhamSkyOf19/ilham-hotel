@@ -14,6 +14,7 @@ import { FasilitasService } from "../services/fasilitas.service";
 import { FileService } from "../services/file.service";
 import { HotelService } from "../services/hotel.service";
 import { GalleryService } from "../services/gallery.service";
+import { BookingService } from "../services/booking.service";
 
 export class HotelController {
   // create
@@ -325,6 +326,50 @@ export class HotelController {
       });
     } catch (error) {
       if (req.file) await FileService.deleteFileFromRequest(req.file.path);
+      console.log(error);
+      next(error);
+    }
+  }
+
+  // delete by id hotel
+  static async deleteByIdHote(
+    req: Request<{ idHotel: string }>,
+    res: Response<ResponseType<null>>,
+    next: NextFunction
+  ) {
+    try {
+      // get id hotel from params
+      const idHotel = req.params.idHotel;
+
+      // cek bookings
+      const findBookings = await BookingService.getBookingByIdHotel(idHotel);
+
+      // cek
+      if (findBookings)
+        return res.status(403).json({
+          status: "failed",
+          message: "hotel tidak boleh di hapus",
+          data: null,
+        });
+
+      // call service
+      const response = await HotelService.deleteById(idHotel);
+
+      // cek response
+      if (!response)
+        return res.status(400).json({
+          status: "failed",
+          message: "hotel gagal dihapus",
+          data: null,
+        });
+
+      // return
+      return res.status(200).json({
+        status: "success",
+        message: "hotel berhasil dihapus",
+        data: null,
+      });
+    } catch (error) {
       console.log(error);
       next(error);
     }
